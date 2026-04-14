@@ -5,15 +5,15 @@
   justify-content: center;
   align-items: center;
   flex: 1;
-  min-height: 300px;
-  border-radius: 16px;
+  min-height: 220px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(20px);
   cursor: pointer;
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 24px;
+  padding: 16px;
   text-align: center;
 }
 
@@ -120,17 +120,17 @@
 
 @media (max-width: 640px) {
   .team-card {
-    min-height: 200px;
-    padding: 16px;
-    border-radius: 12px;
+    min-height: 150px;
+    padding: 12px;
+    border-radius: 10px;
   }
   .team-name {
-    font-size: 1rem;
+    font-size: 0.9rem;
     letter-spacing: 1px;
   }
   .team-description {
-    font-size: 0.7rem;
-    line-height: 1.2;
+    font-size: 0.65rem;
+    line-height: 1.1;
     max-width: 100%;
   }
 }
