@@ -1,134 +1,78 @@
 .login-page {
   position: relative;
   min-height: 100vh;
+  width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
-  color: white;
-  overflow: hidden;
-  background-color: #020617;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-.login-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-.grid-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
-  background-size: 50px 50px;
-  pointer-events: none;
-}
-
-.glow-effect {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 800px;
-  height: 800px;
-  background: radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, transparent 70%);
-  filter: blur(50px);
-  pointer-events: none;
+  align-items: center;
+  background-color: #05070a;
+  padding: 24px;
+  overflow-y: auto;
 }
 
 .login-container {
-  position: relative;
-  z-index: 10;
   width: 100%;
-  max-width: 450px;
-  padding: 3rem;
-  background: rgba(15, 23, 42, 0.7);
+  max-width: 400px;
+  background: rgba(13, 15, 26, 0.7);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.logo-container {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 1.5rem;
+  margin-bottom: 32px;
 }
 
 .logo-text {
-  font-size: 2.5rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.8rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  margin: 0;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  color: #00d2ff;
   text-transform: uppercase;
 }
 
-.scanner-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--color-neon-blue, #00f2ff);
-  box-shadow: 0 0 10px var(--color-neon-blue, #00f2ff);
-  animation: scan 2s linear infinite;
-  opacity: 0.5;
-}
-
 .login-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: white;
+  color: #fff;
+  margin-bottom: 8px;
 }
 
 .login-subtitle {
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.5);
-  font-size: 0.9375rem;
+  line-height: 1.6;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
 .error-message {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  font-size: 0.875rem;
+  background: rgba(255, 0, 60, 0.1);
+  color: #ff003c;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
   text-align: center;
-}
-
-.form-actions {
-  margin-top: 1rem;
+  border: 1px solid rgba(255, 0, 60, 0.2);
 }
 
 .auth-divider {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 1.5rem 0;
+  margin: 24px 0;
   color: rgba(255, 255, 255, 0.2);
   font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  font-weight: 800;
 }
 
 .auth-divider::before,
@@ -138,133 +82,58 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.auth-divider:not(:empty)::before {
-  margin-right: .75rem;
-}
-
-.auth-divider:not(:empty)::after {
-  margin-left: .75rem;
+.auth-divider span {
+  padding: 0 12px;
 }
 
 .google-auth-btn {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.75rem;
-  background: white;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
   border: none;
-  border-radius: 4px;
-  color: #1f2937;
-  font-weight: 600;
+  border-radius: 8px;
+  color: #1a1a1a;
   font-size: 0.9375rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .google-auth-btn:hover {
-  background: #f3f4f6;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.google-auth-btn:active {
-  transform: translateY(0);
-}
-
-.google-auth-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.google-icon {
-  flex-shrink: 0;
+  background: #f0f0f0;
+  transform: translateY(-2px);
 }
 
 .login-footer {
-  margin-top: 2rem;
+  margin-top: 32px;
   text-align: center;
+}
+
+.login-footer p {
   color: rgba(255, 255, 255, 0.4);
   font-size: 0.875rem;
 }
 
 .toggle-auth-btn {
-  background: transparent;
+  background: none;
   border: none;
-  color: var(--color-neon-blue, #00f2ff);
-  font-weight: 600;
-  margin-left: 0.5rem;
+  color: #00d2ff;
+  font-weight: 700;
+  margin-left: 8px;
   cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  transition: all 0.2s ease;
+  padding: 0;
 }
 
 .toggle-auth-btn:hover {
-  text-shadow: 0 0 8px var(--color-neon-blue, #00f2ff);
   text-decoration: underline;
 }
 
-.security-status {
-  position: absolute;
-  bottom: 2rem;
-  left: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.3);
-  z-index: 5;
-}
-
-.status-item {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.status-value {
-  color: var(--color-neon-blue, #00f2ff);
-}
-
-.pulse-text {
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes scan {
-  0% { top: 0; }
-  100% { top: 100%; }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse {
-  0% { opacity: 0.4; }
-  50% { opacity: 1; }
-  100% { opacity: 0.4; }
-}
-
-@media (max-width: 640px) {
+@media (max-width: 480px) {
   .login-container {
-    padding: 2rem;
-    max-width: 90%;
-  }
-  
-  .logo-text {
-    font-size: 2rem;
-  }
-  
-  .security-status {
-    display: none;
+    padding: 30px 24px;
   }
 }

@@ -38,7 +38,7 @@ const TeamSelectionPage = () => {
   return (
     <div className="page-container team-selection-page">
       <header className="page-header">
-        <h1 className="title neon-text">{UI_TEXT.selectTeamTitle}</h1>
+        <h1 className="title">{UI_TEXT.selectTeamTitle}</h1>
       </header>
       
       <div className="teams-container">
@@ -48,7 +48,7 @@ const TeamSelectionPage = () => {
           onClick={() => handleSelect(TEAM_BLUE.id)}
         />
         
-        <div className="vs-divider">VS</div>
+
         
         <TeamCard 
           team={TEAM_RED} 

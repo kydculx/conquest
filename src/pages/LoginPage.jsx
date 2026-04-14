@@ -53,18 +53,11 @@ const LoginPage = () => {
   };
 
   return (
+  return (
     <div className="login-page">
-      <div className="login-background">
-        <div className="grid-overlay"></div>
-        <div className="glow-effect"></div>
-      </div>
-
       <div className="login-container">
         <header className="login-header">
-          <div className="logo-container">
-            <h1 className="logo-text neon-text">{APP_TITLE}</h1>
-            <div className="scanner-line"></div>
-          </div>
+          <h1 className="logo-text">{APP_TITLE}</h1>
           <h2 className="login-title">{isLogin ? UI_TEXT.loginTitle : UI_TEXT.signUpBtn}</h2>
           <p className="login-subtitle">{UI_TEXT.loginSubtitle}</p>
         </header>
@@ -133,17 +126,6 @@ const LoginPage = () => {
             </button>
           </p>
         </footer>
-      </div>
-
-      <div className="security-status">
-        <div className="status-item">
-          <span className="status-label">SYS_STATUS:</span>
-          <span className="status-value pulse-text">ENCRYPTED</span>
-        </div>
-        <div className="status-item">
-          <span className="status-label">ENCRYPTION:</span>
-          <span className="status-value">AES-256-GCM</span>
-        </div>
       </div>
     </div>
   );
