@@ -6,6 +6,27 @@
   background-color: #05070a;
 }
 
+/* --- 지도 출처 표시(Attribution) 커스텀 --- */
+.leaflet-control-attribution {
+  background: transparent !important;
+  color: rgba(0, 210, 255, 0.3) !important; /* 매우 희미한 파란색 */
+  font-family: 'Inter', monospace !important;
+  font-size: 10px !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 15px 5px 0 !important;
+  transition: color 0.3s ease;
+}
+
+.leaflet-control-attribution a {
+  color: rgba(0, 210, 255, 0.4) !important;
+  text-decoration: none;
+}
+
+.leaflet-control-attribution:hover {
+  color: rgba(0, 210, 255, 0.8) !important;
+}
+
 /* Common HUD Panel Style */
 .hud-panel {
   background: var(--color-hud-bg);
