@@ -1,0 +1,35 @@
+:root {
+  /* Colors */
+  --color-bg: #0d0f1a;
+  --color-surface: rgba(25, 30, 45, 0.8);
+  --color-surface-hover: rgba(40, 50, 75, 0.9);
+  
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #94a3b8;
+  
+  --color-neon-blue: #00d2ff;
+  --color-neon-red: #ff3366;
+  --color-accent: #39ff14; /* For capture points or success */
+  --color-glow: rgba(0, 210, 255, 0.3);
+
+  /* Typography */
+  --font-family-base: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  
+  /* Borders & Shadows */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-pill: 9999px;
+  
+  --shadow-neon-blue: 0 0 10px rgba(0, 210, 255, 0.5), 0 0 20px rgba(0, 210, 255, 0.3);
+  --shadow-neon-red: 0 0 10px rgba(255, 51, 102, 0.5), 0 0 20px rgba(255, 51, 102, 0.3);
+  
+  /* Layout */
+  --header-height: 70px;
+  --nav-bottom-height: 80px;
+
+  /* Z-index layers */
+  --z-map: 10;
+  --z-hud: 20;
+  --z-modal: 1000;
+}

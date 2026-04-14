@@ -1,0 +1,245 @@
+.ingame-hud-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 100000;
+  overflow: hidden;
+}
+
+.ingame-hud-container * {
+  pointer-events: auto;
+}
+
+/* CRT & Scanline Effects */
+.crt-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 50%, rgba(0, 0, 0, 0.2) 100%);
+  pointer-events: none;
+  z-index: 50;
+}
+
+.scanline-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.05) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 5;
+  pointer-events: none;
+  animation: scanline 10s linear infinite;
+  opacity: 0.2;
+}
+
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100%; }
+}
+
+/* Coordinate boxes removed - integrated into header */
+
+/* HUD Side Panels */
+.side-panel {
+  position: absolute;
+  left: 50%;
+  margin-left: -110px; /* width 220px의 절반만큼 왼쪽으로 밀어서 중앙 정렬 */
+  width: 220px;
+  padding: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(13, 15, 26, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+.left-panel {
+  bottom: 50%;
+  margin-bottom: 5px;
+  border-left: 4px solid var(--color-neon-blue);
+}
+
+.right-panel {
+  top: 50%;
+  margin-top: 5px;
+  border-right: 4px solid var(--color-neon-red);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.agent-info {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.agent-avatar {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: var(--color-neon-blue);
+}
+
+.agent-email { font-size: 0.9rem; font-weight: 700; color: #fff; margin: 0; }
+.agent-rank { font-size: 0.6rem; color: var(--color-text-secondary); margin: 2px 0 0; }
+
+.stat-item { margin-bottom: 10px; }
+.stat-label { display: block; font-size: 0.6rem; color: rgba(255, 255, 255, 0.4); margin-bottom: 4px; }
+.stat-bar-bg { height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; }
+.stat-bar-fill { height: 100%; background: var(--color-neon-blue); border-radius: 2px; box-shadow: 0 0 10px var(--color-neon-blue); }
+
+/* Tactical Feed */
+.tactical-log {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+  font-family: monospace;
+}
+
+.log-entry { font-size: 0.65rem; color: #cbd5e1; }
+.log-time { color: var(--color-neon-blue); margin-right: 8px; font-weight: 700; }
+.log-entry.highlight { color: #f87171; font-weight: 700; }
+
+.team-score-mini {
+  display: flex;
+  gap: 10px;
+}
+
+.score-box {
+  flex: 1;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.score-box.active { border-color: rgba(255, 255, 255, 0.2); }
+.score-label { display: block; font-size: 0.55rem; color: rgba(255, 255, 255, 0.4); margin-bottom: 2px; }
+.score-num { font-size: 1rem; font-weight: 900; }
+
+/* Logout Button */
+.hud-logout-btn {
+  position: absolute;
+  bottom: 100px;
+  left: 240px;
+  background: rgba(13, 15, 26, 0.8);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.hud-logout-btn:hover {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  transform: rotate(-90deg);
+}
+
+/* Tactical Frame Corners Removed */
+
+.pulse { animation: pulse 2s infinite; }
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* Mobile Toggle Icons */
+.panel-toggle {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.panel-toggle.rotated {
+  transform: rotate(180deg);
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
+
+  /* Shared Side Panel Drawer Styles for Mobile */
+  .side-panel {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px; /* 조금 더 슬림하게 변경 */
+    max-height: 30vh;
+    padding: 10px;
+    background: rgba(13, 15, 26, 0.9);
+  }
+
+  .left-panel {
+    top: auto;
+    bottom: 50%;
+    margin-bottom: 2px;
+  }
+
+  .right-panel {
+    top: 50%;
+    bottom: auto;
+    margin-top: 2px;
+  }
+
+  .panel-header {
+    cursor: pointer;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    margin: -15px -15px 12px -15px;
+    display: flex;
+    align-items: center;
+  }
+
+  .coord-box {
+    font-size: 0.6rem;
+    padding: 6px 10px;
+  }
+
+  .top-left, .top-right { top: 75px; }
+  
+  .hud-logout-btn {
+    left: auto;
+    right: 20px;
+    bottom: 160px; /* Footer 위로 배치 */
+    width: 40px;
+    height: 40px;
+  }
+}

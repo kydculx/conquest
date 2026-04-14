@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
+@import './variables.css';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-bg);
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(20, 25, 45, 0) 0%, rgba(13, 15, 26, 1) 100%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill-opacity='0.03' fill='%23ffffff' fill-rule='evenodd'/%3E%3C/svg%3E");
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Global Overlay for Scanlines */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 3px 100%;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* Animations that make the UI feel alive */
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(0.98); }
+}
+
+@keyframes scanner {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Utility classes */
+.glass-panel {
+  background: rgba(13, 15, 26, 0.7);
+  backdrop-filter: blur(15px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.82);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: scanner 3s linear infinite;
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #fff, var(--color-text-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+input, button {
+  font-family: inherit;
+}
+
+/* App container */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Security Clearance Check Screen */
+.security-check-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: var(--color-neon-blue);
+}
+
+.security-scanner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.scan-line {
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 210, 255, 0.5);
+  box-shadow: 0 0 15px var(--color-neon-blue);
+  animation: scan-vertical 3s linear infinite;
+}
+
+@keyframes scan-vertical {
+  0% { transform: translateY(-10px); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+.tactical-loader {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid transparent;
+  border-top-color: var(--color-neon-blue);
+  border-bottom-color: var(--color-neon-blue);
+  border-radius: 50%;
+  animation: rotate-plus 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+@keyframes rotate-plus {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loader-core {
+  width: 40px;
+  height: 40px;
+  background: var(--color-neon-blue);
+  border-radius: 4px;
+  transform: rotate(45deg);
+  box-shadow: 0 0 20px var(--color-neon-blue);
+  animation: pulse-core 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-core {
+  0%, 100% { transform: rotate(45deg) scale(0.8); opacity: 0.5; }
+  50% { transform: rotate(45deg) scale(1.1); opacity: 1; }
+}
+
+.security-title {
+  font-size: 1.2rem;
+  letter-spacing: 5px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  text-align: center;
+  text-shadow: 0 0 10px var(--color-glow);
+}
+
+.security-status-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+}
+
+.status-item::before {
+  content: "> ";
+  margin-right: 10px;
+}
+
+.delay-1 { animation-delay: 0.5s; }
+.delay-2 { animation-delay: 1s; }
+
+.clearance-footer {
+  position: absolute;
+  bottom: 40px;
+  font-family: monospace;
+  font-size: 0.7rem;
+  opacity: 0.4;
+  letter-spacing: 2px;
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
