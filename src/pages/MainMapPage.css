@@ -168,8 +168,19 @@
   z-index: 1;
 }
 
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #05070a !important;
+}
+
+.real-map-container {
+  width: 100%;
+  height: 100%;
+}
+
 .dark-map-tiles {
-  filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(115%) grayscale(0.8) saturate(0.5);
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(110%) grayscale(0.5) saturate(0.8);
 }
 
 /* Tactical Vignette */
