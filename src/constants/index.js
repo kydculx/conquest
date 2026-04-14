@@ -46,7 +46,7 @@ export const UI_TEXT = {
   signalGood: "연결 좋음",
   signalWeak: "신호 약함",
   
-  statusSyncing: "동기화 중...",
+  statusSyncing: "점령 중...",
   statusSignalWeak: "신호 약함",
   statusReclaimed: "점령 완료",
   statusCapture: "점령하기",
