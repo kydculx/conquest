@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Crosshair, Navigation, Target, ShieldAlert, Wifi, WifiOff } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
-import { TEAM_BLUE, TEAM_RED } from '../constants';
+import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
 import { getTileInfo } from '../utils/geoUtils';
 import { getSignalStatus } from '../utils/locationUtils';
 import { MapContainer, TileLayer, Marker, useMap, Rectangle, Circle } from 'react-leaflet';
@@ -97,9 +97,9 @@ const MainMapPage = () => {
     return (
       <div className="status-overlay">
         <ShieldAlert size={64} color="#ff003c" />
-        <h2>LOCATION ACCESS DENIED</h2>
-        <p>Please enable location permissions in your browser settings to continue conquest.</p>
-        <button className="auth-btn" onClick={() => window.location.reload()}>RETRY SENSOR SYNC</button>
+        <h2>{UI_TEXT.permissionDenied}</h2>
+        <p>{UI_TEXT.permissionHint}</p>
+        <button className="auth-btn" onClick={() => window.location.reload()}>{UI_TEXT.retrySync}</button>
       </div>
     );
   }
@@ -109,17 +109,17 @@ const MainMapPage = () => {
       {/* 좌표 정보 플로팅 UI - 왼쪽 상단 */}
       <div className="coord-floating-ui">
         <div className="coord-item">
-          <span className="coord-label">LAT:</span>
+          <span className="coord-label">{UI_TEXT.latLabel}:</span>
           <span className="coord-value">{location ? location[0].toFixed(6) : '---'}</span>
         </div>
         <div className="coord-item">
-          <span className="coord-label">LNG:</span>
+          <span className="coord-label">{UI_TEXT.lngLabel}:</span>
           <span className="coord-value">{location ? location[1].toFixed(6) : '---'}</span>
         </div>
         <div className="coord-item">
-          <span className="coord-label">ACC:</span>
+          <span className="coord-label">{UI_TEXT.accLabel}:</span>
           <span className={`coord-value ${signal.class}`}>
-            {accuracy ? `±${accuracy.toFixed(1)}M` : 'CALIBRATING'}
+            {accuracy ? `±${accuracy.toFixed(1)}M` : UI_TEXT.calibrating}
           </span>
         </div>
       </div>
@@ -207,7 +207,7 @@ const MainMapPage = () => {
       <button
         className="recenter-btn"
         onClick={() => setRecenterTrigger(prev => prev + 1)}
-        title="RECENTER POSITION"
+        title={UI_TEXT.recenterBtn}
       >
         <Navigation size={24} />
       </button>
@@ -221,9 +221,9 @@ const MainMapPage = () => {
         <div className="btn-content">
           <Target size={24} />
           <span>
-            {isCapturing ? 'SYNCING...' : 
-             accuracy > 50 ? 'SIGNAL WEAK' :
-             isCapturedByMe ? 'RECLAIMED' : 'CAPTURE'}
+            {isCapturing ? UI_TEXT.statusSyncing : 
+             accuracy > 50 ? UI_TEXT.statusSignalWeak :
+             isCapturedByMe ? UI_TEXT.statusReclaimed : UI_TEXT.statusCapture}
           </span>
         </div>
       </div>

@@ -37,8 +37,8 @@ export const getDistance = (lat1, lon1, lat2, lon2) => {
  * 정확도에 따른 신호 상태 반환
  */
 export const getSignalStatus = (accuracy) => {
-  if (accuracy === null) return { label: 'SEARCHING', class: 'searching' };
-  if (accuracy < 15) return { label: 'LINK_STABLE', class: 'stable' };
-  if (accuracy < 40) return { label: 'LINK_GOOD', class: 'good' };
-  return { label: 'LINK_WEAK', class: 'weak' };
+  if (accuracy === null) return { label: '수신 중', class: 'searching' };
+  if (accuracy < 15) return { label: '연결 안정', class: 'stable' };
+  if (accuracy < 40) return { label: '연결 좋음', class: 'good' };
+  return { label: '신호 약함', class: 'weak' };
 };

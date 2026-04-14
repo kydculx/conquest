@@ -53,7 +53,7 @@ const TeamSelectionPage = () => {
 
       {loading && (
         <div className="selection-loading">
-          <div className="pulse-text">SYNCHRONIZING...</div>
+          <div className="pulse-text">현장 투입 중...</div>
         </div>
       )}
     </div>
