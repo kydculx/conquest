@@ -38,11 +38,17 @@ export const useGeolocation = () => {
 
     // Permission API를 통한 권한 상태 실시간 감시
     if (navigator.permissions && navigator.permissions.query) {
-      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-        setPermissionStatus(result.state);
-        // 사용자 권한이 바뀌면 (예: 설정에서 차단 해제) 즉시 반영
-        result.onchange = () => setPermissionStatus(result.state);
-      });
+      try {
+        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+          setPermissionStatus(result.state);
+          // 사용자 권한이 바뀌면 (예: 설정에서 차단 해제) 즉시 반영
+          result.onchange = () => setPermissionStatus(result.state);
+        }).catch(err => {
+          console.warn('Permissions API query failed:', err);
+        });
+      } catch (err) {
+        console.warn('Permissions API not fully supported:', err);
+      }
     }
 
     // 위치 정보 획득 성공 시 실행될 핸들러
