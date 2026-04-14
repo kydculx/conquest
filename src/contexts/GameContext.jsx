@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { TEAM_BLUE, TEAM_RED } from '../constants';
+import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
 import { supabase } from '../lib/supabase';
 
 export const GameContext = createContext();
@@ -19,8 +19,6 @@ export const GameProvider = ({ children }) => {
     red: 0,
   });
 
-  // 보안을 위한 익명 세션 관리
-  const [session, setSession] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   
   // 알림 시스템 상태
@@ -35,39 +33,34 @@ export const GameProvider = ({ children }) => {
     setAlerts(prev => prev.filter(alert => alert.id !== id));
   };
 
-  // 익명 인증 및 초기 데이터 로드
+  // 초기 데이터 로드 및 실시간 연동
   useEffect(() => {
     const initGame = async () => {
-      // 1. 익명 로그인 수행 (세션 확보)
-      const { data: authData } = await supabase.auth.getSession();
-      if (!authData.session) {
-        await supabase.auth.signInAnonymously();
+      try {
+        // 초기 데이터 로드 (필터 없이 모든 점령 정보 가져오기)
+        const { data, error } = await supabase
+          .from('captured_tiles')
+          .select('*');
+
+        if (error) {
+          console.error('Error fetching tiles:', error);
+          return;
+        }
+
+        const tileMap = {};
+        const newScore = { blue: 0, red: 0 };
+
+        data.forEach(tile => {
+          tileMap[tile.id] = tile;
+          if (tile.owner === TEAM_BLUE.id) newScore.blue += 10;
+          if (tile.owner === TEAM_RED.id) newScore.red += 10;
+        });
+
+        setCapturedTiles(tileMap);
+        setScore(newScore);
+      } catch (err) {
+        console.error('Initialization error:', err);
       }
-      
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      setSession(currentSession);
-
-      // 2. 초기 데이터 로드
-      const { data, error } = await supabase
-        .from('captured_tiles')
-        .select('*');
-
-      if (error) {
-        console.error('Error fetching tiles:', error);
-        return;
-      }
-
-      const tileMap = {};
-      const newScore = { blue: 0, red: 0 };
-
-      data.forEach(tile => {
-        tileMap[tile.id] = tile;
-        if (tile.owner === TEAM_BLUE.id) newScore.blue += 10;
-        if (tile.owner === TEAM_RED.id) newScore.red += 10;
-      });
-
-      setCapturedTiles(tileMap);
-      setScore(newScore);
     };
 
     initGame();
@@ -96,7 +89,7 @@ export const GameProvider = ({ children }) => {
               } else if (prevTile.owner !== newTile.owner) {
                 // 주인이 바뀐 경우 (UPDATE)
                 if (newTile.owner === selectedTeam) {
-                  addAlert(UI_TEXT.alertCounterCapture, 'success');
+                  addAlert(addAlert(UI_TEXT.alertCounterCapture, 'success'));
                 } else if (prevTile.owner === selectedTeam) {
                   addAlert(UI_TEXT.alertEnemyInvasion, 'danger');
                 } else {
@@ -110,7 +103,7 @@ export const GameProvider = ({ children }) => {
               };
             });
             
-            // 실시간 스코어 업데이트 (안전한 업데이트를 위해 이전 주인이 있을 경우 차감)
+            // 실시간 스코어 업데이트
             setScore(prev => {
               const updatedScore = { ...prev };
               updatedScore[newTile.owner] += 10;
@@ -127,13 +120,14 @@ export const GameProvider = ({ children }) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [selectedTeam]); // 팀 변경 시 알림 로직 동기화를 위해 팀 상태 추가
 
   const captureTile = async (tileInfo) => {
-    if (!selectedTeam || !session || isProcessing) return false;
+    // 세션 체크 제거 - 오직 팀 선택 여부와 처리 중인 상태만 확인
+    if (!selectedTeam || isProcessing) return false;
     const { id, bounds } = tileInfo;
 
-    // 이미 같은 팀이 점령한 경우 무시 (클라이언트 1차 방어)
+    // 이미 같은 팀이 점령한 경우 무시
     if (capturedTiles[id]?.owner === selectedTeam) return false;
 
     setIsProcessing(true);
@@ -142,8 +136,8 @@ export const GameProvider = ({ children }) => {
         id,
         bounds,
         owner: selectedTeam,
-        captured_at: new Date().toISOString(),
-        captured_by: session.user.id // 누가 점령했는지 기록 (보안용)
+        captured_at: new Date().toISOString()
+        // captured_by 필드 삭제 (유저 프로필 정보 비활성화)
       };
 
       const { error } = await supabase
@@ -151,7 +145,6 @@ export const GameProvider = ({ children }) => {
         .upsert(newTile);
 
       if (error) throw error;
-
       return true;
     } catch (error) {
       console.error('Capture error:', error);
@@ -162,7 +155,6 @@ export const GameProvider = ({ children }) => {
   };
 
   const saveSelectedTeam = async (teamId) => {
-    // 계정 정보 대신 로컬 저장소에 영구 저장
     localStorage.setItem('nexus_selected_team', teamId);
     setSelectedTeam(teamId);
   };
@@ -187,3 +179,4 @@ export const GameProvider = ({ children }) => {
     </GameContext.Provider>
   );
 };
+
