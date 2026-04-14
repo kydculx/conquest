@@ -87,20 +87,25 @@
 
 @media (max-width: 900px) {
   .team-selection-page {
-    padding: 40px 20px;
-    justify-content: flex-start;
+    padding: 30px 16px;
+    justify-content: center;
   }
   
   .teams-container {
-    flex-direction: column;
-    gap: 20px;
+    flex-direction: row;
+    gap: 12px;
+    align-items: stretch;
   }
   
   .title {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   
   .page-header {
-    margin-bottom: 40px;
+    margin-bottom: 24px;
+  }
+
+  .action-container {
+    margin-top: 32px;
   }
 }

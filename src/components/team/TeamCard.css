@@ -118,12 +118,19 @@
   transform: translate(10%, 10%);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .team-card {
-    min-height: 320px;
-    padding: 30px;
+    min-height: 200px;
+    padding: 16px;
+    border-radius: 12px;
   }
   .team-name {
-    font-size: 1.8rem;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  .team-description {
+    font-size: 0.7rem;
+    line-height: 1.2;
+    max-width: 100%;
   }
 }
