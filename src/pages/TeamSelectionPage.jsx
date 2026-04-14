@@ -2,22 +2,20 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../hooks/useGame';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
-import { useAuth } from '../hooks/useAuth';
 import TeamCard from '../components/team/TeamCard';
 import Button from '../components/common/Button';
 import './TeamSelectionPage.css';
 
 const TeamSelectionPage = () => {
   const { selectedTeam, setSelectedTeam, saveSelectedTeam } = useGame();
-  const { profile } = useAuth();
   const navigate = useNavigate();
 
-  // 이미 진영이 선택된 유저라면 즉시 지도로 투입 (계정 귀속)
+  // 이미 진영이 선택된 유저라면 즉시 지도로 투입 (localStorage 확인)
   React.useEffect(() => {
-    if (profile?.team_id) {
+    if (selectedTeam) {
       navigate('/map', { replace: true });
     }
-  }, [profile, navigate]);
+  }, [selectedTeam, navigate]);
 
   const handleSelect = (teamId) => {
     setSelectedTeam(teamId);
@@ -26,7 +24,7 @@ const TeamSelectionPage = () => {
   const handleConfirm = async () => {
     if (selectedTeam) {
       try {
-        // DB에 진영 정보 영구 귀속
+        // 로컬 저장소에 진영 정보 저장
         await saveSelectedTeam(selectedTeam);
         navigate('/map');
       } catch (err) {
@@ -47,8 +45,6 @@ const TeamSelectionPage = () => {
           isSelected={selectedTeam === TEAM_BLUE.id}
           onClick={() => handleSelect(TEAM_BLUE.id)}
         />
-        
-
         
         <TeamCard 
           team={TEAM_RED} 

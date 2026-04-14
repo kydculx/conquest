@@ -1,25 +1,19 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { TEAM_BLUE, TEAM_RED } from '../constants';
 import { supabase } from '../lib/supabase';
-import { useAuth } from '../hooks/useAuth';
 
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-  const { user, profile, refreshProfile } = useAuth();
-  const [selectedTeam, setSelectedTeam] = useState(null);
-  
-  // 계정에 귀속된 진영 정보가 있으면 자동 설정
-  useEffect(() => {
-    if (profile?.team_id) {
-      setSelectedTeam(profile.team_id);
-    }
-  }, [profile]);
+  const [selectedTeam, setSelectedTeam] = useState(() => {
+    // Initial fetch from localStorage
+    return localStorage.getItem('nexus_selected_team') || null;
+  });
   
   // 점령된 타일 정보를 관리하는 상태 (Key: TileID, Value: Tile Info)
   const [capturedTiles, setCapturedTiles] = useState({});
 
-  // 전역 스코어 (초기값 - DB에서 계산될 예정)
+  // 전역 스코어
   const [score, setScore] = useState({
     blue: 0,
     red: 0,
@@ -67,7 +61,7 @@ export const GameProvider = ({ children }) => {
               [newTile.id]: newTile
             }));
             
-            // 실시간 스코어 업데이트 (간이 방식: 전체 다시 계산하거나 차이만 반영)
+            // 실시간 스코어 업데이트
             setScore(prev => ({
               ...prev,
               [newTile.owner]: prev[newTile.owner] + 10,
@@ -97,18 +91,18 @@ export const GameProvider = ({ children }) => {
       captured_at: new Date().toISOString()
     };
 
-    // Supabase DB에 기록 (Upsert)
+    // Supabase DB에 기록 (Upsert) - RLS 정책이 anon에게 허용되어야 함
     const { error } = await supabase
       .from('captured_tiles')
       .upsert(newTile);
 
     if (error) {
       console.error('Error capturing tile in DB:', error);
+      // 만약 RLS 때문에 실패하더라도 로컬 반응은 줄 수 있지만, 
+      // 여기서는 DB 에러 시 조기 종료합니다.
       return false;
     }
 
-    // 로컬 상태는 Realtime 구독을 통해 업데이트되거나, 즉각적인 반응을 위해 수동 업데이트 가능
-    // 여기서는 Realtime이 처리하도록 하거나 즉시 업데이트
     setCapturedTiles(prev => ({
       ...prev,
       [id]: newTile
@@ -123,22 +117,8 @@ export const GameProvider = ({ children }) => {
   };
 
   const saveSelectedTeam = async (teamId) => {
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('profiles')
-      .upsert({ 
-        id: user.id, 
-        team_id: teamId, 
-        updated_at: new Date().toISOString() 
-      });
-
-    if (error) {
-      console.error('Error saving team to profile:', error);
-      throw error;
-    }
-
-    await refreshProfile();
+    // 계정 정보 대신 로컬 저장소에 영구 저장
+    localStorage.setItem('nexus_selected_team', teamId);
     setSelectedTeam(teamId);
   };
 
