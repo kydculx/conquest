@@ -138,65 +138,68 @@ const MainMapPage = () => {
       </div>
 
       <div className="map-view">
-        <MapContainer
-          center={defaultPosition}
-          zoom={16}
-          zoomControl={false}
-          className="real-map-container"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            className="dark-map-tiles"
-          />
-
-          {location && <MapUpdater center={location} recenterTrigger={recenterTrigger} />}
-
-          {/* 오차 범위 Circle */}
-          {location && accuracy && (
-            <Circle
-              center={location}
-              radius={accuracy}
-              pathOptions={{
-                color: signal.class === 'stable' ? '#00d2ff' : '#ffea00',
-                fillColor: signal.class === 'stable' ? '#00d2ff' : '#ffea00',
-                fillOpacity: 0.1,
-                weight: 1,
-                dashArray: '3, 6'
-              }}
+        <div className="tactical-overlay-container">
+          <div className="tactical-overlay"></div>
+          <MapContainer
+            center={defaultPosition}
+            zoom={16}
+            zoomControl={false}
+            className="real-map-container"
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              className="dark-map-tiles"
             />
-          )}
 
-          {/* 점령된 타일들 표시 */}
-          {Object.values(capturedTiles).map(tile => (
-            <Rectangle
-              key={tile.id}
-              bounds={tile.bounds}
-              pathOptions={{
-                color: tile.owner === TEAM_BLUE.id ? '#00d2ff' : '#ff003c',
-                fillColor: tile.owner === TEAM_BLUE.id ? '#00d2ff' : '#ff003c',
-                fillOpacity: 0.4,
-                weight: 1
-              }}
-            />
-          ))}
+            {location && <MapUpdater center={location} recenterTrigger={recenterTrigger} />}
 
-          {/* 현재 타일 하이라이트 */}
-          {currentTile && (
-            <Rectangle
-              bounds={currentTile.bounds}
-              pathOptions={{
-                color: '#fff',
-                fillColor: 'transparent',
-                weight: 2,
-                dashArray: '5, 5'
-              }}
-            />
-          )}
+            {/* 오차 범위 Circle */}
+            {location && accuracy && (
+              <Circle
+                center={location}
+                radius={accuracy}
+                pathOptions={{
+                  color: signal.class === 'stable' ? '#00d2ff' : '#ffea00',
+                  fillColor: signal.class === 'stable' ? '#00d2ff' : '#ffea00',
+                  fillOpacity: 0.1,
+                  weight: 1,
+                  dashArray: '3, 6'
+                }}
+              />
+            )}
 
-          {/* Player Marker */}
-          <Marker position={effectivePosition} icon={playerIcon} />
-        </MapContainer>
+            {/* 점령된 타일들 표시 */}
+            {Object.values(capturedTiles).map(tile => (
+              <Rectangle
+                key={tile.id}
+                bounds={tile.bounds}
+                pathOptions={{
+                  color: tile.owner === TEAM_BLUE.id ? '#00d2ff' : '#ff003c',
+                  fillColor: tile.owner === TEAM_BLUE.id ? '#00d2ff' : '#ff003c',
+                  fillOpacity: 0.4,
+                  weight: 1
+                }}
+              />
+            ))}
+
+            {/* 현재 타일 하이라이트 */}
+            {currentTile && (
+              <Rectangle
+                bounds={currentTile.bounds}
+                pathOptions={{
+                  color: '#fff',
+                  fillColor: 'transparent',
+                  weight: 2,
+                  dashArray: '5, 5'
+                }}
+              />
+            )}
+
+            {/* Player Marker */}
+            <Marker position={effectivePosition} icon={playerIcon} />
+          </MapContainer>
+        </div>
 
         <div className="crosshair-center">
           <Crosshair size={40} className={`active-target ${isCapturing ? 'capturing' : 'animate-pulse'}`} />

@@ -64,7 +64,6 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  border-top-width: 0; /* Clean top edge */
 }
 
 .score-floating-ui::before {
@@ -83,89 +82,49 @@
   font-weight: 800;
 }
 
-.marker-wrapper {
-  position: relative;
-  width: 40px; height: 40px;
-  display: flex; justify-content: center; align-items: center;
-}
-
-.marker-reticle {
-  position: absolute;
-  width: 32px; height: 32px;
-  border: 1px solid currentColor;
-  border-radius: 4px;
-  opacity: 0.5;
-  animation: reticle-rotate 10s linear infinite;
-}
-
-.marker-reticle::before,
-.marker-reticle::after {
-  content: "";
-  position: absolute;
-  background: currentColor;
-}
-
-/* Crosshair lines */
-.marker-reticle::before { top: 50%; left: -4px; right: -4px; height: 1px; transform: translateY(-50%); }
-.marker-reticle::after { left: 50%; top: -4px; bottom: -4px; width: 1px; transform: translateX(-50%); }
-
-.marker-pulse {
-  position: absolute;
-  width: 100%; height: 100%;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-  opacity: 0;
-  animation: marker-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
-.marker-core {
-  width: 12px; height: 12px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 15px currentColor;
-  border: 2px solid currentColor;
-  z-index: 2;
-}
-
-.blue-marker { color: var(--color-neon-blue); }
-.red-marker { color: var(--color-neon-red); }
-
-@keyframes reticle-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes marker-ping {
-  0% { transform: scale(0.5); opacity: 0.8; }
-  100% { transform: scale(2); opacity: 0; }
-}
-
-.blue-score { color: var(--color-neon-blue); }
-.red-score { color: var(--color-neon-red); }
-.divider { opacity: 0.2; font-weight: 300; }
-
-.sat-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 20px;
-}
-
-.sat-value {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-/* Map View */
+/* Tactical Map View & Overlays */
 .map-view {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   z-index: 1;
+}
+
+.tactical-overlay-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.tactical-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 10;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center center;
+}
+
+/* Moving Scanning Line */
+.tactical-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 210, 255, 0.03) 50%,
+    transparent 100%
+  );
+  background-size: 100% 200px;
+  animation: scanning-line 8s linear infinite;
+}
+
+@keyframes scanning-line {
+  0% { background-position: 0 -200px; }
+  100% { background-position: 0 100vh; }
 }
 
 .leaflet-container {
@@ -179,31 +138,115 @@
   height: 100%;
 }
 
+/* High-End Game Map Filters */
 .dark-map-tiles {
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(110%) grayscale(0.5) saturate(0.8);
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(110%) grayscale(0.7) sepia(0.1) saturate(0.6);
+  transition: filter 1s ease;
 }
 
-/* Tactical Vignette */
+.map-page.team-blue .dark-map-tiles {
+  filter: invert(100%) hue-rotate(190deg) brightness(90%) contrast(120%) grayscale(0.5) saturate(1.2) shadow(0 0 5px rgba(0, 210, 255, 0.2));
+}
+
+.map-page.team-red .dark-map-tiles {
+  filter: invert(100%) hue-rotate(340deg) brightness(90%) contrast(120%) grayscale(0.5) saturate(1.2);
+}
+
+/* Tactical Vignette & HUD Edge Fade */
 .map-page::after {
   content: "";
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.4) 120%);
+  background: 
+    radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.6) 130%),
+    linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.4) 100%);
   pointer-events: none;
   z-index: 500;
 }
 
-/* Crosshair - Compact & Minimal */
+/* Markers */
+.marker-wrapper {
+  position: relative;
+  width: 40px; height: 40px;
+  display: flex; justify-content: center; align-items: center;
+}
+
+.marker-reticle {
+  position: absolute;
+  width: 32px; height: 32px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  opacity: 0.6;
+  animation: reticle-rotate 12s linear infinite;
+}
+
+.marker-reticle::before { top: 50%; left: -6px; right: -6px; height: 1px; background: currentColor; content: ""; position: absolute; transform: translateY(-50%); }
+.marker-reticle::after { left: 50%; top: -6px; bottom: -6px; width: 1px; background: currentColor; content: ""; position: absolute; transform: translateX(-50%); }
+
+.marker-pulse {
+  position: absolute;
+  width: 100%; height: 100%;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  animation: marker-ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.marker-core {
+  width: 10px; height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 15px currentColor;
+  border: 1px solid currentColor;
+  z-index: 2;
+}
+
+.blue-marker { color: var(--color-neon-blue); }
+.red-marker { color: var(--color-neon-red); }
+
+@keyframes reticle-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes marker-ping {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+.blue-score { color: var(--color-neon-blue); }
+.red-score { color: var(--color-neon-red); }
+.divider { opacity: 0.2; font-weight: 300; }
+
+.sat-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.sat-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Crosshair Center */
 .crosshair-center {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
-/* Tactical Recenter Button */
+/* Buttons */
 .recenter-btn {
   position: fixed;
   right: 20px;
@@ -229,21 +272,19 @@
   box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
 }
 
-/* Capture HUD - Bottom Center Control Bar */
 .capture-overlay-btn {
   position: fixed;
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10003;
-  width: auto;
 }
 
 .capture-overlay-btn .btn-content {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 12px 32px;
+  padding: 14px 40px;
   border-radius: var(--border-radius-pill);
   background: var(--color-hud-bg);
   backdrop-filter: var(--glass-blur);
@@ -257,22 +298,17 @@
 
 .capture-overlay-btn .btn-content span {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 800;
-  letter-spacing: 2px;
+  font-size: 0.95rem;
+  font-weight: 850;
+  letter-spacing: 3px;
   text-transform: uppercase;
 }
 
 .capture-overlay-btn:not(.disabled):hover .btn-content {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.08);
   border-color: var(--color-border-focus);
-  transform: translateY(-4px);
-  box-shadow: 0 15px 40px -5px rgba(0, 0, 0, 0.9);
-}
-
-.capture-overlay-btn.disabled {
-  opacity: 0.3;
-  pointer-events: none;
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 1);
 }
 
 /* Mobile Adjustments */
@@ -307,6 +343,6 @@
   .capture-overlay-btn .btn-content {
     width: 100%;
     justify-content: center;
-    padding: 14px;
+    padding: 16px;
   }
 }
