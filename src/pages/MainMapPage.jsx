@@ -10,13 +10,13 @@ import { MapContainer, TileLayer, Marker, useMap, Rectangle, Circle } from 'reac
 import L from 'leaflet';
 import './MainMapPage.css';
 
-// Special icon for player with radar effect
+// Tactical reticle icon for player
 const playerIconBase = (colorClass) => L.divIcon({
   className: `custom-leaflet-icon player-marker-transition`,
   html: `
     <div class="marker-wrapper ${colorClass}">
-      <div class="player-radar"></div>
-      <div class="ring ring-outer" style="animation-duration: 4s"></div>
+      <div class="marker-reticle"></div>
+      <div class="marker-pulse"></div>
       <div class="marker-core"></div>
     </div>
   `,
@@ -107,7 +107,7 @@ const MainMapPage = () => {
   return (
     <div className={`map-page team-${selectedTeam}`}>
       {/* 좌표 정보 플로팅 UI - 왼쪽 상단 */}
-      <div className="coord-floating-ui">
+      <div className="coord-floating-ui hud-panel">
         <div className="coord-item">
           <span className="coord-label">{UI_TEXT.latLabel}:</span>
           <span className="coord-value">{location ? location[0].toFixed(6) : '---'}</span>
@@ -125,7 +125,7 @@ const MainMapPage = () => {
       </div>
 
       {/* 점수 및 상태 UI - 상단 중앙 */}
-      <div className="score-floating-ui">
+      <div className="score-floating-ui hud-panel">
         <div className="score-section">
           <span className="blue-score">{score.blue}</span>
           <span className="divider">:</span>
