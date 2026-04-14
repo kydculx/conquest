@@ -1,7 +1,17 @@
+import React from 'react';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import 'leaflet/dist/leaflet.css';
+import { GameProvider } from './contexts/GameContext';
+import TeamSelectionPage from './pages/TeamSelectionPage';
+import MainMapPage from './pages/MainMapPage';
+import './styles/global.css';
 import { useGame } from './hooks/useGame';
 import TacticalAlert from './components/common/TacticalAlert';
 
-// Wrapper to use GameContext hooks
+/**
+ * TacticalAlertManager: 전역 알림을 관리하는 내부 컴포넌트
+ * GameProvider 내부에 위치해야 useGame 훅을 사용할 수 있습니다.
+ */
 const TacticalAlertManager = () => {
   const { alerts, removeAlert } = useGame();
   return <TacticalAlert alerts={alerts} onRemove={removeAlert} />;
@@ -10,7 +20,7 @@ const TacticalAlertManager = () => {
 function App() {
   return (
     <GameProvider>
-      <Router basename={import.meta.env.BASE_URL}>
+      <Router>
         <Routes>
           <Route path="/" element={<TeamSelectionPage />} />
           <Route path="/map" element={<MainMapPage />} />
