@@ -18,11 +18,15 @@ export const GameProvider = ({ children }) => {
   // 점령된 타일 정보를 관리하는 상태 (Key: 타일ID, Value: 타일 객체)
   const [capturedTiles, setCapturedTiles] = useState({});
 
-  // 양 팀의 전역 스코어 (점령지 개수 기반)
-  const [score, setScore] = useState({
-    blue: 0,
-    red: 0,
-  });
+  // [수정] 점수 누적 에러 방지를 위해 capturedTiles에서 직접 실시간으로 갯수를 계산(Derived State)합니다.
+  const score = React.useMemo(() => {
+    const counts = { blue: 0, red: 0 };
+    Object.values(capturedTiles).forEach(tile => {
+      if (tile.owner === TEAM_BLUE.id) counts.blue += 1;
+      if (tile.owner === TEAM_RED.id) counts.red += 1;
+    });
+    return counts;
+  }, [capturedTiles]);
 
   // 점령 프로세스 중복 방지 플래그
   const [isProcessing, setIsProcessing] = useState(false);
@@ -64,17 +68,12 @@ export const GameProvider = ({ children }) => {
         }
 
         const tileMap = {};
-        const newScore = { blue: 0, red: 0 };
 
         data.forEach(tile => {
           tileMap[tile.id] = tile;
-          // 타일 하나당 1점씩 합산
-          if (tile.owner === TEAM_BLUE.id) newScore.blue += 1;
-          if (tile.owner === TEAM_RED.id) newScore.red += 1;
         });
 
         setCapturedTiles(tileMap);
-        setScore(newScore);
       } catch (err) {
         console.error('초기화 에러:', err);
       }
@@ -113,29 +112,10 @@ export const GameProvider = ({ children }) => {
               }
             }
 
-            // [타일 데이터 업데이트]
             setCapturedTiles(prev => ({
               ...prev,
               [newTile.id]: newTile
             }));
-            
-            // [점수 업데이트] - 소유주가 변경된 경우에만 갯수 조정
-            setScore(prev => {
-              const updatedScore = { ...prev };
-              
-              if (eventType === 'INSERT') {
-                // 신규 점령일 때만 +1
-                updatedScore[newTile.owner] += 1;
-              } else if (eventType === 'UPDATE' && oldTile && oldTile.owner !== newTile.owner) {
-                // 소유주가 바뀌었을 때만 새로운 진영 +1, 기존 진영 -1
-                updatedScore[newTile.owner] += 1;
-                if (oldTile.owner) {
-                  updatedScore[oldTile.owner] -= 1;
-                }
-              }
-              
-              return updatedScore;
-            });
           }
         }
       )
@@ -196,7 +176,6 @@ export const GameProvider = ({ children }) => {
     setSelectedTeam,
     saveSelectedTeam,
     score,
-    setScore,
     capturedTiles,
     captureTile,
     alerts,
