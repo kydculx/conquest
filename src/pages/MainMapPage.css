@@ -42,7 +42,12 @@
   font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.9);
   letter-spacing: 0.5px;
+  transition: color 0.3s ease;
 }
+
+.coord-value.stable { color: #00d2ff; }
+.coord-value.good { color: #ffea00; }
+.coord-value.weak { color: #ff003c; }
 
 @media (max-width: 768px) {
   .coord-floating-ui {
@@ -109,15 +114,19 @@
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   width: 100%;
   justify-content: center;
+  transition: all 0.5s ease;
 }
+
+.status-stable { color: #00d2ff; }
+.status-good { color: #ffea00; }
+.status-weak { color: #ff003c; }
+.status-searching { color: rgba(255, 255, 255, 0.5); }
 
 .score-floating-ui .sat-value {
   font-family: 'Space Grotesk', monospace;
   font-size: 0.65rem;
   font-weight: 700;
-  color: var(--color-accent);
   letter-spacing: 0.5px;
-  text-shadow: 0 0 8px rgba(57, 255, 20, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -175,6 +184,11 @@
   border: none;
 }
 
+/* Smooth interpolation for player marker */
+.player-marker-transition {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .marker-wrapper {
   position: relative;
   width: 40px;
@@ -208,31 +222,21 @@
 }
 
 .marker-core {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background: currentColor;
   border-radius: 50%;
   box-shadow: 0 0 15px currentColor;
 }
 
 @keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes rotate-rev {
-  from {
-    transform: rotate(360deg);
-  }
-
-  to {
-    transform: rotate(0deg);
-  }
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
 }
 
 /* Tactical Vignette & Overlay */
@@ -246,22 +250,6 @@
   background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.4) 110%);
   pointer-events: none;
   z-index: 5;
-}
-
-@keyframes radar-pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0.5);
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 0.3;
-  }
-
-  100% {
-    transform: translate(-50%, -50%) scale(2);
-    opacity: 0;
-  }
 }
 
 /* Crosshair */
@@ -278,6 +266,13 @@
 .active-target {
   color: var(--color-accent);
   filter: drop-shadow(0 0 10px var(--color-accent));
+  transition: all 0.3s ease;
+}
+
+.active-target.capturing {
+  transform: scale(1.5) rotate(45deg);
+  color: #fff;
+  filter: drop-shadow(0 0 20px #fff);
 }
 
 /* Recenter Button */
@@ -378,7 +373,6 @@
     transform: scale(1);
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
   }
-
   to {
     transform: scale(1.05);
     box-shadow: 0 0 35px rgba(255, 255, 255, 0.4);
@@ -387,12 +381,42 @@
 
 .capture-overlay-btn.disabled {
   opacity: 0.4;
-  filter: grayscale(1);
+  filter: grayscale(0.8);
   cursor: not-allowed;
 }
 
 .capture-overlay-btn:not(.disabled):hover {
   transform: translateX(-50%) translateY(-5px);
+}
+
+/* Status Overlays (Error/Loading) */
+.status-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0d0f1a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 200000;
+  padding: 40px;
+  text-align: center;
+  gap: 20px;
+}
+
+.status-overlay h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #fff;
+  letter-spacing: 4px;
+}
+
+.status-overlay p {
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 400px;
+  line-height: 1.6;
 }
 
 @media (max-width: 768px) {

@@ -1,17 +1,18 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Crosshair, Navigation, Target } from 'lucide-react';
+import { Crosshair, Navigation, Target, ShieldAlert, Wifi, WifiOff } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { TEAM_BLUE, TEAM_RED } from '../constants';
 import { getTileInfo } from '../utils/geoUtils';
-import { MapContainer, TileLayer, Marker, useMap, Rectangle } from 'react-leaflet';
+import { getSignalStatus } from '../utils/locationUtils';
+import { MapContainer, TileLayer, Marker, useMap, Rectangle, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import './MainMapPage.css';
 
 // Special icon for player with radar effect
 const playerIconBase = (colorClass) => L.divIcon({
-  className: 'custom-leaflet-icon',
+  className: `custom-leaflet-icon player-marker-transition`,
   html: `
     <div class="marker-wrapper ${colorClass}">
       <div class="player-radar"></div>
@@ -31,7 +32,7 @@ const MapUpdater = ({ center, recenterTrigger }) => {
   const map = useMap();
   useEffect(() => {
     if (center) {
-      map.flyTo(center, 15, { animate: true, duration: 1.5 });
+      map.flyTo(center, 18, { animate: true, duration: 1.5 });
     }
   }, [center, recenterTrigger, map]);
   return null;
@@ -40,7 +41,7 @@ const MapUpdater = ({ center, recenterTrigger }) => {
 const MainMapPage = () => {
   const navigate = useNavigate();
   const { selectedTeam, score, capturedTiles, captureTile } = useGame();
-  const { location } = useGeolocation();
+  const { location, accuracy, error, loading, permissionStatus } = useGeolocation();
   const [currentTile, setCurrentTile] = useState(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const [recenterTrigger, setRecenterTrigger] = useState(0);
@@ -73,7 +74,10 @@ const MainMapPage = () => {
   const isCapturedByMe = tileStatus?.owner === selectedTeam;
 
   const handleCapture = () => {
-    if (!currentTile || isCapturing || isCapturedByMe) return;
+    if (!currentTile || isCapturing || isCapturedByMe || (accuracy && accuracy > 50)) {
+      if (accuracy > 50) triggerHaptic(100);
+      return;
+    }
 
     triggerHaptic([30, 50, 30]);
     setIsCapturing(true);
@@ -86,6 +90,19 @@ const MainMapPage = () => {
   const playerIcon = selectedTeam === TEAM_BLUE.id ? bluePlayerIcon : redPlayerIcon;
   const defaultPosition = [37.5665, 126.9780];
   const effectivePosition = location || defaultPosition;
+  const signal = getSignalStatus(accuracy);
+
+  // Permission warning UI
+  if (permissionStatus === 'denied') {
+    return (
+      <div className="status-overlay">
+        <ShieldAlert size={64} color="#ff003c" />
+        <h2>LOCATION ACCESS DENIED</h2>
+        <p>Please enable location permissions in your browser settings to continue conquest.</p>
+        <button className="auth-btn" onClick={() => window.location.reload()}>RETRY SENSOR SYNC</button>
+      </div>
+    );
+  }
 
   return (
     <div className={`map-page team-${selectedTeam}`}>
@@ -100,20 +117,23 @@ const MainMapPage = () => {
           <span className="coord-value">{location ? location[1].toFixed(6) : '---'}</span>
         </div>
         <div className="coord-item">
-          <span className="coord-label">ALT:</span>
-          <span className="coord-value">024.5M</span>
+          <span className="coord-label">ACC:</span>
+          <span className={`coord-value ${signal.class}`}>
+            {accuracy ? `±${accuracy.toFixed(1)}M` : 'CALIBRATING'}
+          </span>
         </div>
       </div>
 
-      {/* 점수 플로팅 UI - 상단 중앙 */}
+      {/* 점수 및 상태 UI - 상단 중앙 */}
       <div className="score-floating-ui">
         <div className="score-section">
           <span className="blue-score">{score.blue}</span>
           <span className="divider">:</span>
           <span className="red-score">{score.red}</span>
         </div>
-        <div className="sat-status">
-          <span className="sat-value">LINK_ACTIVE</span>
+        <div className={`sat-status status-${signal.class}`}>
+          {accuracy ? <Wifi size={14} /> : <WifiOff size={14} className="animate-pulse" />}
+          <span className="sat-value">{signal.label}</span>
         </div>
       </div>
 
@@ -131,6 +151,21 @@ const MainMapPage = () => {
           />
 
           {location && <MapUpdater center={location} recenterTrigger={recenterTrigger} />}
+
+          {/* 오차 범위 Circle */}
+          {location && accuracy && (
+            <Circle
+              center={location}
+              radius={accuracy}
+              pathOptions={{
+                color: signal.class === 'stable' ? '#00d2ff' : '#ffea00',
+                fillColor: signal.class === 'stable' ? '#00d2ff' : '#ffea00',
+                fillOpacity: 0.1,
+                weight: 1,
+                dashArray: '3, 6'
+              }}
+            />
+          )}
 
           {/* 점령된 타일들 표시 */}
           {Object.values(capturedTiles).map(tile => (
@@ -164,7 +199,7 @@ const MainMapPage = () => {
         </MapContainer>
 
         <div className="crosshair-center">
-          <Crosshair size={40} className="active-target animate-pulse" />
+          <Crosshair size={40} className={`active-target ${isCapturing ? 'capturing' : 'animate-pulse'}`} />
         </div>
       </div>
 
@@ -179,13 +214,17 @@ const MainMapPage = () => {
 
       {/* 점령 액션 버튼 - 중앙 하단 */}
       <div
-        className={`capture-overlay-btn team-${selectedTeam} ${isCapturing ? 'loading' : ''} ${!currentTile || isCapturedByMe ? 'disabled' : ''}`}
+        className={`capture-overlay-btn team-${selectedTeam} ${isCapturing ? 'loading' : ''} ${!currentTile || isCapturedByMe || (accuracy > 50) ? 'disabled' : ''}`}
         onClick={handleCapture}
       >
         <div className="btn-glow"></div>
         <div className="btn-content">
           <Target size={24} />
-          <span>{isCapturing ? 'SYNCING...' : isCapturedByMe ? 'RECLAIMED' : 'CAPTURE'}</span>
+          <span>
+            {isCapturing ? 'SYNCING...' : 
+             accuracy > 50 ? 'SIGNAL WEAK' :
+             isCapturedByMe ? 'RECLAIMED' : 'CAPTURE'}
+          </span>
         </div>
       </div>
     </div>
