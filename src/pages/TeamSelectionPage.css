@@ -27,22 +27,22 @@
   position: relative;
   z-index: 10;
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 32px;
   animation: fadeInDown 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 2.8rem;
+  font-size: 2rem;
   font-weight: 950;
-  letter-spacing: 6px;
+  letter-spacing: 4px;
   color: #fff;
   text-transform: uppercase;
   margin: 0;
   background: linear-gradient(to bottom, #fff, #888);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 20px rgba(255,255,255,0.1));
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
 }
 
 .teams-container {
@@ -52,9 +52,9 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 16px;
   width: 100%;
-  max-width: 1100px;
+  max-width: 700px;
   animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
@@ -62,9 +62,16 @@
   position: relative;
   z-index: 10;
   margin-top: 60px;
+  display: flex;
+  justify-content: center;
   width: 100%;
-  max-width: 360px;
   animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+
+/* Ensure the button itself has a premium but compact feel */
+.action-container .btn {
+  padding: 12px 48px;
+  min-width: 200px;
 }
 
 /* Animations */
