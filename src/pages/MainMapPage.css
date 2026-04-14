@@ -540,19 +540,8 @@
   box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
 }
 
-.recenter-btn.ready {
-  background: var(--team-primary);
-  box-shadow: 0 0 20px var(--team-glow);
-  border: 1px solid #fff;
-}
-
-.tracking-hint {
-  animation: bounce-right 1s infinite;
-}
-
-@keyframes bounce-right {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(5px); }
+.recenter-btn:active {
+  transform: scale(0.95);
 }
 
 .tactical-btn.active:hover {

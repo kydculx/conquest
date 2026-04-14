@@ -267,14 +267,14 @@ const MainMapPage = () => {
 
       {/* 4. 내 위치 보기 플로팅 버튼 (수동 GPS 활성화 연동) */}
       <button
-        className={`recenter-btn ${!isTrackingStarted ? 'ready' : ''}`}
+        className="recenter-btn"
         onClick={() => {
           if (!isTrackingStarted) startTracking();
           setRecenterTrigger(prev => prev + 1);
         }}
         title={UI_TEXT.recenterBtn}
       >
-        <Navigation size={24} className={!isTrackingStarted ? 'tracking-hint' : ''} />
+        <Navigation size={24} />
       </button>
 
       {/* 5. 점령/스캐닝 실행 캡슐 버튼 (중앙 하단) */}
