@@ -19,9 +19,23 @@ export const GameProvider = ({ children }) => {
     red: 0,
   });
 
-  // DB에서 초기 데이터 로드 및 스코어 계산
+  // 보안을 위한 익명 세션 관리
+  const [session, setSession] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // 익명 인증 및 초기 데이터 로드
   useEffect(() => {
-    const fetchTiles = async () => {
+    const initGame = async () => {
+      // 1. 익명 로그인 수행 (세션 확보)
+      const { data: authData } = await supabase.auth.getSession();
+      if (!authData.session) {
+        await supabase.auth.signInAnonymously();
+      }
+      
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      setSession(currentSession);
+
+      // 2. 초기 데이터 로드
       const { data, error } = await supabase
         .from('captured_tiles')
         .select('*');
@@ -44,7 +58,7 @@ export const GameProvider = ({ children }) => {
       setScore(newScore);
     };
 
-    fetchTiles();
+    initGame();
 
     // 실시간 동기화 (Realtime)
     const channel = supabase
@@ -61,12 +75,15 @@ export const GameProvider = ({ children }) => {
               [newTile.id]: newTile
             }));
             
-            // 실시간 스코어 업데이트
-            setScore(prev => ({
-              ...prev,
-              [newTile.owner]: prev[newTile.owner] + 10,
-              ...(oldTile?.owner && oldTile.owner !== newTile.owner ? { [oldTile.owner]: prev[oldTile.owner] - 10 } : {})
-            }));
+            // 실시간 스코어 업데이트 (안전한 업데이트를 위해 이전 주인이 있을 경우 차감)
+            setScore(prev => {
+              const updatedScore = { ...prev };
+              updatedScore[newTile.owner] += 10;
+              if (oldTile?.owner && oldTile.owner !== newTile.owner) {
+                updatedScore[oldTile.owner] -= 10;
+              }
+              return updatedScore;
+            });
           }
         }
       )
@@ -78,42 +95,35 @@ export const GameProvider = ({ children }) => {
   }, []);
 
   const captureTile = async (tileInfo) => {
-    if (!selectedTeam) return false;
+    if (!selectedTeam || !session || isProcessing) return false;
     const { id, bounds } = tileInfo;
 
-    // 이미 같은 팀이 점령한 경우 무시
+    // 이미 같은 팀이 점령한 경우 무시 (클라이언트 1차 방어)
     if (capturedTiles[id]?.owner === selectedTeam) return false;
 
-    const newTile = {
-      id,
-      bounds,
-      owner: selectedTeam,
-      captured_at: new Date().toISOString()
-    };
+    setIsProcessing(true);
+    try {
+      const newTile = {
+        id,
+        bounds,
+        owner: selectedTeam,
+        captured_at: new Date().toISOString(),
+        captured_by: session.user.id // 누가 점령했는지 기록 (보안용)
+      };
 
-    // Supabase DB에 기록 (Upsert) - RLS 정책이 anon에게 허용되어야 함
-    const { error } = await supabase
-      .from('captured_tiles')
-      .upsert(newTile);
+      const { error } = await supabase
+        .from('captured_tiles')
+        .upsert(newTile);
 
-    if (error) {
-      console.error('Error capturing tile in DB:', error);
-      // 만약 RLS 때문에 실패하더라도 로컬 반응은 줄 수 있지만, 
-      // 여기서는 DB 에러 시 조기 종료합니다.
+      if (error) throw error;
+
+      return true;
+    } catch (error) {
+      console.error('Capture error:', error);
       return false;
+    } finally {
+      setIsProcessing(false);
     }
-
-    setCapturedTiles(prev => ({
-      ...prev,
-      [id]: newTile
-    }));
-
-    setScore(prev => ({
-      ...prev,
-      [selectedTeam]: prev[selectedTeam] + 10
-    }));
-    
-    return true;
   };
 
   const saveSelectedTeam = async (teamId) => {
