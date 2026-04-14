@@ -70,7 +70,12 @@ export const useGeolocation = () => {
 
     // 위치 정보 획득 실패 시 실행될 핸들러
     const handleError = (err) => {
-      // 에러 메시지 업데이트 (사용자 권한 거부, 위치 확인 불가 등)
+      // 1. 사용자가 명시적으로 권한을 거부한 경우 상태 업데이트
+      if (err.code === err.PERMISSION_DENIED) {
+        setPermissionStatus('denied');
+      }
+      
+      // 2. 에러 메시지 업데이트 (위치 확인 불가, 타임아웃 등)
       setError(err.message);
       setLoading(false);
     };
