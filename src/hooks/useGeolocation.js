@@ -25,10 +25,26 @@ export const useGeolocation = () => {
   // 브라우저 위치 권한 상태 ('granted', 'denied', 'prompt')
   const [permissionStatus, setPermissionStatus] = useState('prompt');
 
+  // GPS 추적 활성화 여부 (사용자 제스처 연동용)
+  const [isTrackingStarted, setIsTrackingStarted] = useState(false);
+
   // 부드러운 위치 이동을 위한 이전 값 보관용 Ref (리렌더링 방지)
   const smoothedRef = useRef(null);
 
+  /**
+   * GPS 추적을 수동으로 시작하는 함수
+   * - 아이폰 등에서 사용자 클릭 이벤트와 연동하여 권한 팝업을 띄우기 위해 사용합니다.
+   */
+  const startTracking = () => {
+    if (!isTrackingStarted) {
+      setIsTrackingStarted(true);
+    }
+  };
+
   useEffect(() => {
+    // 수동 시작 전이면 아무것도 하지 않음
+    if (!isTrackingStarted) return;
+
     // 브라우저 지원 여부 확인
     if (!navigator.geolocation) {
       setError('이 브라우저는 위치 정보 서비스를 지원하지 않습니다.');
@@ -100,5 +116,13 @@ export const useGeolocation = () => {
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
-  return { location, accuracy, error, loading, permissionStatus };
+  return { 
+    location, 
+    accuracy, 
+    error, 
+    loading, 
+    permissionStatus, 
+    isTrackingStarted, 
+    startTracking 
+  };
 };

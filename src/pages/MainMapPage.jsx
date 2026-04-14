@@ -66,7 +66,15 @@ const MainMapPage = () => {
   const navigate = useNavigate();
   // 게임 전역 상태 및 GPS 추적 훅 사용
   const { selectedTeam, score, capturedTiles, captureTile } = useGame();
-  const { location, accuracy, error, loading, permissionStatus } = useGeolocation();
+  const { 
+    location, 
+    accuracy, 
+    error, 
+    loading, 
+    permissionStatus, 
+    isTrackingStarted, 
+    startTracking 
+  } = useGeolocation();
   
   // 현재 위치한 타일 및 점령 중 여부 상태
   const [currentTile, setCurrentTile] = useState(null);
@@ -257,13 +265,16 @@ const MainMapPage = () => {
         </div>
       </div>
 
-      {/* 4. 내 위치 보기 플로팅 버튼 */}
+      {/* 4. 내 위치 보기 플로팅 버튼 (수동 GPS 활성화 연동) */}
       <button
-        className="recenter-btn"
-        onClick={() => setRecenterTrigger(prev => prev + 1)}
+        className={`recenter-btn ${!isTrackingStarted ? 'ready' : ''}`}
+        onClick={() => {
+          if (!isTrackingStarted) startTracking();
+          setRecenterTrigger(prev => prev + 1);
+        }}
         title={UI_TEXT.recenterBtn}
       >
-        <Navigation size={24} />
+        <Navigation size={24} className={!isTrackingStarted ? 'tracking-hint' : ''} />
       </button>
 
       {/* 5. 점령/스캐닝 실행 캡슐 버튼 (중앙 하단) */}
