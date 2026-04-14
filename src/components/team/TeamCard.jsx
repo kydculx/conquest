@@ -10,6 +10,7 @@ const TeamCard = ({ team, isSelected, onClick }) => {
       <div className="card-border" />
       <div className="card-content">
         <h2 className="team-name">{team.name}</h2>
+        <p className="team-description">{team.description}</p>
       </div>
       <div className="selection-indicator">
         {isSelected && <div className="indicator-glow" />}
