@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Crosshair, Navigation, Target, ShieldAlert, Wifi, WifiOff } from 'lucide-react';
+import { Crosshair, Navigation, Flag, ShieldAlert, Wifi, WifiOff } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
@@ -222,7 +222,7 @@ const MainMapPage = () => {
       >
         <div className="btn-glow"></div>
         <div className="btn-content">
-          <Target size={24} />
+          <Flag size={24} fill="currentColor" />
           <span>
             {isCapturing ? UI_TEXT.statusSyncing : 
              accuracy > 50 ? UI_TEXT.statusSignalWeak :
