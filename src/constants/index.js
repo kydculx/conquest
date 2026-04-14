@@ -1,4 +1,4 @@
-export const APP_TITLE = "Nexus Conquest";
+export const APP_TITLE = "Conquest";
 
 export const TEAM_RED = {
   id: "red",
