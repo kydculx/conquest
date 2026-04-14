@@ -54,5 +54,12 @@ export const UI_TEXT = {
   // 권한 관련
   permissionDenied: "위치 권한 거부됨",
   permissionHint: "점령을 계속하려면 브라우저 설정에서 위치 권한을 허용해 주십시오.",
-  retrySync: "센서 동기화 재시도"
+  retrySync: "센서 동기화 재시도",
+
+  // 알림 메시지 템플릿
+  alertNeutralCapture: "영토 확보: 새로운 구역을 점령했습니다.",
+  alertEnemyInvasion: "침공 발생! 적군이 우리 영토를 탈취했습니다.",
+  alertCounterCapture: "반격 성공! 적의 구역을 탈취했습니다.",
+  alertOtherTeamCapture: "전선 변화: 타 진영간의 교전이 감지되었습니다.",
+  alertSensorWarning: "수신 저하: GPS 신호가 불안정합니다."
 };

@@ -22,6 +22,18 @@ export const GameProvider = ({ children }) => {
   // 보안을 위한 익명 세션 관리
   const [session, setSession] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  // 알림 시스템 상태
+  const [alerts, setAlerts] = useState([]);
+
+  const addAlert = (message, type = 'info') => {
+    const id = Date.now() + Math.random();
+    setAlerts(prev => [{ id, message, type }, ...prev].slice(0, 5)); // 최대 5개 유지
+  };
+
+  const removeAlert = (id) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id));
+  };
 
   // 익명 인증 및 초기 데이터 로드
   useEffect(() => {
@@ -70,10 +82,33 @@ export const GameProvider = ({ children }) => {
           const { eventType, new: newTile, old: oldTile } = payload;
 
           if (eventType === 'INSERT' || eventType === 'UPDATE') {
-            setCapturedTiles(prev => ({
-              ...prev,
-              [newTile.id]: newTile
-            }));
+            setCapturedTiles(prev => {
+              const prevTile = prev[newTile.id];
+              
+              // 알림 로직
+              if (!prevTile) {
+                // 새로운 구역 점령 (INSERT)
+                if (newTile.owner === selectedTeam) {
+                  addAlert(UI_TEXT.alertNeutralCapture, 'success');
+                } else {
+                  addAlert(UI_TEXT.alertOtherTeamCapture, 'info');
+                }
+              } else if (prevTile.owner !== newTile.owner) {
+                // 주인이 바뀐 경우 (UPDATE)
+                if (newTile.owner === selectedTeam) {
+                  addAlert(UI_TEXT.alertCounterCapture, 'success');
+                } else if (prevTile.owner === selectedTeam) {
+                  addAlert(UI_TEXT.alertEnemyInvasion, 'danger');
+                } else {
+                  addAlert(UI_TEXT.alertOtherTeamCapture, 'info');
+                }
+              }
+              
+              return {
+                ...prev,
+                [newTile.id]: newTile
+              };
+            });
             
             // 실시간 스코어 업데이트 (안전한 업데이트를 위해 이전 주인이 있을 경우 차감)
             setScore(prev => {
@@ -140,6 +175,9 @@ export const GameProvider = ({ children }) => {
     setScore,
     capturedTiles,
     captureTile,
+    alerts,
+    removeAlert,
+    addAlert,
     teamData: selectedTeam === TEAM_BLUE.id ? TEAM_BLUE : selectedTeam === TEAM_RED.id ? TEAM_RED : null,
   };
 

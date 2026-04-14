@@ -1,0 +1,107 @@
+.tactical-alerts-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 20000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: 320px;
+  width: calc(100% - 40px);
+}
+
+.tactical-alert {
+  pointer-events: auto;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--color-hud-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-hud);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: alert-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.tactical-alert::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+
+.tactical-alert.info { border-left-color: var(--color-neon-blue); }
+.tactical-alert.info::before { background: var(--color-neon-blue); }
+.tactical-alert.info .alert-icon { color: var(--color-neon-blue); }
+
+.tactical-alert.warning { border-left-color: #ffea00; }
+.tactical-alert.warning::before { background: #ffea00; }
+.tactical-alert.warning .alert-icon { color: #ffea00; }
+
+.tactical-alert.danger { border-left-color: var(--color-neon-red); }
+.tactical-alert.danger::before { background: var(--color-neon-red); }
+.tactical-alert.danger .alert-icon { color: var(--color-neon-red); }
+
+.tactical-alert.success { border-left-color: var(--color-accent); }
+.tactical-alert.success::before { background: var(--color-accent); }
+.tactical-alert.success .alert-icon { color: var(--color-accent); }
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-message {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+  letter-spacing: 0.3px;
+}
+
+.alert-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@keyframes alert-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.tactical-alert.exiting {
+  animation: alert-slide-out 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes alert-slide-out {
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+@media (max-width: 768px) {
+  .tactical-alerts-container {
+    top: calc(env(safe-area-inset-top, 20px) + 60px);
+    right: 15px;
+    left: 15px;
+    width: auto;
+    max-width: none;
+  }
+  
+  .alert-message {
+    font-size: 0.75rem;
+  }
+}

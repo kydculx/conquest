@@ -1,10 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import 'leaflet/dist/leaflet.css';
-import { GameProvider } from './contexts/GameContext';
-import TeamSelectionPage from './pages/TeamSelectionPage';
-import MainMapPage from './pages/MainMapPage';
-import './styles/global.css';
+import { useGame } from './hooks/useGame';
+import TacticalAlert from './components/common/TacticalAlert';
+
+// Wrapper to use GameContext hooks
+const TacticalAlertManager = () => {
+  const { alerts, removeAlert } = useGame();
+  return <TacticalAlert alerts={alerts} onRemove={removeAlert} />;
+};
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<TeamSelectionPage />} />
           <Route path="/map" element={<MainMapPage />} />
         </Routes>
+        <TacticalAlertManager />
       </Router>
     </GameProvider>
   );
