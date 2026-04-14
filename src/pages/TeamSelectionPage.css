@@ -58,31 +58,29 @@
   animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
-.action-container {
-  position: relative;
-  z-index: 10;
-  margin-top: 60px;
+.selection-loading {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(5, 7, 10, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 100;
   display: flex;
   justify-content: center;
-  width: 100%;
-  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  align-items: center;
 }
 
-/* Ensure the button itself has a premium but compact feel */
-.action-container .btn {
-  padding: 12px 48px;
-  min-width: 200px;
+.selection-loading .pulse-text {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--color-neon-blue);
+  animation: text-pulse 1.5s infinite;
 }
 
-/* Animations */
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes text-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 @media (max-width: 900px) {
@@ -103,9 +101,5 @@
   
   .page-header {
     margin-bottom: 24px;
-  }
-
-  .action-container {
-    margin-top: 32px;
   }
 }

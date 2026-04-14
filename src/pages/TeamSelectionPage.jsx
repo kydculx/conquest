@@ -7,34 +7,32 @@ import Button from '../components/common/Button';
 import './TeamSelectionPage.css';
 
 const TeamSelectionPage = () => {
-  const { selectedTeam, setSelectedTeam, saveSelectedTeam } = useGame();
+  const { selectedTeam, saveSelectedTeam } = useGame();
   const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false);
 
-  // 이미 진영이 선택된 유저라면 즉시 지도로 투입 (localStorage 확인)
+  // 이미 진영이 선택된 유저라면 즉시 지도로 투입
   React.useEffect(() => {
-    if (selectedTeam) {
+    if (selectedTeam && !loading) {
       navigate('/map', { replace: true });
     }
-  }, [selectedTeam, navigate]);
+  }, [selectedTeam, navigate, loading]);
 
-  const handleSelect = (teamId) => {
-    setSelectedTeam(teamId);
-  };
-
-  const handleConfirm = async () => {
-    if (selectedTeam) {
-      try {
-        // 로컬 저장소에 진영 정보 저장
-        await saveSelectedTeam(selectedTeam);
-        navigate('/map');
-      } catch (err) {
-        console.error('Confirm error:', err);
-      }
+  const handleTeamClick = async (teamId) => {
+    if (loading) return;
+    
+    setLoading(true);
+    try {
+      await saveSelectedTeam(teamId);
+      navigate('/map');
+    } catch (err) {
+      console.error('Save team error:', err);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="page-container team-selection-page">
+    <div className={`page-container team-selection-page ${loading ? 'loading' : ''}`}>
       <header className="page-header">
         <h1 className="title">{UI_TEXT.selectTeamTitle}</h1>
       </header>
@@ -43,26 +41,21 @@ const TeamSelectionPage = () => {
         <TeamCard 
           team={TEAM_BLUE} 
           isSelected={selectedTeam === TEAM_BLUE.id}
-          onClick={() => handleSelect(TEAM_BLUE.id)}
+          onClick={() => handleTeamClick(TEAM_BLUE.id)}
         />
         
         <TeamCard 
           team={TEAM_RED} 
           isSelected={selectedTeam === TEAM_RED.id}
-          onClick={() => handleSelect(TEAM_RED.id)}
+          onClick={() => handleTeamClick(TEAM_RED.id)}
         />
       </div>
-      
-      <div className="action-container">
-        <Button 
-          variant={selectedTeam === TEAM_BLUE.id ? 'blue' : selectedTeam === TEAM_RED.id ? 'red' : 'primary'}
-          disabled={!selectedTeam}
-          onClick={handleConfirm}
-          fullWidth
-        >
-          {UI_TEXT.readyBtn}
-        </Button>
-      </div>
+
+      {loading && (
+        <div className="selection-loading">
+          <div className="pulse-text">SYNCHRONIZING...</div>
+        </div>
+      )}
     </div>
   );
 };
