@@ -17,14 +17,21 @@ const TacticalAlertManager = () => {
   return <TacticalAlert alerts={alerts} onRemove={removeAlert} />;
 };
 
+/**
+ * 넥서스 컨퀘스트(Nexus Conquest) 애플리케이션 최상위 컴포넌트
+ * - 전역 상태(GameProvider)와 라우팅(HashRouter)을 설정합니다.
+ */
 function App() {
   return (
     <GameProvider>
       <Router>
         <Routes>
+          {/* 초기 진영 선택 페이지 */}
           <Route path="/" element={<TeamSelectionPage />} />
+          {/* 메인 전술 지도 페이지 */}
           <Route path="/map" element={<MainMapPage />} />
         </Routes>
+        {/* 모든 페이지에서 전역 알림 수신 대기 */}
         <TacticalAlertManager />
       </Router>
     </GameProvider>

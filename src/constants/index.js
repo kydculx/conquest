@@ -32,25 +32,25 @@ export const UI_TEXT = {
   authError: "인증에 실패했습니다. 액세스 권한을 확인하십시오.",
   logoutBtn: "통신 종료",
   googleLoginBtn: "Google 계정으로 접속",
-  
+
   // 추가된 맵 관련 텍스트
   latLabel: "위도",
   lngLabel: "경도",
   accLabel: "정밀도",
   calibrating: "보정 중",
   recenterBtn: "내 위치로",
-  
+
   // 시그널 및 점령 상태
   signalSearching: "수신 중",
   signalStable: "연결 안정",
   signalGood: "연결 좋음",
   signalWeak: "신호 약함",
-  
+
   statusSyncing: "점령 중...",
   statusSignalWeak: "신호 약함",
   statusReclaimed: "점령 완료",
   statusCapture: "점령하기",
-  
+
   // 권한 관련
   permissionDenied: "위치 권한 거부됨",
   permissionHint: "점령을 계속하려면 브라우저 설정에서 위치 권한을 허용해 주십시오.",
@@ -62,4 +62,12 @@ export const UI_TEXT = {
   alertCounterCapture: "반격 성공! 적의 구역을 탈취했습니다.",
   alertOtherTeamCapture: "전선 변화: 타 진영간의 교전이 감지되었습니다.",
   alertSensorWarning: "수신 저하: GPS 신호가 불안정합니다."
+};
+
+export const MAP_CONFIG = {
+  DEFAULT_ZOOM: 16,
+  MIN_ZOOM: 13,
+  MAX_ZOOM: 17,
+  FLY_DURATION: 1.5,
+  TILE_SIZE: 500, // 100m grid
 };

@@ -12,64 +12,80 @@
   backdrop-filter: var(--glass-blur);
   border: 1px solid var(--color-border-subtle);
   box-shadow: var(--shadow-hud);
-  border-radius: 12px;
+  border-radius: 6px;
   pointer-events: auto;
 }
 
-/* Coordinate HUD - Top Left */
+/* ==========================================================================
+   좌표 정보 HUD (상단 왼쪽)
+   ========================================================================== */
 .coord-floating-ui {
+  /* 위치 설정 */
   position: fixed;
   top: 24px;
-  left: 20px;
+  left: 10px;
   z-index: 10002;
-  padding: 12px 16px;
+
+  /* 레이아웃 */
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 140px;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 4px 6px;
+  width: fit-content;
 }
 
 .coord-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 6px;
 }
 
 .coord-label {
+  display: inline-block;
+  width: 24px; /* 라벨 너비 고정으로 수치 정렬 */
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 800;
-  color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
 }
 
 .coord-value {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #fff;
 }
 
-/* Score HUD - Top Center */
+/* ==========================================================================
+   점수 정보 HUD (상단 중앙)
+   ========================================================================== */
 .score-floating-ui {
+  /* 위치 설정 */
   position: fixed;
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10002;
-  padding: 8px 24px;
+
+  /* 레이아웃 및 스타일 */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  padding: 8px 24px;
 }
 
 .score-floating-ui::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0; height: 2px;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
   background: linear-gradient(90deg, var(--color-neon-blue), var(--color-neon-red));
 }
 
@@ -82,10 +98,13 @@
   font-weight: 800;
 }
 
-/* Tactical Map View & Overlays */
+/* 전술 맵 뷰 및 오버레이 */
 .map-view {
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
 }
 
@@ -97,34 +116,43 @@
 
 .tactical-overlay {
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 10;
   pointer-events: none;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
   background-position: center center;
 }
 
-/* Moving Scanning Line */
+/* 움직이는 스캐닝 라인 애니메이션 */
 .tactical-overlay::after {
   content: "";
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(0, 210, 255, 0.03) 50%,
-    transparent 100%
-  );
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(0, 210, 255, 0.03) 50%,
+      transparent 100%);
   background-size: 100% 200px;
   animation: scanning-line 8s linear infinite;
 }
 
 @keyframes scanning-line {
-  0% { background-position: 0 -200px; }
-  100% { background-position: 0 100vh; }
+  0% {
+    background-position: 0 -200px;
+  }
+
+  100% {
+    background-position: 0 100vh;
+  }
 }
 
 .leaflet-container {
@@ -138,7 +166,7 @@
   height: 100%;
 }
 
-/* High-End Game Map Filters */
+/* 하이엔드 게임용 맵 필터 효과 */
 .dark-map-tiles {
   filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(110%) grayscale(0.7) sepia(0.1) saturate(0.6);
   transition: filter 1s ease;
@@ -156,10 +184,13 @@
 .map-page::after {
   content: "";
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: 
-    radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.6) 130%),
-    linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.4) 100%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.6) 130%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 15%, transparent 85%, rgba(0, 0, 0, 0.4) 100%);
   pointer-events: none;
   z-index: 500;
 }
@@ -167,25 +198,49 @@
 /* Markers */
 .marker-wrapper {
   position: relative;
-  width: 40px; height: 40px;
-  display: flex; justify-content: center; align-items: center;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .marker-reticle {
   position: absolute;
-  width: 32px; height: 32px;
+  width: 32px;
+  height: 32px;
   border: 1px solid currentColor;
   border-radius: 4px;
   opacity: 0.6;
   animation: reticle-rotate 12s linear infinite;
 }
 
-.marker-reticle::before { top: 50%; left: -6px; right: -6px; height: 1px; background: currentColor; content: ""; position: absolute; transform: translateY(-50%); }
-.marker-reticle::after { left: 50%; top: -6px; bottom: -6px; width: 1px; background: currentColor; content: ""; position: absolute; transform: translateX(-50%); }
+.marker-reticle::before {
+  top: 50%;
+  left: -6px;
+  right: -6px;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+.marker-reticle::after {
+  left: 50%;
+  top: -6px;
+  bottom: -6px;
+  width: 1px;
+  background: currentColor;
+  content: "";
+  position: absolute;
+  transform: translateX(-50%);
+}
 
 .marker-pulse {
   position: absolute;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   border: 1px solid currentColor;
   border-radius: 50%;
   opacity: 0;
@@ -193,7 +248,8 @@
 }
 
 .marker-core {
-  width: 10px; height: 10px;
+  width: 10px;
+  height: 10px;
   background: #fff;
   border-radius: 50%;
   box-shadow: 0 0 15px currentColor;
@@ -201,31 +257,57 @@
   z-index: 2;
 }
 
-.blue-marker { color: var(--color-neon-blue); }
-.red-marker { color: var(--color-neon-red); }
+.blue-marker {
+  color: var(--color-neon-blue);
+}
+
+.red-marker {
+  color: var(--color-neon-red);
+}
 
 @keyframes reticle-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes marker-ping {
-  0% { transform: scale(0.5); opacity: 1; }
-  100% { transform: scale(3); opacity: 0; }
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
 }
 
-.blue-score { color: var(--color-neon-blue); }
-.red-score { color: var(--color-neon-red); }
-.divider { opacity: 0.2; font-weight: 300; }
+.blue-score {
+  color: var(--color-neon-blue);
+}
+
+.red-score {
+  color: var(--color-neon-red);
+}
+
+.divider {
+  opacity: 0.2;
+  font-weight: 300;
+}
 
 .sat-status {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .sat-value {
@@ -239,42 +321,51 @@
 /* Crosshair Center */
 .crosshair-center {
   position: absolute;
-  top: 50%; left: 50%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
   pointer-events: none;
   opacity: 0.3;
 }
 
-/* Buttons */
+/* ==========================================================================
+   하단 액션 버튼 그룹 (PC 위치 권장)
+   ========================================================================== */
+/* [내 위치 보기 버튼] */
 .recenter-btn {
+  /* 위치 설정 */
   position: fixed;
   right: 20px;
   bottom: 120px;
+  z-index: 10002;
+
+  /* 크기 및 모양 */
   width: 48px;
   height: 48px;
-  border-radius: 12px;
-  z-index: 10002;
+  border-radius: 50%;
+
+  /* 디자인 */
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-neon-blue);
-  cursor: pointer;
   background: var(--color-hud-bg);
   backdrop-filter: var(--glass-blur);
   border: 1px solid var(--color-border-subtle);
+  color: var(--color-neon-blue);
+  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .recenter-btn:hover {
-  background: var(--color-border-subtle);
   border-color: var(--color-neon-blue);
+  background: var(--color-border-subtle);
   box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
 }
 
 .capture-overlay-btn {
   position: fixed;
-  bottom: 32px;
+  bottom: 120px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10003;
@@ -293,8 +384,13 @@
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.capture-overlay-btn.team-blue .btn-content { border-color: rgba(0, 210, 255, 0.3); }
-.capture-overlay-btn.team-red .btn-content { border-color: rgba(255, 51, 102, 0.3); }
+.capture-overlay-btn.team-blue .btn-content {
+  border-color: rgba(0, 210, 255, 0.3);
+}
+
+.capture-overlay-btn.team-red .btn-content {
+  border-color: rgba(255, 51, 102, 0.3);
+}
 
 .capture-overlay-btn .btn-content span {
   font-family: 'Space Grotesk', sans-serif;
@@ -305,52 +401,60 @@
 }
 
 .capture-overlay-btn:not(.disabled):hover .btn-content {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-color: var(--color-border-focus);
   transform: translateY(-6px);
   box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 1);
 }
 
-/* Mobile Adjustments */
+/* ==========================================================================
+   모바일 반응형 최적화 (768px 이하)
+   ========================================================================== */
 @media (max-width: 768px) {
+  /* --- 상단 좌표 HUD (모바일) --- */
   .coord-floating-ui {
-    top: env(safe-area-inset-top, 16px);
-    left: 12px;
-    padding: 8px 12px;
-    min-width: 120px;
+    top: calc(env(safe-area-inset-top, 0px) + 16px);
   }
-  
+
+  /* --- 상단 점수 HUD (모바일) --- */
   .score-floating-ui {
-    top: calc(env(safe-area-inset-top, 16px) + 0px);
+    top: calc(env(safe-area-inset-top, 0px) + 16px);
     padding: 6px 16px;
   }
-  
-  .score-section { font-size: 1.1rem; }
-  
+
+  .score-section {
+    font-size: 1.1rem;
+  }
+
+  /* --- 내 위치 버튼 (모바일) --- */
   .recenter-btn {
     right: 12px;
-    bottom: 100px;
+    bottom: calc(env(safe-area-inset-bottom, 24px) + 63px);
     width: 44px;
     height: 44px;
   }
-  
+
+  /* --- 점령 액션 버튼 (모바일) --- */
   .capture-overlay-btn {
-    bottom: calc(env(safe-area-inset-bottom, 24px) + 8px);
-    width: calc(100% - 32px);
-    max-width: 400px;
+    bottom: calc(env(safe-area-inset-bottom, 24px) + 60px);
+    width: auto;
+    max-width: 90%;
   }
-  
+
   .capture-overlay-btn .btn-content {
-    width: 100%;
     justify-content: center;
-    padding: 16px;
+    width: auto;
+    padding: 14px 30px;
   }
 }
 
-/* Status Overlays (Auth, Permissions, etc.) */
+/* 상태 오버레이 (인증, 권한 안내 등) */
 .status-overlay {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(5, 7, 10, 0.85);
   backdrop-filter: blur(10px);
   z-index: 20000;
@@ -421,17 +525,41 @@
 }
 
 @keyframes card-appear {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes glitch-text {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  100% { transform: translate(0); }
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-2px, 2px);
+  }
+
+  40% {
+    transform: translate(-2px, -2px);
+  }
+
+  60% {
+    transform: translate(2px, 2px);
+  }
+
+  80% {
+    transform: translate(2px, -2px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
 }
 
 .glitch-text {
@@ -441,4 +569,3 @@
   color: #fff;
   text-shadow: 2px 0 var(--color-neon-red), -2px 0 var(--color-neon-blue);
 }
-

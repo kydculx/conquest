@@ -3,8 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useGame } from '../hooks/useGame';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
 import TeamCard from '../components/team/TeamCard';
-import Button from '../components/common/Button';
 import './TeamSelectionPage.css';
+
+/**
+ * 진영 선택(팀 가입) 화면 컴포넌트
+ * - 사용자가 앱에 처음 진입했을 때 소속될 팀을 선택합니다.
+ * - 선택 정보는 로컬 스토리지에 저장되어 이후 접속 시 자동으로 전술 지도로 투입됩니다.
+ */
 
 const TeamSelectionPage = () => {
   const { selectedTeam, saveSelectedTeam } = useGame();
