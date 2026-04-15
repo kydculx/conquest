@@ -2,19 +2,6 @@ import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 
-const getHexagonCoords = (lat, lng, radius) => {
-  const coords = [];
-  for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i - Math.PI / 2;
-    coords.push([
-      lat + radius * Math.cos(angle),
-      lng + radius * Math.sin(angle)
-    ]);
-  }
-  coords.push(coords[0]);
-  return coords;
-};
-
 const TileScanOverlay = ({ tile, isCapturing, teamColor }) => {
   const map = useMap();
   const layerRef = useRef(null);
@@ -39,15 +26,10 @@ const TileScanOverlay = ({ tile, isCapturing, teamColor }) => {
     if (!isCapturing) return;
 
     const bounds = tile.bounds;
-    const centerLat = (bounds[0][0] + bounds[1][0]) / 2;
-    const centerLng = (bounds[0][1] + bounds[1][1]) / 2;
-    const radius = (bounds[1][0] - bounds[0][0]) / 2 * 1.1;
-
-    const hexCoords = getHexagonCoords(centerLat, centerLng, radius);
     const teamColorValue = teamColor === 'blue' ? '#00f0ff' : '#ff1744';
     const enemyColor = teamColor === 'blue' ? '#ff1744' : '#00f0ff';
     
-    layerRef.current = L.polygon(hexCoords, {
+    layerRef.current = L.rectangle(bounds, {
       color: 'transparent',
       weight: 0,
       fillOpacity: 0.3,
