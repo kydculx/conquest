@@ -1,10 +1,14 @@
+/**
+ * "CONQUEST" 어플리케이션의 핵심 페이지: 메인 전술 지도 화면
+ * - 실시간 GPS 추적, 헥사곤 그리드 기반 영토 렌더링, 점령 인터페이스를 총괄합니다.
+ */
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Crosshair } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useCaptureLogic } from '../hooks/useCaptureLogic';
-import { TEAM_BLUE, UI_TEXT, MAP_CONFIG } from '../constants';
+import { TEAM_BLUE, TEAM_RED, UI_TEXT, MAP_CONFIG, GAME_CONFIG } from '../constants';
 import { getTileInfo, hexToLatLng } from '../utils/geoUtils';
 import { getSignalStatus } from '../utils/locationUtils';
 import { MapContainer, TileLayer, Marker, Polygon, Circle, useMapEvents } from 'react-leaflet';
@@ -19,7 +23,25 @@ import CaptureButton from '../components/map/CaptureButton';
 import RecentButton from '../components/map/RecentButton';
 import PermissionDenied from '../components/map/PermissionDenied';
 import './MainMapPage.css';
+/**
+ * 전술 지도 메인 컴포넌트
+ */
+const MainMapPage = () => {
+  const navigate = useNavigate();
+  
+  // 1. 전역 게임 상태 및 위치 정보 훅 연결
+  const { selectedTeam, score, capturedTiles } = useGame();
+  const { 
+    location, accuracy, error, permissionStatus, 
+    isTrackingStarted, startTracking 
+  } = useGeolocation();
+  
+  // 2. 점령 비즈니스 로직 훅 연결
+  const { 
+    isCapturing, captureProgress, startCapture, canCapture 
+  } = useCaptureLogic();
 
+  // 3. 로컬 UI 상태 (지도 재중심화 트리거, 현재 지도 중앙 타일)
   const [recenterTrigger, setRecenterTrigger] = useState(0);
   const [centerTile, setCenterTile] = useState(null);
 
@@ -46,7 +68,7 @@ import './MainMapPage.css';
   const handleCapture = useCallback(() => {
     if (currentTile) {
       startCapture(currentTile);
-      if ('vibrate' in navigator) navigator.vibrate([30, 50, 30]);
+      if ('vibrate' in navigator) navigator.vibrate(GAME_CONFIG.CAPTURE.VIBRATION_PATTERN);
     }
   }, [currentTile, startCapture]);
 
@@ -55,19 +77,19 @@ import './MainMapPage.css';
     setRecenterTrigger(prev => prev + 1);
   }, [isTrackingStarted, startTracking]);
 
+  // 플레이어 아이콘 및 위치 설정
   const playerIcon = selectedTeam === TEAM_BLUE.id ? bluePlayerIcon : redPlayerIcon;
-  const defaultPosition = [37.5665, 126.9780];
-  const effectivePosition = location || defaultPosition;
+  const effectivePosition = location || MAP_CONFIG.DEFAULT_POSITION;
   const signal = getSignalStatus(accuracy);
 
   const getCaptureStatusText = () => {
     if (isCapturing) {
-      return `점령 중... ${Math.round(captureProgress)}%`;
+      return `${UI_TEXT.statusCapturingBase} ${Math.round(captureProgress)}%`;
     }
     if (captureCheck.reason === 'signal') return UI_TEXT.statusSignalWeak;
     if (captureCheck.reason === 'owned' || isCapturedByMe) return UI_TEXT.statusReclaimed;
-    if (captureCheck.reason === 'busy') return '진행 중...';
-    if (isEnemyTile) return '점령하기';
+    if (captureCheck.reason === 'busy') return UI_TEXT.statusProcessing;
+    if (isEnemyTile) return UI_TEXT.statusCaptureReady;
     return UI_TEXT.statusCapture;
   };
 
@@ -105,7 +127,7 @@ import './MainMapPage.css';
       <div className="map-view">
         <div className="tactical-overlay-container">
           <MapContainer
-            center={defaultPosition}
+            center={MAP_CONFIG.DEFAULT_POSITION}
             zoom={MAP_CONFIG.DEFAULT_ZOOM}
             minZoom={MAP_CONFIG.MIN_ZOOM}
             maxZoom={MAP_CONFIG.MAX_ZOOM}
@@ -113,8 +135,8 @@ import './MainMapPage.css';
             className="real-map-container"
           >
             <TileLayer
-              attribution='&copy; CartoDB'
-              url="https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"
+              attribution={MAP_CONFIG.ATTRIBUTION}
+              url={MAP_CONFIG.TILE_URL}
             />
 
             <MapCenterTracker onCenterTileChange={setCenterTile} />
@@ -126,8 +148,8 @@ import './MainMapPage.css';
                 center={location}
                 radius={accuracy}
                 pathOptions={{
-                  color: 'transparent',
-                  fillColor: signal.class === 'stable' ? '#00ff88' : '#ffd600',
+                  color: GAME_CONFIG.COLORS.TRANSPARENT,
+                  fillColor: signal.class === 'stable' ? GAME_CONFIG.COLORS.SIGNAL_STABLE : GAME_CONFIG.COLORS.SIGNAL_UNSTABLE,
                   fillOpacity: 0.08,
                   weight: 0
                 }}
@@ -139,8 +161,8 @@ import './MainMapPage.css';
                 key={`current-${currentTile.id}`}
                 positions={currentTile.bounds || currentTile.coords}
                 pathOptions={{
-                  color: selectedTeam === 'blue' ? '#00f0ff' : '#ff1744',
-                  fillColor: 'transparent',
+                  color: selectedTeam === TEAM_BLUE.id ? GAME_CONFIG.COLORS.TEAM_BLUE : GAME_CONFIG.COLORS.TEAM_RED,
+                  fillColor: GAME_CONFIG.COLORS.TRANSPARENT,
                   fillOpacity: 0,
                   weight: 1,
                   dashArray: '5, 5'
@@ -153,8 +175,8 @@ import './MainMapPage.css';
                 key={tile.id}
                 positions={tile.bounds || tile.coords}
                 pathOptions={{
-                  color: 'transparent',
-                  fillColor: tile.owner === TEAM_BLUE.id ? '#00f0ff' : '#ff1744',
+                  color: GAME_CONFIG.COLORS.TRANSPARENT,
+                  fillColor: tile.owner === TEAM_BLUE.id ? GAME_CONFIG.COLORS.TEAM_BLUE : GAME_CONFIG.COLORS.TEAM_RED,
                   fillOpacity: 0.35,
                   weight: 0
                 }}
@@ -167,8 +189,8 @@ import './MainMapPage.css';
                 key={`center-${centerTile.id}`}
                 positions={centerTile.bounds}
                 pathOptions={{
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  fillColor: 'transparent',
+                  color: GAME_CONFIG.COLORS.TILE_HIGHLIGHT,
+                  fillColor: GAME_CONFIG.COLORS.TRANSPARENT,
                   weight: 2,
                   dashArray: null
                 }}

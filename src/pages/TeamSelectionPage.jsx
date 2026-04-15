@@ -1,3 +1,8 @@
+/**
+ * "CONQUEST" 초기 진영 선택 페이지
+ * - 사용자가 게임에 처음 접속할 때 두 진영(Cyber Core, Shield Cell) 중 하나를 선택하는 관문입니다.
+ * - 선택된 팀 정보는 서버(Supabase)와 로컬 상태에 저장됩니다.
+ */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../hooks/useGame';

@@ -1,7 +1,18 @@
+/**
+ * 점령 진행 중 해당 타일 구역에 표시되는 전술 스캔 시각 효과
+ * - Leaflet Polygon을 생성하여 캔버스 애니메이션 기반의 점멸(Pulse) 효과를 구현합니다.
+ */
 import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 
+/**
+ * 타일 스캔 오버레이 컴포넌트
+ * @param {Object} props
+ * @param {Object} props.tile - 대상 타일 정보
+ * @param {boolean} props.isCapturing - 점령 중 여부
+ * @param {string} props.teamColor - 현재 플레이어의 팀 컬러
+ */
 const TileScanOverlay = ({ tile, isCapturing, teamColor }) => {
   const map = useMap();
   const layerRef = useRef(null);

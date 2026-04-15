@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { smoothValue } from '../utils/locationUtils';
-import { GPS_CONFIG } from '../constants';
+import { GPS_CONFIG, GAME_CONFIG, UI_TEXT } from '../constants';
 
 /**
  * 실시간 GPS 위치 정보를 추적하고 관리하는 커스텀 훅
@@ -85,7 +85,7 @@ export const useGeolocation = () => {
       }
 
       // 보정 계수 (낮을수록 부드럽지만 반응은 느려짐)
-      const alpha = 0.3;
+      const alpha = GAME_CONFIG.EMA_ALPHA;
       const smoothLat = smoothValue(smoothedRef.current?.[0], latitude, alpha);
       const smoothLng = smoothValue(smoothedRef.current?.[1], longitude, alpha);
       
@@ -111,17 +111,15 @@ export const useGeolocation = () => {
           navigator.permissions.query({ name: 'geolocation' }).then(result => {
             if (result.state === 'denied') {
               setPermissionStatus('denied');
-              setError('위치 권한이 거부되었습니다.');
-            } else {
-              setError('GPS 장치 신호가 일시적으로 불안정합니다.');
+              setError(UI_TEXT.statusSignalWeak);
             }
           });
         }
         setLoading(false);
       } else if (err.code === err.TIMEOUT) {
-        setError('GPS 신호를 찾는 중입니다...');
+        setError(UI_TEXT.gpsSearching);
       } else {
-        setError(err.message || 'GPS 수신 오류');
+        setError(err.message || UI_TEXT.statusSignalWeak);
         setLoading(false);
       }
     };
@@ -129,7 +127,7 @@ export const useGeolocation = () => {
     // 3. 위치 추적 시작
     const watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
       enableHighAccuracy: true,
-      timeout: 10000,
+      timeout: GAME_CONFIG.SYSTEM.GPS_TIMEOUT,
       maximumAge: 0
     });
 

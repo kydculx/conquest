@@ -1,3 +1,6 @@
+/**
+ * 지도 중앙 좌표를 실시간 추적하여 현재 조준 중인 타일을 감지하는 컴포넌트
+ */
 import { useMapEvents } from 'react-leaflet';
 import { getTileInfo } from '../../utils/geoUtils';
 

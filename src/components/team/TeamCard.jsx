@@ -1,6 +1,15 @@
+/**
+ * 진영(Team) 정보를 시각화하는 카드 컴포넌트
+ */
 import { Shield, Zap } from 'lucide-react';
 import './TeamCard.css';
 
+/**
+ * 팀 카드 컴포넌트
+ * @param {Object} props
+ * @param {Object} props.team - {id, name, description, color} 형태의 팀 정보 객체
+ * @param {Function} props.onClick - 클릭 핸들러
+ */
 const TeamCard = ({ team, onClick }) => {
   const IconComponent = team.id === 'blue' ? Shield : Zap;
 

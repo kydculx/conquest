@@ -1,3 +1,6 @@
+/**
+ * 게임의 두 진영(Cyber Core, Shield Cell) 정의 및 속성
+ */
 export const TEAM_RED = {
   id: "red",
   name: "사이버 코어",
@@ -14,8 +17,14 @@ export const TEAM_BLUE = {
   callsign: "블루 센티널",
 };
 
+// 모든 팀의 리스트 (UI 및 선택 화면에서 사용)
 export const ALL_TEAMS = [TEAM_BLUE, TEAM_RED];
 
+/**
+ * ID를 기반으로 특정 팀 정보를 검색
+ * @param {string} id - 팀 ID ('blue' | 'red')
+ * @returns {Object|null} 팀 객체 또는 null
+ */
 export const getTeamById = (id) => {
   return ALL_TEAMS.find(team => team.id === id) || null;
 };

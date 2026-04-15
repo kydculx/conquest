@@ -1,3 +1,6 @@
+/**
+ * 위치 권한 거부 시 표시되는 안내 오버레이
+ */
 import { ShieldAlert } from 'lucide-react';
 import { UI_TEXT } from '../../constants';
 
