@@ -120,14 +120,30 @@ export const useGeolocation = () => {
     const handleError = (err) => {
       // 1. 사용자가 명시적으로 권한을 거부한 경우
       if (err.code === err.PERMISSION_DENIED) {
-        setPermissionStatus('denied');
-        setError('위치 권한이 거부되었습니다. 설정에서 권한을 허용해주세요.');
+        // 실제 브라우저 권한 상태를 한 번 더 체크 (오인 방지)
+        if (navigator.permissions && navigator.permissions.query) {
+          navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+            if (result.state === 'denied') {
+              setPermissionStatus('denied');
+              setError('위치 권한이 거부되었습니다. 설정에서 권한을 허용해주세요.');
+            } else {
+              // 권한 설정은 허용인데 에러가 왔다면 신호 문제로 간주
+              setError('GPS 장치를 초기화할 수 없습니다 (신호 불안정).');
+            }
+          });
+        } else {
+          // Permissions API 미지원 시에는 기존 로직 유지하되 location이 있으면 보수적으로 처리
+          if (!smoothedRef.current) {
+            setPermissionStatus('denied');
+          }
+          setError('위치 권한 확인이 필요합니다.');
+        }
         setLoading(false);
       } else if (err.code === err.TIMEOUT) {
         // 타임아웃의 경우 loading을 끄지 않고 연결 시도 중임을 표시
         setError('위치 신호를 찾는 중입니다 (타임아웃)...');
       } else {
-        setError(err.message);
+        setError(err.message || 'GPS 신호를 수신할 수 없습니다.');
         setLoading(false);
       }
     };

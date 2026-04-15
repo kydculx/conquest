@@ -108,7 +108,9 @@ const MainMapPage = () => {
     return !captureCheck.canCapture && !isCapturing;
   };
 
-  if (permissionStatus === 'denied') {
+  // 실제 권한이 거부되었고, 캐시된 위치 정보조차 없는 경우에만 차단 화면 노출
+  // 이미 위치 정보가 있다면 신호가 불안정하더라도 지도를 계속 보여줌
+  if (permissionStatus === 'denied' && !location) {
     return <PermissionDenied />;
   }
 
