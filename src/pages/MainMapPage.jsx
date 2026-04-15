@@ -164,7 +164,7 @@ const MainMapPage = () => {
 
             <MapCenterTracker />
 
-            {location && <MapUpdater center={location} recenterTrigger={recenterTrigger} />}
+            <MapUpdater center={location} recenterTrigger={recenterTrigger} />
 
             {location && accuracy && (
               <Circle
