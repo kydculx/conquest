@@ -1,25 +1,21 @@
 /**
- * 게임의 전역 상태를 관리하는 컨텍스트
+ * 게임의 전역 상태를 관리하는 Provider
  * - 선택된 팀, 점령된 타일 데이터, 실시간 점수, 알림 시스템을 총괄합니다.
  * - Supabase Realtime을 사용하여 모든 플레이어의 점령 현황을 실시간으로 동기화합니다.
  */
-import React, { createContext, useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { GameContext } from './GameContext.js';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
 import { supabase } from '../lib/supabase';
 
-export const GameContext = createContext();
-
 export const GameProvider = ({ children }) => {
-  // 사용자가 선택한 진영 (블루/레드) - 로컬 스토리지에 저장하여 새로고침 시에도 유지
   const [selectedTeam, setSelectedTeam] = useState(() => {
-    return localStorage.getItem('nexus_selected_team') || null;
+    return localStorage.getItem('conquest_selected_team') || null;
   });
   
-  // 점령된 타일 정보를 관리하는 상태 (Key: 타일ID, Value: 타일 객체)
   const [capturedTiles, setCapturedTiles] = useState({});
 
-  // [수정] 점수 누적 에러 방지를 위해 capturedTiles에서 직접 실시간으로 갯수를 계산(Derived State)합니다.
-  const score = React.useMemo(() => {
+  const score = useMemo(() => {
     const counts = { blue: 0, red: 0 };
     Object.values(capturedTiles).forEach(tile => {
       if (tile.owner === TEAM_BLUE.id) counts.blue += 1;
@@ -39,17 +35,17 @@ export const GameProvider = ({ children }) => {
    * @param {string} message - 표시할 메시지
    * @param {string} type - 알림 타입 (success, danger, info)
    */
-  const addAlert = (message, type = 'info') => {
+  const addAlert = useCallback((message, type = 'info') => {
     const id = Date.now() + Math.random();
-    setAlerts(prev => [{ id, message, type }, ...prev].slice(0, 5)); // 최신 5개 알림만 유지
-  };
+    setAlerts(prev => [{ id, message, type }, ...prev].slice(0, 5));
+  }, []);
 
   /**
    * 전술 알림 제거 함수 (타이머 완료 시 호출)
    */
-  const removeAlert = (id) => {
+  const removeAlert = useCallback((id) => {
     setAlerts(prev => prev.filter(alert => alert.id !== id));
-  };
+  }, []);
 
   // 초기 데이터 로드 및 실시간 연동 (최초 1회 실행)
   useEffect(() => {
@@ -121,53 +117,44 @@ export const GameProvider = ({ children }) => {
       )
       .subscribe();
 
-    // 언마운트 시 실시간 채널 해제
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTeam]); 
 
-  /**
-   * 현재 위치의 타일을 점령하는 함수
-   * @param {object} tileInfo - 점령할 타일의 정보 (ID, 영역 등)
-   */
   const captureTile = async (tileInfo) => {
-    // 팀을 선택하지 않았거나 이미 처리 중인 경우 무시
-    if (!selectedTeam || isProcessing) return false;
-    const { id, bounds } = tileInfo;
+    if (!selectedTeam) return false;
+    const { id, bounds, owner, capture_started_at, capture_status } = tileInfo;
 
-    // 이미 우리 팀이 점령 중인 곳이라면 중복 처리 방지
     if (capturedTiles[id]?.owner === selectedTeam) return false;
 
-    setIsProcessing(true);
-    try {
-      const newTile = {
-        id,
-        bounds,
-        owner: selectedTeam,
-        captured_at: new Date().toISOString()
-      };
+    const newTile = {
+      id,
+      bounds,
+      owner: owner || selectedTeam,
+      captured_at: new Date().toISOString(),
+      ...(capture_started_at && { capture_started_at }),
+      ...(capture_status && { capture_status })
+    };
 
-      // Upsert: 데이터가 없으면 삽입, 있으면 업데이트
-      const { error } = await supabase
-        .from('captured_tiles')
-        .upsert(newTile);
+    const { error } = await supabase
+      .from('captured_tiles')
+      .upsert(newTile);
 
-      if (error) throw error;
-      return true;
-    } catch (error) {
+    if (error) {
       console.error('점령 실패:', error);
       return false;
-    } finally {
-      setIsProcessing(false);
     }
+
+    return true;
   };
 
   /**
    * 팀 선택 정보를 로컬 스토리지에 저장
    */
   const saveSelectedTeam = async (teamId) => {
-    localStorage.setItem('nexus_selected_team', teamId);
+    localStorage.setItem('conquest_selected_team', teamId);
     setSelectedTeam(teamId);
   };
 

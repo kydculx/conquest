@@ -1,6 +1,8 @@
 /**
  * GPS 수신 데이터 및 좌표 보정을 위한 공통 유틸리티
+ * getDistance는 geoUtils.js의 calculateDistance를 재사용합니다.
  */
+export { calculateDistance as getDistance } from './geoUtils';
 
 /**
  * 전술적 위치 데이터 보정 (지수 이동 평균 - EMA 필터)
@@ -17,35 +19,11 @@ export const smoothValue = (prevSmoothValue, newValue, alpha = 0.2) => {
   return (newValue * alpha) + (prevSmoothValue * (1 - alpha));
 };
 
-/**
- * 하버사인(Haversine) 공식을 이용한 두 지점 간의 실제 거리 계산
- * 구(Globe) 형태인 지구 상에서 두 좌표 사이의 곡선 거리를 미터 단위로 반환합니다.
- * @returns {number} 거리 (미터 단위)
- */
-export const getDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371e3; // 지구의 반지름 (단위: m)
-  const φ1 = lat1 * Math.PI / 180;
-  const φ2 = lat2 * Math.PI / 180;
-  const Δφ = (lat2 - lat1) * Math.PI / 180;
-  const Δλ = (lon2 - lon1) * Math.PI / 180;
+import { GPS_CONFIG } from '../constants';
 
-  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c; // 최종 계산 거리 (m)
-};
-
-/**
- * GPS 정확도(Accuracy) 수치에 따른 통신 신호 상태 판별
- * 미터(m) 단위의 오차 범위를 바탕으로 사용자에게 직관적인 상태 텍스트와 스타일 클래스를 제공합니다.
- * @param {number|null} accuracy - GPS 오차 범위 (m)
- * @returns {object} 상태 텍스트(label)와 스타일용 클래스명(class)
- */
 export const getSignalStatus = (accuracy) => {
   if (accuracy === null) return { label: '수신 중', class: 'searching' };
-  if (accuracy < 15) return { label: '연결 안정', class: 'stable' }; // 15m 미만: 무선 전술망 활성화
-  if (accuracy < 40) return { label: '연결 좋음', class: 'good' };   // 40m 미만: 일반 위성 데이터 수신
-  return { label: '신호 약함', class: 'weak' };                      // 40m 이상: 수신 감도 저하
+  if (accuracy < GPS_CONFIG.HIGH_ACCURACY_THRESHOLD) return { label: '연결 안정', class: 'stable' };
+  if (accuracy < GPS_CONFIG.GOOD_ACCURACY_THRESHOLD) return { label: '연결 좋음', class: 'good' };
+  return { label: '신호 약함', class: 'weak' };
 };
