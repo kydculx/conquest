@@ -123,9 +123,8 @@ const MainMapPage = () => {
             className="real-map-container"
           >
             <TileLayer
-              attribution='&copy; OpenStreetMap'
-              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-              className="dark-map-tiles"
+              attribution='&copy; CartoDB'
+              url="https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"
             />
 
             {location && <MapUpdater center={location} recenterTrigger={recenterTrigger} />}
