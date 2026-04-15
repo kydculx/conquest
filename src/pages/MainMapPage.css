@@ -112,80 +112,6 @@
 }
 
 /* ==========================================================================
-   좌표 정보 HUD (상단 왼쪽)
-   ========================================================================== */
-.coord-floating-ui {
-  /* 위치 설정 */
-  position: fixed;
-  top: 24px;
-  left: 10px;
-  z-index: 10002;
-
-  /* 레이아웃 */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  padding: 10px 12px;
-  width: fit-content;
-}
-
-.coord-item {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-}
-
-.coord-label {
-  display: inline-block;
-  width: 28px;
-  font-family: var(--font-family-mono);
-  font-size: 0.6rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--color-text-secondary);
-}
-
-.coord-value {
-  font-family: var(--font-family-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-cyber-green);
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
-}
-
-.signal-indicator {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 4px;
-  padding-top: 4px;
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-.signal-icon {
-  color: var(--color-text-secondary);
-}
-
-.signal-icon.stable {
-  color: var(--color-cyber-green);
-}
-
-.signal-icon.weak {
-  color: var(--color-cyber-yellow);
-}
-
-.signal-text {
-  font-family: var(--font-family-mono);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--color-text-secondary);
-}
-
-/* ==========================================================================
    점수 정보 HUD (상단 중앙)
    ========================================================================== */
 .score-floating-ui {
@@ -406,6 +332,56 @@
   }
 }
 
+
+/* Crosshair Center - Cyber */
+.crosshair-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.crosshair-outer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-radius: 50%;
+  animation: crosshair-pulse 3s ease-in-out infinite;
+}
+
+.crosshair-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crosshair-inner .active-target {
+  color: var(--color-cyber-green);
+  opacity: 0.4;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+}
+
+.crosshair-inner .active-target.capturing {
+  opacity: 1;
+  animation: target-acquire 0.5s ease-in-out infinite;
+}
+
+@keyframes crosshair-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.4; }
+}
+
+@keyframes target-acquire {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
 
 /* ==========================================================================
    하단 액션 버튼 그룹
@@ -916,15 +892,7 @@
   }
 }
 
-/* 점령 중 HUD 요소 성능 최적화 및 집중도 향상 (Dimming) */
-.map-page.is-capturing .score-floating-ui,
-.map-page.is-capturing .coord-floating-ui,
-.map-page.is-capturing .gps-status-bar {
-  opacity: 0.3;
-  filter: grayscale(0.5) blur(1px);
-  pointer-events: none;
-  transition: all 0.5s ease;
-}
+/* 점령 중 HUD 요소 집중도 향상 효과 제거됨 */
 
 /* 점령 버튼 단순화 스타일 */
 .capture-overlay-btn .btn-content {

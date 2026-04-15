@@ -7,7 +7,7 @@ import { useCaptureLogic } from '../hooks/useCaptureLogic';
 import { TEAM_BLUE, UI_TEXT, MAP_CONFIG } from '../constants';
 import { getTileInfo, hexToLatLng } from '../utils/geoUtils';
 import { getSignalStatus } from '../utils/locationUtils';
-import { MapContainer, TileLayer, Marker, Polygon, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Polygon, Circle, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 
 import MapUpdater from '../components/map/MapUpdater';
@@ -47,6 +47,26 @@ const MainMapPage = () => {
   } = useCaptureLogic();
   
   const [recenterTrigger, setRecenterTrigger] = useState(0);
+  const [centerTile, setCenterTile] = useState(null);
+
+  // 지도 중앙 타일을 추적하는 내부 컴포넌트
+  const MapCenterTracker = () => {
+    const map = useMapEvents({
+      move: () => {
+        const center = map.getCenter();
+        setCenterTile(getTileInfo(center.lat, center.lng));
+      },
+      zoomend: () => {
+        const center = map.getCenter();
+        setCenterTile(getTileInfo(center.lat, center.lng));
+      },
+      load: () => {
+        const center = map.getCenter();
+        setCenterTile(getTileInfo(center.lat, center.lng));
+      }
+    });
+    return null;
+  };
 
   useEffect(() => {
     if (!selectedTeam) navigate('/', { replace: true });
@@ -92,7 +112,7 @@ const MainMapPage = () => {
     if (captureCheck.reason === 'signal') return UI_TEXT.statusSignalWeak;
     if (captureCheck.reason === 'owned' || isCapturedByMe) return UI_TEXT.statusReclaimed;
     if (captureCheck.reason === 'busy') return '진행 중...';
-    if (isEnemyTile) return '적군 영토';
+    if (isEnemyTile) return '점령하기';
     return UI_TEXT.statusCapture;
   };
 
@@ -142,6 +162,8 @@ const MainMapPage = () => {
               url="https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"
             />
 
+            <MapCenterTracker />
+
             {location && <MapUpdater center={location} recenterTrigger={recenterTrigger} />}
 
             {location && accuracy && (
@@ -184,12 +206,33 @@ const MainMapPage = () => {
               />
             ))}
 
+            {/* 현재 지도의 중앙(커서) 타일 테두리 */}
+            {centerTile && (
+              <Polygon
+                key={`center-${centerTile.id}`}
+                positions={centerTile.bounds}
+                pathOptions={{
+                  color: 'rgba(255, 255, 255, 0.4)',
+                  fillColor: 'transparent',
+                  weight: 2,
+                  dashArray: null
+                }}
+              />
+            )}
+
             <TileScanOverlay tile={currentTile} isCapturing={isCapturing} teamColor={selectedTeam} />
 
             <Marker position={effectivePosition} icon={playerIcon} />
           </MapContainer>
         </div>
 
+        {/* 정중앙 전술 십자선 */}
+        <div className="crosshair-center">
+          <div className="crosshair-outer"></div>
+          <div className="crosshair-inner">
+            <Crosshair size={32} className={`active-target ${isCapturing ? 'capturing' : ''}`} />
+          </div>
+        </div>
       </div>
 
       <RecentButton onClick={handleRecentClick} />
