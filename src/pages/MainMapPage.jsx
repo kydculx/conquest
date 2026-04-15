@@ -5,9 +5,9 @@ import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useCaptureLogic } from '../hooks/useCaptureLogic';
 import { TEAM_BLUE, UI_TEXT, MAP_CONFIG } from '../constants';
-import { getTileInfo } from '../utils/geoUtils';
+import { getTileInfo, hexToLatLng } from '../utils/geoUtils';
 import { getSignalStatus } from '../utils/locationUtils';
-import { MapContainer, TileLayer, Marker, Rectangle, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Polygon, Circle } from 'react-leaflet';
 import L from 'leaflet';
 
 import MapUpdater from '../components/map/MapUpdater';
@@ -123,8 +123,8 @@ const MainMapPage = () => {
             className="real-map-container"
           >
             <TileLayer
-              attribution='&copy; Stadia Maps'
-              url="https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png"
+              attribution='&copy; OpenStreetMap'
+              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
               className="dark-map-tiles"
             />
 
@@ -143,10 +143,24 @@ const MainMapPage = () => {
               />
             )}
 
+            {currentTile && (
+              <Polygon
+                key={`current-${currentTile.id}`}
+                positions={currentTile.bounds || currentTile.coords}
+                pathOptions={{
+                  color: selectedTeam === 'blue' ? '#00f0ff' : '#ff1744',
+                  fillColor: 'transparent',
+                  fillOpacity: 0,
+                  weight: 1,
+                  dashArray: '5, 5'
+                }}
+              />
+            )}
+
             {Object.values(capturedTiles).map(tile => (
-              <Rectangle
+              <Polygon
                 key={tile.id}
-                bounds={tile.bounds}
+                positions={tile.bounds || tile.coords}
                 pathOptions={{
                   color: 'transparent',
                   fillColor: tile.owner === TEAM_BLUE.id ? '#00f0ff' : '#ff1744',
@@ -155,19 +169,6 @@ const MainMapPage = () => {
                 }}
               />
             ))}
-
-            {currentTile && (
-              <Rectangle
-                key={`current-${currentTile.id}`}
-                bounds={currentTile.bounds}
-                pathOptions={{
-                  color: 'transparent',
-                  fillColor: '#00ff88',
-                  fillOpacity: isCapturing ? 0.15 : 0,
-                  weight: 0
-                }}
-              />
-            )}
 
             <TileScanOverlay tile={currentTile} isCapturing={isCapturing} teamColor={selectedTeam} />
 

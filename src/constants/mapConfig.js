@@ -1,9 +1,9 @@
 export const MAP_CONFIG = {
-  DEFAULT_ZOOM: 16,
-  MIN_ZOOM: 13,
-  MAX_ZOOM: 17,
+  DEFAULT_ZOOM: 13,
+  MIN_ZOOM: 10,
+  MAX_ZOOM: 15,
   FLY_DURATION: 1.5,
-  TILE_SIZE: 500,
+  TILE_SIZE: 400,
 };
 
 export const GPS_CONFIG = {
