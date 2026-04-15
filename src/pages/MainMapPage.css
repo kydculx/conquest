@@ -287,16 +287,16 @@
 
 /* 하이엔드 게임용 맵 필터 효과 - Cyber */
 .dark-map-tiles {
-  filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(115%) grayscale(0.8) sepia(0.15) saturate(0.5);
-  transition: filter 1s ease;
+  filter: invert(100%) hue-rotate(185deg) brightness(85%) contrast(130%) grayscale(0.6) saturate(1.5) drop-shadow(0 0 3px rgba(0, 255, 136, 0.3));
+  transition: filter 0.8s ease;
 }
 
 .map-page.team-blue .dark-map-tiles {
-  filter: invert(100%) hue-rotate(195deg) brightness(88%) contrast(125%) grayscale(0.4) saturate(1.3);
+  filter: invert(100%) hue-rotate(200deg) brightness(82%) contrast(140%) grayscale(0.3) saturate(2) drop-shadow(0 0 5px rgba(0, 240, 255, 0.4));
 }
 
 .map-page.team-red .dark-map-tiles {
-  filter: invert(100%) hue-rotate(345deg) brightness(88%) contrast(125%) grayscale(0.4) saturate(1.3);
+  filter: invert(100%) hue-rotate(340deg) brightness(82%) contrast(140%) grayscale(0.3) saturate(2) drop-shadow(0 0 5px rgba(255, 23, 68, 0.4));
 }
 
 /* Tactical Vignette & HUD Edge Fade - Cyber */
@@ -728,4 +728,82 @@
   color: #fff;
   text-shadow: 2px 0 var(--color-neon-red), -2px 0 var(--color-neon-blue);
   animation: glitch 3s infinite;
+}
+
+.capturing-rectangle path,
+.leaflet-interactive.capturing-rectangle {
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.scan-line-rect path,
+.leaflet-interactive.scan-line-rect {
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.tile-scan-overlay {
+  position: absolute;
+  pointer-events: none;
+  overflow: hidden;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  background: rgba(0, 255, 136, 0.05);
+}
+
+.tile-scan-overlay::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(0, 255, 136, 0.8) 20%, 
+    rgba(0, 255, 136, 1) 50%, 
+    rgba(0, 255, 136, 0.8) 80%, 
+    transparent 100%
+  );
+  box-shadow: 0 0 15px rgba(0, 255, 136, 1), 0 0 30px rgba(0, 255, 136, 0.5);
+  animation: scan-move 1.5s linear infinite;
+}
+
+.tile-scan-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 136, 0.15) 0%,
+    transparent 15%,
+    transparent 85%,
+    rgba(0, 255, 136, 0.15) 100%
+  );
+  animation: scan-fade 1.5s linear infinite;
+}
+
+@keyframes scan-move {
+  0% {
+    top: -2px;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes scan-fade {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
