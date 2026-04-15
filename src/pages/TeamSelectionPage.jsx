@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGame } from '../hooks/useGame';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
 import TeamCard from '../components/team/TeamCard';
+import { Terminal, Activity } from 'lucide-react';
 import './TeamSelectionPage.css';
 
 /**
@@ -15,6 +16,13 @@ const TeamSelectionPage = () => {
   const { selectedTeam, saveSelectedTeam } = useGame();
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
+  const [bootSequence, setBootSequence] = React.useState(true);
+
+  // 부트 시퀀스 애니메이션
+  React.useEffect(() => {
+    const timer = setTimeout(() => setBootSequence(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // 이미 진영이 선택된 유저라면 즉시 지도로 투입
   React.useEffect(() => {
@@ -25,7 +33,7 @@ const TeamSelectionPage = () => {
 
   const handleTeamClick = async (teamId) => {
     if (loading) return;
-    
+
     setLoading(true);
     try {
       await saveSelectedTeam(teamId);
@@ -36,21 +44,47 @@ const TeamSelectionPage = () => {
     }
   };
 
+  // 부트 시퀀스 화면
+  if (bootSequence) {
+    return (
+      <div className="page-container team-selection-page boot-sequence">
+        <div className="boot-terminal">
+          <Terminal size={48} className="boot-icon animate-pulse" />
+          <div className="boot-text">
+            <span className="line">[시스템] NEXUS CONQUEST v2.0.26</span>
+            <span className="line">[시스템] 사이버 워페어 프로토콜 초기화</span>
+            <span className="line">[시스템] 보안 연결 설정 중...</span>
+            <span className="loading-line">
+              <span className="cursor"></span>
+            </span>
+          </div>
+          <Activity size={24} className="activity-icon animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`page-container team-selection-page ${loading ? 'loading' : ''}`}>
       <header className="page-header">
-        <h1 className="title">{UI_TEXT.selectTeamTitle}</h1>
+        <div className="header-decoration"></div>
+        <h1 className="title glitch-effect">{UI_TEXT.selectTeamTitle}</h1>
+        <p className="subtitle">{UI_TEXT.selectTeamSubtitle}</p>
+        <div className="status-bar">
+          <span className="status-indicator online">시스템 온라인</span>
+          <span className="status-indicator secure">암호화됨</span>
+        </div>
       </header>
-      
+
       <div className="teams-container">
-        <TeamCard 
-          team={TEAM_BLUE} 
+        <TeamCard
+          team={TEAM_BLUE}
           isSelected={selectedTeam === TEAM_BLUE.id}
           onClick={() => handleTeamClick(TEAM_BLUE.id)}
         />
-        
-        <TeamCard 
-          team={TEAM_RED} 
+
+        <TeamCard
+          team={TEAM_RED}
           isSelected={selectedTeam === TEAM_RED.id}
           onClick={() => handleTeamClick(TEAM_RED.id)}
         />
@@ -58,7 +92,10 @@ const TeamSelectionPage = () => {
 
       {loading && (
         <div className="selection-loading">
-          <div className="pulse-text">현장 투입 중...</div>
+          <div className="pulse-text">네트워크 연결 중...</div>
+          <div className="loading-bar">
+            <div className="loading-progress"></div>
+          </div>
         </div>
       )}
     </div>

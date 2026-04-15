@@ -5,7 +5,7 @@
  */
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Crosshair, Navigation, Flag, ShieldAlert, Wifi, WifiOff } from 'lucide-react';
+import { Crosshair, Navigation, Flag, ShieldAlert, Radar, Satellite, Target, Wifi } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT, MAP_CONFIG } from '../constants';
@@ -66,14 +66,12 @@ const MainMapPage = () => {
   const navigate = useNavigate();
   // 게임 전역 상태 및 GPS 추적 훅 사용
   const { selectedTeam, score, capturedTiles, captureTile } = useGame();
-  const { 
-    location, 
-    accuracy, 
-    error, 
-    loading, 
-    permissionStatus, 
-    isTrackingStarted, 
-    startTracking 
+  const {
+    location,
+    accuracy,
+    permissionStatus,
+    isTrackingStarted,
+    startTracking
   } = useGeolocation();
   
   // 현재 위치한 타일 및 점령 중 여부 상태
@@ -168,32 +166,51 @@ const MainMapPage = () => {
 
   return (
     <div className={`map-page team-${selectedTeam}`}>
+      {/* Cyber Scanline Overlay */}
+      <div className="scanline-overlay"></div>
+      
       {/* 1. 좌표 정보 HUD (상단 왼쪽) */}
       <div className="coord-floating-ui hud-panel">
-        <div className="coord-item">
-          <span className="coord-label">{UI_TEXT.latLabel}:</span>
-          <span className="coord-value">{location ? location[0].toFixed(3) : '---'}</span>
+        <div className="hud-header">
+          <Satellite size={12} />
+          <span>GPS 수신</span>
         </div>
         <div className="coord-item">
-          <span className="coord-label">{UI_TEXT.lngLabel}:</span>
-          <span className="coord-value">{location ? location[1].toFixed(3) : '---'}</span>
+          <span className="coord-label">위도:</span>
+          <span className="coord-value">{location ? location[0].toFixed(5) : '---'}</span>
+        </div>
+        <div className="coord-item">
+          <span className="coord-label">경도:</span>
+          <span className="coord-value">{location ? location[1].toFixed(5) : '---'}</span>
+        </div>
+        <div className="signal-indicator">
+          <Wifi size={12} className={`signal-icon ${signal.class}`} />
+          <span className="signal-text">{signal.text}</span>
         </div>
       </div>
 
       {/* 2. 전역 팀 스코어 HUD (상단 중앙) */}
       <div className="score-floating-ui hud-panel">
+        <div className="hud-header-center">
+          <Target size={14} />
+          <span>영토 점유율</span>
+        </div>
         <div className="score-section">
-          <span className="blue-score">{score.blue}</span>
-          <span className="divider">:</span>
-          <span className="red-score">{score.red}</span>
+          <div className="team-score blue">
+            <span className="score-number">{score.blue}</span>
+            <span className="score-label">블루</span>
+          </div>
+          <div className="vs-divider">VS</div>
+          <div className="team-score red">
+            <span className="score-number">{score.red}</span>
+            <span className="score-label">레드</span>
+          </div>
         </div>
       </div>
 
       {/* 3. 메인 전술 지도 (Leaflet) */}
       <div className="map-view">
         <div className="tactical-overlay-container">
-          <div className="tactical-overlay"></div> {/* 스캔 라인 오버레이 */}
-          
           <MapContainer
             center={defaultPosition}
             zoom={MAP_CONFIG.DEFAULT_ZOOM}
@@ -218,11 +235,11 @@ const MainMapPage = () => {
                 center={location}
                 radius={accuracy}
                 pathOptions={{
-                  color: signal.class === 'stable' ? '#00d2ff' : '#ffea00',
-                  fillColor: signal.class === 'stable' ? '#00d2ff' : '#ffea00',
-                  fillOpacity: 0.1,
+                  color: signal.class === 'stable' ? '#00ff88' : '#ffd600',
+                  fillColor: signal.class === 'stable' ? '#00ff88' : '#ffd600',
+                  fillOpacity: 0.08,
                   weight: 1,
-                  dashArray: '3, 6'
+                  dashArray: '4, 8'
                 }}
               />
             )}
@@ -233,10 +250,10 @@ const MainMapPage = () => {
                 key={tile.id}
                 bounds={tile.bounds}
                 pathOptions={{
-                  color: tile.owner === TEAM_BLUE.id ? '#00d2ff' : '#ff003c',
-                  fillColor: tile.owner === TEAM_BLUE.id ? '#00d2ff' : '#ff003c',
-                  fillOpacity: 0.4,
-                  weight: 1
+                  color: tile.owner === TEAM_BLUE.id ? '#00f0ff' : '#ff1744',
+                  fillColor: tile.owner === TEAM_BLUE.id ? '#00f0ff' : '#ff1744',
+                  fillOpacity: 0.35,
+                  weight: 2
                 }}
               />
             ))}
@@ -246,10 +263,10 @@ const MainMapPage = () => {
               <Rectangle
                 bounds={currentTile.bounds}
                 pathOptions={{
-                  color: '#fff',
+                  color: '#00ff88',
                   fillColor: 'transparent',
                   weight: 2,
-                  dashArray: '5, 5'
+                  dashArray: '6, 6'
                 }}
               />
             )}
@@ -261,7 +278,10 @@ const MainMapPage = () => {
 
         {/* 지도 정가운데 전술 조준경(고정UI) */}
         <div className="crosshair-center">
-          <Crosshair size={40} className={`active-target ${isCapturing ? 'capturing' : 'animate-pulse'}`} />
+          <div className="crosshair-outer"></div>
+          <div className="crosshair-inner">
+            <Crosshair size={32} className={`active-target ${isCapturing ? 'capturing' : ''}`} />
+          </div>
         </div>
       </div>
 
@@ -274,7 +294,7 @@ const MainMapPage = () => {
         }}
         title={UI_TEXT.recenterBtn}
       >
-        <Navigation size={24} />
+        <Radar size={22} />
       </button>
 
       {/* 5. 점령/스캐닝 실행 캡슐 버튼 (중앙 하단) */}
@@ -284,13 +304,14 @@ const MainMapPage = () => {
       >
         <div className="btn-glow"></div>
         <div className="btn-content">
-          <Flag size={24} fill="currentColor" />
+          <Flag size={20} fill="currentColor" />
           <span>
             {isCapturing ? UI_TEXT.statusSyncing :
               accuracy > 50 ? UI_TEXT.statusSignalWeak :
                 isCapturedByMe ? UI_TEXT.statusReclaimed : UI_TEXT.statusCapture}
           </span>
         </div>
+        {isCapturing && <div className="btn-loading-bar"></div>}
       </div>
     </div>
   );

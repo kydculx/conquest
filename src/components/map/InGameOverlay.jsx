@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { LogOut, User, Zap, Shield, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOut, User, Shield, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
 import './InGameOverlay.css';
 
-const InGameOverlay = ({ user, onLogout, location, team, score }) => {
+const InGameOverlay = ({ user, onLogout, team, score }) => {
   const [isLeftExpanded, setIsLeftExpanded] = useState(false);
   const [isRightExpanded, setIsRightExpanded] = useState(false);
-
-  const formatCoord = (val) => val ? val.toFixed(6) : '---.------';
 
   const triggerHaptic = (pattern = 10) => {
     if ('vibrate' in navigator) {

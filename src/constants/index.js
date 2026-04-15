@@ -1,22 +1,24 @@
-export const APP_TITLE = "Conquest";
+export const APP_TITLE = "NEXUS CONQUEST // 사이버 워페어";
 
 export const TEAM_RED = {
   id: "red",
-  name: "레드 팀",
-  description: "압도적인 화력으로 전장을 지배합니다.",
+  name: "사이버 코어",
+  description: "공격형 해킹 특화. 적 네트워크를 마비시키고 시스템을 장악합니다.",
   color: "var(--color-neon-red)",
+  callsign: "레드 팬텀",
 };
 
 export const TEAM_BLUE = {
   id: "blue",
-  name: "블루 팀",
-  description: "정밀한 전술과 전략으로 승리를 쟁취합니다.",
+  name: "실드 셀",
+  description: "방어형 보안 특화. 아군 네트워크를 보호하고 역공을 전개합니다.",
   color: "var(--color-neon-blue)",
+  callsign: "블루 센티널",
 };
 
 export const UI_TEXT = {
-  selectTeamTitle: "진영 선택",
-  selectTeamSubtitle: "넥서스의 운명을 결정할 진영을 선택하십시오.",
+  selectTeamTitle: "프로토콜 초기화",
+  selectTeamSubtitle: "사이버 전쟁 커맨드에 접속할 진영을 선택하십시오.",
   readyBtn: "작전 개시",
   captureBtn: "구역 점령",
   scanningBtn: "구역 스캔 중...",
@@ -41,15 +43,15 @@ export const UI_TEXT = {
   recenterBtn: "내 위치로",
 
   // 시그널 및 점령 상태
-  signalSearching: "수신 중",
+  signalSearching: "신호 탐색 중",
   signalStable: "연결 안정",
   signalGood: "연결 좋음",
   signalWeak: "신호 약함",
 
-  statusSyncing: "점령 중...",
+  statusSyncing: "점령 진행 중...",
   statusSignalWeak: "신호 약함",
   statusReclaimed: "점령 완료",
-  statusCapture: "점령하기",
+  statusCapture: "구역 점령",
 
   // 권한 관련
   permissionDenied: "위치 권한 거부됨",
@@ -60,7 +62,7 @@ export const UI_TEXT = {
   alertNeutralCapture: "영토 확보: 새로운 구역을 점령했습니다.",
   alertEnemyInvasion: "침공 발생! 적군이 우리 영토를 탈취했습니다.",
   alertCounterCapture: "반격 성공! 적의 구역을 탈취했습니다.",
-  alertOtherTeamCapture: "전선 변화: 타 진영간의 교전이 감지되었습니다.",
+  alertOtherTeamCapture: "전선 변화: 타 진영 간의 교전이 감지되었습니다.",
   alertSensorWarning: "수신 저하: GPS 신호가 불안정합니다."
 };
 

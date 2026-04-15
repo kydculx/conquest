@@ -4,15 +4,15 @@
  * - 일정 시간이 지나면 자동으로 페이드 아웃되며 사라집니다.
  */
 import React, { useEffect, useState } from 'react';
-import { Info, AlertTriangle, Radiation, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, Radiation, CheckCircle2, Terminal } from 'lucide-react';
 import './TacticalAlert.css';
 
 // 알림 타입별 루시드 아이콘 매핑
 const ALERT_ICONS = {
-  info: <Info size={18} className="alert-icon" />,
-  warning: <AlertTriangle size={18} className="alert-icon" />,
-  danger: <Radiation size={18} className="alert-icon" />,
-  success: <CheckCircle2 size={18} className="alert-icon" />,
+  info: <Terminal size={16} className="alert-icon" />,
+  warning: <AlertTriangle size={16} className="alert-icon" />,
+  danger: <Radiation size={16} className="alert-icon" />,
+  success: <CheckCircle2 size={16} className="alert-icon" />,
 };
 
 /**
