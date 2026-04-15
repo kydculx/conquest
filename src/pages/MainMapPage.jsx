@@ -11,6 +11,8 @@ import { MapContainer, TileLayer, Marker, Polygon, Circle, useMapEvents } from '
 import L from 'leaflet';
 
 import MapUpdater from '../components/map/MapUpdater';
+import MapCenterTracker from '../components/map/MapCenterTracker';
+import { bluePlayerIcon, redPlayerIcon } from '../components/map/MapIcons';
 import TileScanOverlay from '../components/map/TileScanOverlay';
 import ScoreHUD from '../components/map/ScoreHUD';
 import CaptureButton from '../components/map/CaptureButton';
@@ -18,55 +20,8 @@ import RecentButton from '../components/map/RecentButton';
 import PermissionDenied from '../components/map/PermissionDenied';
 import './MainMapPage.css';
 
-const playerIconBase = (colorClass) => L.divIcon({
-  className: `custom-leaflet-icon player-marker-transition`,
-  html: `
-    <div class="marker-wrapper ${colorClass}">
-      <div class="marker-pulse"></div>
-      <div class="marker-core"></div>
-    </div>
-  `,
-  iconSize: [40, 40],
-  iconAnchor: [20, 20],
-});
-
-const bluePlayerIcon = playerIconBase('blue-marker');
-const redPlayerIcon = playerIconBase('red-marker');
-
-
-const MainMapPage = () => {
-  const navigate = useNavigate();
-  const { selectedTeam, score, capturedTiles } = useGame();
-  const { location, accuracy, error, permissionStatus, isTrackingStarted, startTracking } = useGeolocation();
-  const {
-    isCapturing,
-    captureProgress,
-    startCapture,
-    canCapture,
-    getRemainingTime
-  } = useCaptureLogic();
-  
   const [recenterTrigger, setRecenterTrigger] = useState(0);
   const [centerTile, setCenterTile] = useState(null);
-
-  // 지도 중앙 타일을 추적하는 내부 컴포넌트
-  const MapCenterTracker = () => {
-    const map = useMapEvents({
-      move: () => {
-        const center = map.getCenter();
-        setCenterTile(getTileInfo(center.lat, center.lng));
-      },
-      zoomend: () => {
-        const center = map.getCenter();
-        setCenterTile(getTileInfo(center.lat, center.lng));
-      },
-      load: () => {
-        const center = map.getCenter();
-        setCenterTile(getTileInfo(center.lat, center.lng));
-      }
-    });
-    return null;
-  };
 
   useEffect(() => {
     if (!selectedTeam) navigate('/', { replace: true });
@@ -162,7 +117,7 @@ const MainMapPage = () => {
               url="https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"
             />
 
-            <MapCenterTracker />
+            <MapCenterTracker onCenterTileChange={setCenterTile} />
 
             <MapUpdater center={location} recenterTrigger={recenterTrigger} />
 

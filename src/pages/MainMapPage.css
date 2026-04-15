@@ -211,20 +211,6 @@
   height: 100%;
 }
 
-/* 하이엔드 게임용 맵 필터 효과 - Cyber */
-.dark-map-tiles {
-  filter: invert(100%) hue-rotate(185deg) brightness(85%) contrast(130%) grayscale(0.6) saturate(1.5) drop-shadow(0 0 3px rgba(0, 255, 136, 0.3));
-  transition: filter 0.8s ease;
-}
-
-.map-page.team-blue .dark-map-tiles {
-  filter: invert(100%) hue-rotate(200deg) brightness(82%) contrast(140%) grayscale(0.3) saturate(2) drop-shadow(0 0 5px rgba(0, 240, 255, 0.4));
-}
-
-.map-page.team-red .dark-map-tiles {
-  filter: invert(100%) hue-rotate(340deg) brightness(82%) contrast(140%) grayscale(0.3) saturate(2) drop-shadow(0 0 5px rgba(255, 23, 68, 0.4));
-}
-
 /* Tactical Vignette & HUD Edge Fade - Cyber */
 .map-page::after {
   content: "";
@@ -248,38 +234,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.marker-reticle {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  border: 1px solid currentColor;
-  border-radius: 4px;
-  opacity: 0.6;
-  animation: reticle-rotate 12s linear infinite;
-}
-
-.marker-reticle::before {
-  top: 50%;
-  left: -6px;
-  right: -6px;
-  height: 1px;
-  background: currentColor;
-  content: "";
-  position: absolute;
-  transform: translateY(-50%);
-}
-
-.marker-reticle::after {
-  left: 50%;
-  top: -6px;
-  bottom: -6px;
-  width: 1px;
-  background: currentColor;
-  content: "";
-  position: absolute;
-  transform: translateX(-50%);
 }
 
 .marker-pulse {
@@ -308,16 +262,6 @@
 
 .red-marker {
   color: var(--color-neon-red);
-}
-
-@keyframes reticle-rotate {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 @keyframes marker-ping {
