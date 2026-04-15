@@ -27,7 +27,7 @@ export const useCaptureLogic = () => {
   const startCapture = useCallback(async (tileInfo) => {
     if (!selectedTeam || !tileInfo) return false;
     
-    const { id, bounds } = tileInfo;
+    const { id, q, r, bounds } = tileInfo;
     const existingTile = capturedTiles[id];
     
     const isEmptyTile = !existingTile;
@@ -39,6 +39,8 @@ export const useCaptureLogic = () => {
     
     const data = {
       id,
+      q,
+      r,
       bounds,
       owner: selectedTeam,
       capture_started_at: new Date().toISOString(),

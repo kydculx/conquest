@@ -125,18 +125,27 @@ export const GameProvider = ({ children }) => {
 
   const captureTile = async (tileInfo) => {
     if (!selectedTeam) return false;
-    const { id, bounds, owner, capture_started_at, capture_status } = tileInfo;
+    const { id, q, r, bounds, owner, capture_started_at, capture_status } = tileInfo;
 
-    if (capturedTiles[id]?.owner === selectedTeam) return false;
+    console.log('captureTile 호출:', { id, q, r, bounds });
+
+    if (capturedTiles[id]?.owner === selectedTeam) {
+      console.log('이미 점령됨');
+      return false;
+    }
 
     const newTile = {
       id,
+      q,
+      r,
       bounds,
       owner: owner || selectedTeam,
       captured_at: new Date().toISOString(),
       ...(capture_started_at && { capture_started_at }),
       ...(capture_status && { capture_status })
     };
+
+    console.log('DB 저장 시도:', newTile);
 
     const { error } = await supabase
       .from('captured_tiles')
@@ -147,6 +156,7 @@ export const GameProvider = ({ children }) => {
       return false;
     }
 
+    console.log('점령 성공');
     return true;
   };
 

@@ -25,11 +25,11 @@ const TileScanOverlay = ({ tile, isCapturing, teamColor }) => {
 
     if (!isCapturing) return;
 
-    const bounds = tile.bounds;
+    const coords = tile.bounds || tile.coords;
     const teamColorValue = teamColor === 'blue' ? '#00f0ff' : '#ff1744';
     const enemyColor = teamColor === 'blue' ? '#ff1744' : '#00f0ff';
     
-    layerRef.current = L.rectangle(bounds, {
+    layerRef.current = L.polygon(coords, {
       color: 'transparent',
       weight: 0,
       fillOpacity: 0.3,
