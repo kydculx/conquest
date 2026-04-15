@@ -116,6 +116,7 @@ export const useCaptureLogic = () => {
   return {
     isCapturing: !!capturingTileId,
     capturingTileId,
+    capturingTile: capturingDataRef.current,
     captureProgress,
     startCapture,
     clearCaptureState,

@@ -22,8 +22,9 @@ export const smoothValue = (prevSmoothValue, newValue, alpha = 0.2) => {
 import { GPS_CONFIG } from '../constants';
 
 export const getSignalStatus = (accuracy) => {
-  if (accuracy === null) return { label: '수신 중', class: 'searching' };
-  if (accuracy < GPS_CONFIG.HIGH_ACCURACY_THRESHOLD) return { label: '연결 안정', class: 'stable' };
-  if (accuracy < GPS_CONFIG.GOOD_ACCURACY_THRESHOLD) return { label: '연결 좋음', class: 'good' };
+  if (accuracy === null) return { label: '신호 검색 중', class: 'searching' };
+  if (accuracy > GPS_CONFIG.UNSTABLE_ACCURACY_THRESHOLD) return { label: '신호 매우 불안정', class: 'unstable' };
+  if (accuracy < GPS_CONFIG.HIGH_ACCURACY_THRESHOLD) return { label: '연결 안정 (최상)', class: 'stable' };
+  if (accuracy < GPS_CONFIG.GOOD_ACCURACY_THRESHOLD) return { label: '연결 양호', class: 'good' };
   return { label: '신호 약함', class: 'weak' };
 };

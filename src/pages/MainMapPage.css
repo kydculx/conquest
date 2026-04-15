@@ -406,55 +406,6 @@
   }
 }
 
-/* Crosshair Center - Cyber */
-.crosshair-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  pointer-events: none;
-}
-
-.crosshair-outer {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  border: 1px solid rgba(0, 255, 136, 0.2);
-  border-radius: 50%;
-  animation: crosshair-pulse 3s ease-in-out infinite;
-}
-
-.crosshair-inner {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.crosshair-inner .active-target {
-  color: var(--color-cyber-green);
-  opacity: 0.4;
-  filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
-}
-
-.crosshair-inner .active-target.capturing {
-  opacity: 1;
-  animation: target-acquire 0.5s ease-in-out infinite;
-}
-
-@keyframes crosshair-pulse {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
-  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.4; }
-}
-
-@keyframes target-acquire {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-}
 
 /* ==========================================================================
    하단 액션 버튼 그룹
@@ -498,75 +449,145 @@
 
 .capture-overlay-btn {
   position: fixed;
-  bottom: 140px;
+  bottom: 80px; /* 위치 상단 이동 */
   left: 50%;
   transform: translateX(-50%);
   z-index: 10003;
+  width: auto;
+  min-width: 240px;
 }
 
 .capture-overlay-btn .btn-content {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 36px;
-  border-radius: var(--border-radius-pill);
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important; /* 가운데 정렬 */
+  justify-content: center !important;
+  gap: 4px;
+  padding: 14px 40px;
   background: var(--color-hud-bg);
   backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--color-border-subtle);
-  box-shadow: var(--shadow-hud);
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
 }
 
-.capture-overlay-btn.team-blue .btn-content {
-  border-color: rgba(0, 240, 255, 0.3);
-}
-
-.capture-overlay-btn.team-red .btn-content {
-  border-color: rgba(255, 23, 68, 0.3);
-}
-
-.capture-overlay-btn .btn-content span {
-  font-family: var(--font-family-mono);
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--color-text-primary);
-}
-
-.capture-overlay-btn:not(.disabled):hover .btn-content {
-  background: rgba(0, 255, 136, 0.08);
-  border-color: var(--color-cyber-green);
-  transform: translateY(-6px);
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 1), 0 0 30px rgba(0, 255, 136, 0.15);
-}
-
-.capture-overlay-btn.disabled .btn-content {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* Loading State */
-.capture-overlay-btn.loading .btn-content {
-  border-color: var(--color-cyber-yellow);
-}
-
-.btn-loading-bar {
+/* 전술적 브래킷 (Corners) */
+.btn-bracket-tl, .btn-bracket-tr, .btn-bracket-bl, .btn-bracket-br {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-cyber-green), var(--color-neon-blue));
-  animation: loading-progress 1.5s ease-in-out infinite;
-  border-radius: 0 0 50px 50px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--color-cyber-green);
+  z-index: 10;
+  opacity: 0.6;
 }
 
-@keyframes loading-progress {
-  0% { width: 0%; left: 0; }
-  50% { width: 100%; left: 0; }
-  100% { width: 0%; left: 100%; }
+.btn-bracket-tl { top: 4px; left: 4px; border-right: 0; border-bottom: 0; }
+.btn-bracket-tr { top: 4px; right: 4px; border-left: 0; border-bottom: 0; }
+.btn-bracket-bl { bottom: 4px; left: 4px; border-right: 0; border-top: 0; }
+.btn-bracket-br { bottom: 4px; right: 4px; border-left: 0; border-top: 0; }
+
+/* 빗금 패턴 */
+.btn-scanline-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.02) 10px,
+    rgba(255, 255, 255, 0.02) 11px
+  );
+  pointer-events: none;
+}
+
+/* 상태별 스타일 커스텀 */
+/* 1. Ready State (Green) */
+.state-ready .btn-content {
+  border-color: rgba(0, 255, 136, 0.3);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+}
+.state-ready .status-icon-area { color: var(--color-cyber-green); }
+.state-ready .btn-bracket-tl, .state-ready .btn-bracket-tr,
+.state-ready .btn-bracket-bl, .state-ready .btn-bracket-br { 
+  border-color: var(--color-cyber-green); 
+}
+
+/* 2. Warning State (Amber) */
+.state-warning .btn-content {
+  border-color: rgba(255, 183, 77, 0.4);
+}
+.state-warning .status-icon-area { color: var(--color-cyber-yellow); }
+.state-warning .btn-bracket-tl, .state-warning .btn-bracket-tr,
+.state-warning .btn-bracket-bl, .state-warning .btn-bracket-br { 
+  border-color: var(--color-cyber-yellow); 
+}
+
+/* 3. Secured State (Team Color) */
+.team-blue.state-secured .btn-content { border-color: rgba(0, 240, 255, 0.4); }
+.team-red.state-secured .btn-content { border-color: rgba(255, 23, 68, 0.4); }
+.state-secured .status-icon-area { color: #fff; }
+.team-blue.state-secured .btn-bracket-tl, .team-blue.state-secured .btn-bracket-tr,
+.team-blue.state-secured .btn-bracket-bl, .team-blue.state-secured .btn-bracket-br { 
+  border-color: var(--color-neon-blue); 
+}
+.team-red.state-secured .btn-bracket-tl, .team-red.state-secured .btn-bracket-tr,
+.team-red.state-secured .btn-bracket-bl, .team-red.state-secured .btn-bracket-br { 
+  border-color: var(--color-neon-red); 
+}
+
+/* 4. Busy State (Capture Running) */
+.state-busy .btn-content {
+  background: rgba(10, 14, 23, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Typography & Sub-status */
+.capture-overlay-btn .text-info-area {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.sub-status {
+  font-family: var(--font-family-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--color-cyber-green);
+  letter-spacing: 1px;
+  opacity: 0.8;
+  animation: pulse-text 2s infinite ease-in-out;
+}
+
+@keyframes pulse-text {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Animations */
+.icon-ready-pulse {
+  animation: icon-float 2s infinite ease-in-out;
+}
+
+@keyframes icon-float {
+  0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 5px var(--color-cyber-green)); }
+  50% { transform: translateY(-3px); filter: drop-shadow(0 0 12px var(--color-cyber-green)); }
+}
+
+/* Interactions */
+.capture-overlay-btn:not(.disabled):hover .btn-content {
+  transform: translateY(-4px) scale(1.02);
+  border-color: #fff;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+.capture-overlay-btn:active .btn-content {
+  transform: translateY(1px) scale(0.98);
 }
 
 /* ==========================================================================
@@ -805,5 +826,146 @@
   }
   50% {
     opacity: 0.7;
+  }
+}
+
+/* ==========================================================================
+   GPS 상태 인디케이터 바
+   ========================================================================== */
+.gps-status-bar {
+  position: fixed;
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  background: rgba(10, 14, 23, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--border-radius-pill);
+  font-family: var(--font-family-mono);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.gps-status-bar.has-error {
+  border-color: rgba(255, 23, 68, 0.5);
+  background: rgba(40, 10, 20, 0.85);
+  color: var(--color-neon-red);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-text-secondary);
+}
+
+.stable .status-dot {
+  background: var(--color-cyber-green);
+  box-shadow: 0 0 8px var(--color-cyber-green);
+}
+
+.good .status-dot {
+  background: var(--color-cyber-yellow);
+}
+
+.weak .status-dot, .unstable .status-dot {
+  background: var(--color-neon-red);
+}
+
+.searching .status-dot {
+  background: var(--color-text-secondary);
+  animation: pulse-gray 1.5s infinite;
+}
+
+.gps-status-bar.has-error .status-dot {
+  background: var(--color-neon-red);
+  animation: pulse-red 1s infinite;
+}
+
+.accuracy-value {
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+  font-size: 0.6rem;
+  border-left: 1px solid var(--color-border-subtle);
+  padding-left: 8px;
+}
+
+@keyframes pulse-gray {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 0.4; box-shadow: 0 0 0px var(--color-neon-red); }
+  50% { opacity: 1; box-shadow: 0 0 10px var(--color-neon-red); }
+}
+
+@media (max-width: 768px) {
+  .gps-status-bar {
+    top: calc(env(safe-area-inset-top, 0px) + 72px);
+    font-size: 0.6rem;
+    padding: 4px 12px;
+  }
+}
+
+/* 점령 중 HUD 요소 성능 최적화 및 집중도 향상 (Dimming) */
+.map-page.is-capturing .score-floating-ui,
+.map-page.is-capturing .coord-floating-ui,
+.map-page.is-capturing .gps-status-bar {
+  opacity: 0.3;
+  filter: grayscale(0.5) blur(1px);
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+/* 점령 버튼 단순화 스타일 */
+.capture-overlay-btn .btn-content {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 28px;
+  min-width: 180px;
+  transition: all 0.3s ease;
+}
+
+.capture-overlay-btn.loading .btn-content {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(10, 14, 23, 0.6);
+}
+
+.main-status {
+  font-family: var(--font-family-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--color-text-primary);
+}
+
+.capturing-pulse {
+  animation: icon-pulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes icon-pulse {
+  from { opacity: 0.4; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1.1); }
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+  .central-timer-panel {
+    transform: translate(-50%, 55px);
+    padding: 6px 16px;
+  }
+  
+  .timer-value {
+    font-size: 1rem;
   }
 }

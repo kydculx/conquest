@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { smoothValue } from '../utils/locationUtils';
+import { GPS_CONFIG } from '../constants';
 
 /**
  * 실시간 GPS 위치 정보를 추적하고 관리하는 커스텀 훅
@@ -67,54 +68,90 @@ export const useGeolocation = () => {
       }
     }
 
+    // Wake Lock 관리 변수
+    let wakeLock = null;
+
+    const requestWakeLock = async () => {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+          console.log('Wake Lock is active');
+        } catch (err) {
+          console.warn(`${err.name}, ${err.message}`);
+        }
+      }
+    };
+
+    if (isTrackingStarted) {
+      requestWakeLock();
+    }
+
     // 위치 정보 획득 성공 시 실행될 핸들러
     const handleSuccess = (position) => {
       const { latitude, longitude, accuracy: acc } = position.coords;
       
+      // 지나치게 낮은 정확도는 유효하지 않은 신호로 간주하여 무시
+      if (acc > GPS_CONFIG.UNSTABLE_ACCURACY_THRESHOLD) {
+        console.warn('Low accuracy detected. Skipping update:', acc);
+        setAccuracy(acc); // UI에 신호 약함 노출을 위해 정확도는 업데이트
+        return;
+      }
+
       /**
        * 지수가중이동평균(EMA) 필터링
-       * 튀는 데이터(Noise)를 억제하고 마커 이동을 부드럽게 만들기 위해 이전 좌표와 현재 좌표를 섞습니다.
-       * 0.4(가중치)는 반응성과 부드러움 사이의 밸런스 값입니다.
+       * 가중치를 0.3으로 조정하여 모바일에서 더욱 부드러운 움직임을 구현 (기존 0.4)
        */
-      const smoothLat = smoothValue(smoothedRef.current?.[0], latitude, 0.4);
-      const smoothLng = smoothValue(smoothedRef.current?.[1], longitude, 0.4);
+      const alpha = 0.3;
+      const smoothLat = smoothValue(smoothedRef.current?.[0], latitude, alpha);
+      const smoothLng = smoothValue(smoothedRef.current?.[1], longitude, alpha);
       
       const newLocation = [smoothLat, smoothLng];
       smoothedRef.current = newLocation;
       
       setLocation(newLocation);
       setAccuracy(acc);
+      setError(null); // 성공 시 에러 초기화
       setLoading(false);
       
-      // 기기 재부팅이나 브라우저 재시작 시 빠른 초기화를 위해 마지막 위치 저장
       localStorage.setItem('last_location', JSON.stringify(newLocation));
     };
 
     // 위치 정보 획득 실패 시 실행될 핸들러
     const handleError = (err) => {
-      // 1. 사용자가 명시적으로 권한을 거부한 경우 상태 업데이트
+      // 1. 사용자가 명시적으로 권한을 거부한 경우
       if (err.code === err.PERMISSION_DENIED) {
         setPermissionStatus('denied');
+        setError('위치 권한이 거부되었습니다. 설정에서 권한을 허용해주세요.');
+        setLoading(false);
+      } else if (err.code === err.TIMEOUT) {
+        // 타임아웃의 경우 loading을 끄지 않고 연결 시도 중임을 표시
+        setError('위치 신호를 찾는 중입니다 (타임아웃)...');
+      } else {
+        setError(err.message);
+        setLoading(false);
       }
-      
-      // 2. 에러 메시지 업데이트 (위치 확인 불가, 타임아웃 등)
-      setError(err.message);
-      setLoading(false);
     };
 
     // Geolocation 옵션 설정
     const options = {
-      enableHighAccuracy: true, // 고정밀 모드 사용 (GPS 하드웨어 직접 사용)
-      timeout: 15000,           // 15초 이내에 응답이 없으면 에러 처리
-      maximumAge: 0             // 캐시된 데이터 대신 항상 최신 데이터 요청
+      enableHighAccuracy: true,
+      timeout: 10000,           // 10초로 단축하여 더 빠른 상태 피드백 제공
+      maximumAge: 0
     };
 
     // 실시간 위치 추적 시작
     const watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, options);
 
-    // 컴포넌트 언마운트 시 추적 중단 (배터리 및 메모리 절약)
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, []);
+    // 컴포넌트 언마운트 또는 상태 변경 시 리소스 정리
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+      if (wakeLock) {
+        wakeLock.release().then(() => {
+          wakeLock = null;
+        });
+      }
+    };
+  }, [isTrackingStarted]);
 
   return { 
     location, 

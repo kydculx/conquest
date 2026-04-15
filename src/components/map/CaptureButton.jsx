@@ -1,22 +1,24 @@
-import { Flag, Loader2 } from 'lucide-react';
-
-const CaptureButton = ({ team, isCapturing, onClick, statusText, disabled }) => {
+const CaptureButton = ({ team, isCapturing, statusType, onClick, statusText, disabled }) => {
   return (
     <div
-      className={`capture-overlay-btn team-${team} ${isCapturing ? 'loading' : ''} ${disabled ? 'disabled' : ''}`}
+      className={`capture-overlay-btn team-${team} state-${statusType} ${isCapturing ? 'loading' : ''} ${disabled ? 'disabled' : ''}`}
       onClick={disabled ? undefined : onClick}
     >
-      <div className="btn-scan-container">
-        {isCapturing && <div className="btn-scan-line"></div>}
-      </div>
-      <div className="btn-glow"></div>
+      {/* 전술적 코너 브래킷 */}
+      <div className="btn-bracket-tl"></div>
+      <div className="btn-bracket-tr"></div>
+      <div className="btn-bracket-bl"></div>
+      <div className="btn-bracket-br"></div>
+      
+      {/* 빗금 패턴 배경 */}
+      <div className="btn-scanline-pattern"></div>
+
       <div className="btn-content">
-        {isCapturing ? (
-          <Loader2 size={22} className="spin-icon" />
-        ) : (
-          <Flag size={22} fill="currentColor" />
-        )}
-        <span className={isCapturing ? 'capturing-text' : ''}>{statusText}</span>
+        <div className="text-info-area">
+          <span className="main-status">
+            {statusText}
+          </span>
+        </div>
       </div>
     </div>
   );

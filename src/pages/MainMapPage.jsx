@@ -22,7 +22,6 @@ const playerIconBase = (colorClass) => L.divIcon({
   className: `custom-leaflet-icon player-marker-transition`,
   html: `
     <div class="marker-wrapper ${colorClass}">
-      <div class="marker-reticle"></div>
       <div class="marker-pulse"></div>
       <div class="marker-core"></div>
     </div>
@@ -34,10 +33,11 @@ const playerIconBase = (colorClass) => L.divIcon({
 const bluePlayerIcon = playerIconBase('blue-marker');
 const redPlayerIcon = playerIconBase('red-marker');
 
+
 const MainMapPage = () => {
   const navigate = useNavigate();
   const { selectedTeam, score, capturedTiles } = useGame();
-  const { location, accuracy, permissionStatus, isTrackingStarted, startTracking } = useGeolocation();
+  const { location, accuracy, error, permissionStatus, isTrackingStarted, startTracking } = useGeolocation();
   const {
     isCapturing,
     captureProgress,
@@ -87,19 +87,25 @@ const MainMapPage = () => {
 
   const getCaptureStatusText = () => {
     if (isCapturing) {
-      const remaining = Math.ceil(getRemainingTime() / 1000);
-      if (remaining <= 0) return '완료';
-      return `${remaining}초`;
+      return `점령 중... ${Math.round(captureProgress)}%`;
     }
     if (captureCheck.reason === 'signal') return UI_TEXT.statusSignalWeak;
     if (captureCheck.reason === 'owned' || isCapturedByMe) return UI_TEXT.statusReclaimed;
     if (captureCheck.reason === 'busy') return '진행 중...';
-    if (isEnemyTile) return '적 점령';
+    if (isEnemyTile) return '적군 영토';
     return UI_TEXT.statusCapture;
   };
 
+  const getCaptureStatusType = () => {
+    if (isCapturing) return 'busy';
+    if (captureCheck.reason === 'signal') return 'warning';
+    if (isCapturedByMe) return 'secured';
+    if (captureCheck.canCapture) return 'ready';
+    return 'default';
+  };
+
   const getCaptureDisabled = () => {
-    return !captureCheck.canCapture;
+    return !captureCheck.canCapture && !isCapturing;
   };
 
   if (permissionStatus === 'denied') {
@@ -107,10 +113,17 @@ const MainMapPage = () => {
   }
 
   return (
-    <div className={`map-page team-${selectedTeam}`}>
+    <div className={`map-page team-${selectedTeam} ${isCapturing ? 'is-capturing' : ''}`}>
       <div className="scanline-overlay"></div>
       
       <ScoreHUD score={score} />
+      
+      {/* GPS 상태 인디케이터 */}
+      <div className={`gps-status-bar ${signal.class} ${error ? 'has-error' : ''}`}>
+        <div className="status-dot"></div>
+        <span className="status-label">{error || signal.label}</span>
+        {accuracy && <span className="accuracy-value">±{Math.round(accuracy)}m</span>}
+      </div>
 
       <div className="map-view">
         <div className="tactical-overlay-container">
@@ -175,12 +188,6 @@ const MainMapPage = () => {
           </MapContainer>
         </div>
 
-        <div className="crosshair-center">
-          <div className="crosshair-outer"></div>
-          <div className="crosshair-inner">
-            <Crosshair size={32} className={`active-target ${isCapturing ? 'capturing' : ''}`} />
-          </div>
-        </div>
       </div>
 
       <RecentButton onClick={handleRecentClick} />
@@ -188,7 +195,7 @@ const MainMapPage = () => {
       <CaptureButton
         team={selectedTeam}
         isCapturing={isCapturing}
-        progress={captureProgress}
+        statusType={getCaptureStatusType()}
         onClick={handleCapture}
         statusText={getCaptureStatusText()}
         disabled={getCaptureDisabled()}
