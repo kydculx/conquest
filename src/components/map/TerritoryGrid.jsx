@@ -56,11 +56,14 @@ const TerritoryGrid = () => {
     lastUpdateRef.current = now;
   }, [visibleHexes.length]);
 
+  /**
+   * 실시간 지도 이벤트 핸들러
+   * - move: 지도 중심 이동 시 격자 갱신
+   * - zoom: 확대/축소 시 격자 갱신
+   */
   const map = useMapEvents({
     move: () => updateGrid(map),
-    zoom: () => updateGrid(map),
-    moveend: () => updateGrid(map),
-    zoomend: () => updateGrid(map)
+    zoom: () => updateGrid(map)
   });
 
   // 초기 렌더링 시 실행

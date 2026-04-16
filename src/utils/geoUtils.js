@@ -30,36 +30,6 @@ const ORIGIN_LAT = MAP_CONFIG.DEFAULT_POSITION[0];
 const ORIGIN_LNG = MAP_CONFIG.DEFAULT_POSITION[1];
 
 /**
- * 위도를 평면 Y 좌표로 변환
- */
-const latToY = (lat) => {
-  return (lat - ORIGIN_LAT) * (111320 / HEX_SIZE);
-};
-
-/**
- * 경도를 평면 X 좌표로 변환
- */
-const lngToX = (lng) => {
-  const latRad = (ORIGIN_LAT * Math.PI) / 180;
-  return (lng - ORIGIN_LNG) * (111320 * Math.cos(latRad) / HEX_SIZE);
-};
-
-/**
- * 평면 Y를 위도로 역변환
- */
-const yToLat = (y) => {
-  return (y * HEX_SIZE / 111320) + ORIGIN_LAT;
-};
-
-/**
- * 평면 X를 경도로 역변환
- */
-const xToLng = (x) => {
-  const latRad = (ORIGIN_LAT * Math.PI) / 180;
-  return (x * HEX_SIZE / (111320 * Math.cos(latRad))) + ORIGIN_LNG;
-};
-
-/**
  * 실수 부동소수점 큐브 좌표를 가장 가까운 정수 헥사곤 좌표로 반올림
  */
 const cubeRound = (x, y, z) => {

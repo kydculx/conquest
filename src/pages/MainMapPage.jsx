@@ -9,10 +9,9 @@ import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useCaptureLogic } from '../hooks/useCaptureLogic';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT, MAP_CONFIG, MAP_THEMES, GAME_CONFIG } from '../constants';
-import { getTileInfo, hexToLatLng } from '../utils/geoUtils';
+import { getTileInfo } from '../utils/geoUtils';
 import { getSignalStatus } from '../utils/locationUtils';
-import { MapContainer, TileLayer, Marker, Polygon, Circle, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Polygon, Circle } from 'react-leaflet';
 
 import MapUpdater from '../components/map/MapUpdater';
 import MapCenterTracker from '../components/map/MapCenterTracker';
@@ -127,7 +126,7 @@ const MainMapPage = () => {
     <div className={`map-page team-${selectedTeam} ${isCapturing ? 'is-capturing' : ''}`}>
       <div className="scanline-overlay"></div>
       
-      <ScoreHUD score={score} selectedTeam={selectedTeam} />
+      <ScoreHUD score={score} />
       
       {/* GPS 상태 인디케이터 */}
       <div className={`gps-status-bar ${signal.class} ${error ? 'has-error' : ''}`}>
