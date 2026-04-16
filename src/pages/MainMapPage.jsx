@@ -180,7 +180,8 @@ const MainMapPage = () => {
                   fillColor: GAME_CONFIG.COLORS.TRANSPARENT,
                   fillOpacity: 0,
                   weight: 1,
-                  dashArray: '5, 5'
+                  dashArray: '5, 5',
+                  smoothFactor: 0
                 }}
               />
             )}
@@ -193,7 +194,8 @@ const MainMapPage = () => {
                   color: GAME_CONFIG.COLORS.TRANSPARENT,
                   fillColor: tile.owner === TEAM_BLUE.id ? GAME_CONFIG.COLORS.TEAM_BLUE : GAME_CONFIG.COLORS.TEAM_RED,
                   fillOpacity: 0.35,
-                  weight: 0
+                  weight: 0,
+                  smoothFactor: 0
                 }}
               />
             ))}
@@ -207,7 +209,8 @@ const MainMapPage = () => {
                   color: GAME_CONFIG.COLORS.TILE_HIGHLIGHT,
                   fillColor: GAME_CONFIG.COLORS.TRANSPARENT,
                   weight: 2,
-                  dashArray: null
+                  dashArray: null,
+                  smoothFactor: 0
                 }}
               />
             )}

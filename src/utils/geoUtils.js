@@ -126,7 +126,6 @@ export const getTileInfo = (lat, lng) => {
   const center = hexToLatLng(q, r);
   const distance = calculateDistance(lat, lng, center.lat, center.lng);
   const corners = getHexCorners(q, r);
-  corners.push(corners[0]);
   
   const id = `hex_${q}_${r}`;
   return { id, q, r, bounds: corners, centerLat: center.lat, centerLng: center.lng, distanceFromCenter: distance };

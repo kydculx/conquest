@@ -1,6 +1,4 @@
-/**
- * 지도 중앙 좌표를 실시간 추적하여 현재 조준 중인 타일을 감지하는 컴포넌트
- */
+import { useRef, useCallback, useEffect } from 'react';
 import { useMapEvents } from 'react-leaflet';
 import { getTileInfo } from '../../utils/geoUtils';
 
@@ -10,18 +8,21 @@ import { getTileInfo } from '../../utils/geoUtils';
  * @param {Function} props.onCenterTileChange - 중앙 타일 정보가 변경될 때 호출되는 콜백 함수
  */
 const MapCenterTracker = ({ onCenterTileChange }) => {
+  const lastUpdateRef = useRef(0);
+  const throttleMs = 100;
+
+  const updateCenterTile = useCallback((map) => {
+    const now = Date.now();
+    if (now - lastUpdateRef.current < throttleMs) return;
+
+    const center = map.getCenter();
+    onCenterTileChange(getTileInfo(center.lat, center.lng));
+    lastUpdateRef.current = now;
+  }, [onCenterTileChange]);
+
   const map = useMapEvents({
-    // 지도가 움직일 때
-    move: () => {
-      const center = map.getCenter();
-      onCenterTileChange(getTileInfo(center.lat, center.lng));
-    },
-    // 확대/축소가 끝났을 때
-    zoomend: () => {
-      const center = map.getCenter();
-      onCenterTileChange(getTileInfo(center.lat, center.lng));
-    },
-    // 초기 로딩 시
+    move: () => updateCenterTile(map),
+    zoom: () => updateCenterTile(map),
     load: () => {
       const center = map.getCenter();
       onCenterTileChange(getTileInfo(center.lat, center.lng));
