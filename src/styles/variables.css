@@ -10,7 +10,7 @@
   --color-text-secondary: rgba(0, 255, 170, 0.55); /* 보조 텍스트 색상 */
 
   /* [네온 팔레트] - 진영 및 상태 표시용 */
-  --color-neon-blue: #00f0ff;      /* 블루팀 메인 컬러 */
+  --color-neon-blue: #0066ff;      /* 블루팀 메인 컬러 */
   --color-neon-red: #ff1744;       /* 레드팀 메인 컬러 */
   --color-cyber-green: #00ff88;    /* 시스템 가동/안정 상태 */
   --color-cyber-yellow: #ffd600;   /* 주의/불안정 상태 */

@@ -14,12 +14,12 @@ export const GAME_CONFIG = {
 
   // 전술 테마 색상 (Leaflet 컴포넌트용)
   COLORS: {
-    TEAM_BLUE: '#00f0ff',
+    TEAM_BLUE: '#0066ff',
     TEAM_RED: '#ff1744',
     SIGNAL_STABLE: '#00ff88',
     SIGNAL_UNSTABLE: '#ffd600',
-    TILE_HIGHLIGHT: 'rgba(255, 255, 255, 0.4)',
-    TERRITORY_GRID: 'rgba(0, 255, 200, 0.1)',
+    TILE_HIGHLIGHT: 'rgba(0, 255, 200, 0.5)',
+    TERRITORY_GRID: 'rgba(0, 255, 200, 0.2)',
     TRANSPARENT: 'transparent'
   },
 

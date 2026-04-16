@@ -160,7 +160,7 @@
 
 .team-score.blue .score-number {
   color: var(--color-neon-blue);
-  text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+  text-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
 }
 
 .team-score.blue .score-label {
@@ -513,7 +513,7 @@
 }
 
 /* 3. Secured State (Team Color) */
-.team-blue.state-secured .btn-content { border-color: rgba(0, 240, 255, 0.4); }
+.team-blue.state-secured .btn-content { border-color: rgba(0, 102, 255, 0.4); }
 .team-red.state-secured .btn-content { border-color: rgba(255, 23, 68, 0.4); }
 .state-secured .status-icon-area { color: #fff; }
 .team-blue.state-secured .btn-bracket-tl, .team-blue.state-secured .btn-bracket-tr,
