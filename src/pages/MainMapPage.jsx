@@ -14,7 +14,6 @@ import { getSignalStatus } from '../utils/locationUtils';
 import { MapContainer, TileLayer, Marker, Polygon, Circle } from 'react-leaflet';
 
 import MapUpdater from '../components/map/MapUpdater';
-import MapCenterTracker from '../components/map/MapCenterTracker';
 import { bluePlayerIcon, redPlayerIcon } from '../components/map/MapIcons';
 import TileScanOverlay from '../components/map/TileScanOverlay';
 import ScoreHUD from '../components/map/ScoreHUD';
@@ -22,6 +21,9 @@ import CaptureButton from '../components/map/CaptureButton';
 import RecentButton from '../components/map/RecentButton';
 import TerritoryGrid from '../components/map/TerritoryGrid';
 import MapThemeSwitcher from '../components/map/MapThemeSwitcher';
+import TerritoryList from '../components/map/TerritoryList';
+import CenterTileLayer from '../components/map/CenterTileLayer';
+import CapturedTilesLayer from '../components/map/CapturedTilesLayer';
 import PermissionDenied from '../components/map/PermissionDenied';
 import './MainMapPage.css';
 /**
@@ -151,12 +153,13 @@ const MainMapPage = () => {
               url={MAP_THEMES[mapThemeId]?.url || MAP_THEMES.dark.url}
             />
 
-            <MapCenterTracker onCenterTileChange={setCenterTile} />
 
             <MapUpdater center={location} recenterTrigger={recenterTrigger} />
 
-            {/* 대한민국 영토 전술 격자 레이어 */}
+            {/* 최적화 레이어: 이동 중 숨김 및 상태 격리 적용 */}
             <TerritoryGrid />
+            <CapturedTilesLayer />
+            <CenterTileLayer onTileChange={setCenterTile} />
 
             {location && accuracy && (
               <Circle
@@ -186,38 +189,10 @@ const MainMapPage = () => {
               />
             )}
 
-            {Object.values(capturedTiles).map(tile => (
-              <Polygon
-                key={tile.id}
-                positions={tile.bounds || tile.coords}
-                pathOptions={{
-                  color: GAME_CONFIG.COLORS.TRANSPARENT,
-                  fillColor: tile.owner === TEAM_BLUE.id ? GAME_CONFIG.COLORS.TEAM_BLUE : GAME_CONFIG.COLORS.TEAM_RED,
-                  fillOpacity: 0.35,
-                  weight: 0,
-                  smoothFactor: 0
-                }}
-              />
-            ))}
-
-            {/* 현재 지도의 중앙(커서) 타일 테두리 */}
-            {centerTile && (
-              <Polygon
-                key={`center-${centerTile.id}`}
-                positions={centerTile.bounds}
-                pathOptions={{
-                  color: GAME_CONFIG.COLORS.TILE_HIGHLIGHT,
-                  fillColor: GAME_CONFIG.COLORS.TRANSPARENT,
-                  weight: 2,
-                  dashArray: null,
-                  smoothFactor: 0
-                }}
-              />
-            )}
-
             <TileScanOverlay tile={currentTile} isCapturing={isCapturing} teamColor={selectedTeam} />
 
             <Marker position={effectivePosition} icon={playerIcon} />
+            <TerritoryList />
           </MapContainer>
         </div>
 

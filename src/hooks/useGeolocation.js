@@ -116,6 +116,9 @@ export const useGeolocation = () => {
           });
         }
         setLoading(false);
+      } else if (err.code === err.POSITION_UNAVAILABLE) {
+        setError("위치 신호를 일시적으로 수신할 수 없거나 기기 위치 서비스가 꺼져 있습니다.");
+        setLoading(false);
       } else if (err.code === err.TIMEOUT) {
         setError(UI_TEXT.gpsSearching);
       } else {

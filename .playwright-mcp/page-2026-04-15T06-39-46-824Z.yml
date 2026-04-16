@@ -1,0 +1,33 @@
+- generic [ref=e87]:
+  - generic [ref=e88]:
+    - generic [ref=e89]:
+      - img [ref=e90]
+      - generic [ref=e94]: 영토 점유율
+    - generic [ref=e95]:
+      - generic [ref=e96]:
+        - generic [ref=e97]: "1"
+        - generic [ref=e98]: 블루
+      - generic [ref=e99]: VS
+      - generic [ref=e100]:
+        - generic [ref=e101]: "0"
+        - generic [ref=e102]: 레드
+  - generic [ref=e103]:
+    - generic [ref=e105]:
+      - generic:
+        - generic:
+          - img
+        - button [ref=e106] [cursor=pointer]
+      - generic [ref=e111]:
+        - link "Leaflet" [ref=e112] [cursor=pointer]:
+          - /url: https://leafletjs.com
+          - img [ref=e113]
+          - text: Leaflet
+        - text: "| © OpenStreetMap"
+    - generic:
+      - generic:
+        - img
+  - button "내 위치로" [ref=e117] [cursor=pointer]:
+    - img [ref=e118]
+  - generic [ref=e126]:
+    - img [ref=e127]
+    - generic [ref=e129]: 구역 점령

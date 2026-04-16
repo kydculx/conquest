@@ -1,0 +1,190 @@
+.score-hud-container {
+  /* 상단 중앙 고정 및 폭 고정 */
+  position: fixed;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10010;
+
+  /* 레이아웃 및 스타일 고정 (반응형 제거) */
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  padding: 4px 20px;
+  background: var(--color-hud-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-hud);
+  overflow: hidden;
+}
+
+/* 전술적 데코레이션 (TerritoryList와 동일) */
+.score-hud-container .panel-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  opacity: 0.3;
+  z-index: 10;
+  animation: scoreScanMove 5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scoreScanMove {
+  0% {
+    top: -2px;
+  }
+
+  100% {
+    top: 100%;
+  }
+}
+
+.score-hud-container .corner-bracket {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--color-accent);
+  opacity: 0.6;
+  z-index: 5;
+}
+
+.score-hud-container .corner-bracket.tl {
+  top: 6px;
+  left: 6px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.score-hud-container .corner-bracket.tr {
+  top: 6px;
+  right: 6px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.score-hud-container .corner-bracket.bl {
+  bottom: 6px;
+  left: 6px;
+  border-right: none;
+  border-top: none;
+}
+
+.score-hud-container .corner-bracket.br {
+  bottom: 6px;
+  right: 6px;
+  border-left: none;
+  border-top: none;
+}
+
+.hud-header-center {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: 2px;
+}
+
+.monitoring-label {
+  font-family: var(--font-family-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--color-accent);
+  opacity: 0.8;
+}
+
+.score-main-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.team-stats {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 70px;
+}
+
+.team-stats.blue {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.team-stats.red {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.team-name {
+  font-family: var(--font-family-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.score-val {
+  font-family: var(--font-family-mono);
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.blue .score-val {
+  color: var(--color-neon-blue);
+  text-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.4);
+}
+
+.red .score-val {
+  color: var(--color-neon-red);
+  text-shadow: 0 0 15px rgba(255, 23, 68, 0.4);
+}
+
+/* 점유율 게이지 바 */
+.dominance-gauge {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  display: flex;
+  position: relative;
+  overflow: visible;
+  margin: 0 4px;
+}
+
+.gauge-fill {
+  height: 100%;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.gauge-fill.blue {
+  background: var(--color-neon-blue);
+  box-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
+  border-radius: 3px 0 0 3px;
+}
+
+.gauge-fill.red {
+  background: var(--color-neon-red);
+  box-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
+  border-radius: 0 3px 3px 0;
+}
+
+.vs-label {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-family-mono);
+  font-size: 0.5rem;
+  font-weight: 800;
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+}

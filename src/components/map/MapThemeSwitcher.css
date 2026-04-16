@@ -1,8 +1,8 @@
 .map-theme-switcher {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 10005;
+  top: 80px;
+  right: 10px;
+  z-index: 10010;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -20,13 +20,15 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  opacity: 1; /* 명시적 불투명도 설정 */
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: var(--shadow-hud);
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
 
-.theme-trigger:hover, .theme-trigger.active {
+.theme-trigger:hover,
+.theme-trigger.active {
   border-color: var(--color-accent);
   box-shadow: 0 0 15px var(--color-glow);
   transform: scale(1.05);
@@ -48,8 +50,15 @@
 }
 
 @keyframes menu-appear {
-  from { opacity: 0; transform: scale(0.9) translateY(-10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .theme-options {
@@ -99,12 +108,4 @@
 .theme-name {
   font-size: 0.75rem;
   letter-spacing: 1px;
-}
-
-/* 모바일 대응 */
-@media (max-width: 768px) {
-  .map-theme-switcher {
-    top: calc(env(safe-area-inset-top, 0px) + 80px); /* 점수 HUD 아래에 위치 */
-    right: 12px;
-  }
 }

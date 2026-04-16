@@ -1,7 +1,7 @@
 /**
  * 지도 제어 플로팅 버튼 (내 위치로)
  */
-import { Radar } from 'lucide-react';
+import { LocateFixed } from 'lucide-react';
 import { UI_TEXT } from '../../constants';
 
 /**
@@ -20,13 +20,11 @@ const RecentButton = ({ onClick }) => {
         <div className="radar-scanner"></div>
         <div className="radar-pulse"></div>
         
-        {/* 전술적 브래킷 (작은 사이즈) */}
-        <div className="tiny-bracket tl"></div>
-        <div className="tiny-bracket tr"></div>
-        <div className="tiny-bracket bl"></div>
-        <div className="tiny-bracket br"></div>
+        {/* 회전하는 스캔 링 효과 */}
+        <div className="radar-scanner"></div>
+        <div className="radar-pulse"></div>
 
-        <Radar size={20} className="radar-icon" />
+        <LocateFixed size={20} className="location-icon" />
       </button>
     </div>
   );

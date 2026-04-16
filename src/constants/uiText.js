@@ -25,4 +25,10 @@ export const UI_TEXT = {
   alertEnemyInvasion: "침공 발생! 적군이 우리 영토를 탈취했습니다.",
   alertCounterCapture: "반격 성공! 적의 구역을 탈취했습니다.",
   alertOtherTeamCapture: "전선 변화: 타 진영 간의 교전이 감지되었습니다.",
+
+  // 점령지 목록 관련
+  territoryListTitle: "전술 거점 목록",
+  territoryListEmpty: "확보된 거점이 없습니다.",
+  sectorLabel: "SECTOR",
+  totalCountLabel: "총 {n}개 구역 확보",
 };

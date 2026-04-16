@@ -5,37 +5,15 @@ import { GAME_CONFIG, MAP_CONFIG } from '../../constants';
 import { GRID_RENDER_CONFIG } from '../../constants/territoryConfig';
 
 /**
- * 개별 헥사곤 타일 컴포넌트 (상위 리렌더링 시에도 q, r, size가 같으면 생략)
- */
-const HexagonTile = React.memo(({ q, r, size }) => {
-  const corners = useMemo(() => getHexCorners(q, r, size), [q, r, size]);
-  
-  return (
-    <Polygon
-      positions={corners}
-      pathOptions={{
-        color: GAME_CONFIG.COLORS.TERRITORY_GRID,
-        fillColor: 'transparent',
-        weight: 1,
-        fillOpacity: 0,
-        dashArray: '3, 7',
-        interactive: false,
-        smoothFactor: 0 // 선 단순화 방지로 정확도 유지
-      }}
-    />
-  );
-});
-
-/**
- * 대한민국 영토 내의 격자를 렌더링하는 컴포넌트 (최적화 버전)
+ * 전술 맵 격자 레이어 (멀티-폴리곤 가속 가동)
  */
 const TerritoryGrid = () => {
   const [visibleHexes, setVisibleHexes] = useState([]);
   const [currentZoom, setCurrentZoom] = useState(MAP_CONFIG.DEFAULT_ZOOM);
+  const [isMoving, setIsMoving] = useState(false);
   const lastUpdateRef = useRef(0);
-  const throttleMs = 100; // 업데이트 주기 (ms)
+  const throttleMs = 150;
 
-  // 격자 업데이트 로직 (버퍼링 적용)
   const updateGrid = useCallback((map) => {
     const now = Date.now();
     if (now - lastUpdateRef.current < throttleMs) return;
@@ -49,43 +27,53 @@ const TerritoryGrid = () => {
     }
 
     const bounds = map.getBounds();
-    // 패딩(0.08)을 넉넉히 두어 flyTo 시 타일 끊김 방지
     const hexes = getHexesInBounds(bounds, MAP_CONFIG.TILE_SIZE, 0.08);
     
     setVisibleHexes(hexes);
     lastUpdateRef.current = now;
   }, [visibleHexes.length]);
 
-  /**
-   * 실시간 지도 이벤트 핸들러
-   * - move: 지도 중심 이동 시 격자 갱신
-   * - zoom: 확대/축소 시 격자 갱신
-   */
   const map = useMapEvents({
-    move: () => updateGrid(map),
-    zoom: () => updateGrid(map)
+    movestart: () => setIsMoving(true),
+    zoomstart: () => setIsMoving(true),
+    moveend: () => {
+      setIsMoving(false);
+      updateGrid(map);
+    },
+    zoomend: () => {
+      setIsMoving(false);
+      updateGrid(map);
+    }
   });
 
-  // 초기 렌더링 시 실행
+  const multiPolygonCoords = useMemo(() => {
+    if (visibleHexes.length === 0) return [];
+    return visibleHexes.map(hex => getHexCorners(hex.q, hex.r, MAP_CONFIG.TILE_SIZE));
+  }, [visibleHexes]);
+
   useEffect(() => {
     if (map) {
       updateGrid(map);
     }
   }, [map]);
 
-  if (currentZoom < GRID_RENDER_CONFIG.MIN_ZOOM_LEVEL) return null;
+  if (isMoving || currentZoom < GRID_RENDER_CONFIG.MIN_ZOOM_LEVEL || multiPolygonCoords.length === 0) {
+    return null;
+  }
 
   return (
-    <>
-      {visibleHexes.map(hex => (
-        <HexagonTile 
-          key={`ghost-${hex.q}-${hex.r}`} 
-          q={hex.q} 
-          r={hex.r} 
-          size={MAP_CONFIG.TILE_SIZE} 
-        />
-      ))}
-    </>
+    <Polygon
+      positions={multiPolygonCoords}
+      pathOptions={{
+        color: GAME_CONFIG.COLORS.TERRITORY_GRID,
+        fillColor: 'transparent',
+        weight: 1,
+        fillOpacity: 0,
+        dashArray: '3, 7',
+        interactive: false,
+        smoothFactor: 0.5
+      }}
+    />
   );
 };
 
