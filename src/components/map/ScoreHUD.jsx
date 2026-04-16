@@ -1,4 +1,3 @@
-import { Target } from 'lucide-react';
 import { TEAM_BLUE, TEAM_RED } from '../../constants';
 
 /**
@@ -10,7 +9,6 @@ const ScoreHUD = ({ score }) => {
   return (
     <div className="score-floating-ui hud-panel">
       <div className="hud-header-center">
-        <Target size={14} />
         <span>영토 점유율</span>
       </div>
       <div className="score-section">
