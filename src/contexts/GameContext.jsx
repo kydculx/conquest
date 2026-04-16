@@ -19,6 +19,11 @@ export const GameProvider = ({ children }) => {
     return localStorage.getItem('conquest_selected_team') || null;
   });
 
+  // 지도 테마 상태 (로컬 스토리지와 동기화)
+  const [mapThemeId, setMapThemeId] = useState(() => {
+    return localStorage.getItem('conquest_map_theme') || 'grey';
+  });
+
   // 전체 점령 타일 맵 데이터 { [tileId]: tileObject }
   const [capturedTiles, setCapturedTiles] = useState({});
 
@@ -188,6 +193,15 @@ export const GameProvider = ({ children }) => {
     setSelectedTeam(teamId);
   };
 
+  /**
+   * 지도 테마 선택 정보를 상태와 로컬 스토리지에 유지
+   * @param {string} themeId - 선택한 테마 ID (dark, satellite 등)
+   */
+  const saveMapTheme = (themeId) => {
+    localStorage.setItem('conquest_map_theme', themeId);
+    setMapThemeId(themeId);
+  };
+
   // 컨텍스트에서 외부로 노출할 값들 정리
   // useMemo를 사용하여 불필요한 하위 컴포넌트 리렌더링을 방지합니다.
   const value = useMemo(() => ({
@@ -200,9 +214,11 @@ export const GameProvider = ({ children }) => {
     alerts,            // 현재 활성화된 전술 알림 목록
     removeAlert,       // 알림 제거 함수
     addAlert,          // 알림 수동 추가 함수
+    mapThemeId,        // 현재 가동 중인 지도 테마 ID
+    saveMapTheme,      // 지도 테마 변경 및 저장 함수
     // 현재 선택된 팀의 상세 설정 데이터 (색상, 이름 등)
     teamData: selectedTeam === TEAM_BLUE.id ? TEAM_BLUE : selectedTeam === TEAM_RED.id ? TEAM_RED : null,
-  }), [selectedTeam, score, capturedTiles, alerts, removeAlert, addAlert]);
+  }), [selectedTeam, score, capturedTiles, alerts, removeAlert, addAlert, mapThemeId]);
 
   return (
     <GameContext.Provider value={value}>

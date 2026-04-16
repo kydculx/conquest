@@ -5,16 +5,47 @@ export const MAP_CONFIG = {
   // 기본 중심 좌표 (서울 시청 권역)
   DEFAULT_POSITION: [37.5665, 126.9780],
 
-  // 타일 레이어 및 출처 설정
-  TILE_URL: "https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png",
-  ATTRIBUTION: '&copy; CartoDB',
-
   // 줌 임계치 및 애니메이션 파라미터
   DEFAULT_ZOOM: 13,
   MIN_ZOOM: 5,
   MAX_ZOOM: 15,
   FLY_DURATION: 1.5,
+
   TILE_SIZE: 400, // 헥사곤 타일 한 변의 길이 (평면 미터)
+};
+
+/**
+ * 실시간 변경 가능한 지도 테마 리스트
+ */
+export const MAP_THEMES = {
+  grey: {
+    id: 'grey',
+    name: '회색 캔버스 (기본)',
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    attribution: 'Tiles &copy; Esri',
+    preview: '#2a2a2a'
+  },
+  dark: {
+    id: 'dark',
+    name: '전술 다크',
+    url: "https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png",
+    attribution: '&copy; CartoDB',
+    preview: '#0a101a'
+  },
+  light: {
+    id: 'light',
+    name: '공공 화이트',
+    url: "https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
+    attribution: '&copy; CartoDB',
+    preview: '#f5f5f5'
+  },
+  satellite: {
+    id: 'satellite',
+    name: '위성 지형',
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    attribution: 'Tiles &copy; Esri',
+    preview: '#14251a'
+  }
 };
 
 /**

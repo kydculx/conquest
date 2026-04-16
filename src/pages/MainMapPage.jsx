@@ -8,7 +8,7 @@ import { Crosshair } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useCaptureLogic } from '../hooks/useCaptureLogic';
-import { TEAM_BLUE, TEAM_RED, UI_TEXT, MAP_CONFIG, GAME_CONFIG } from '../constants';
+import { TEAM_BLUE, TEAM_RED, UI_TEXT, MAP_CONFIG, MAP_THEMES, GAME_CONFIG } from '../constants';
 import { getTileInfo, hexToLatLng } from '../utils/geoUtils';
 import { getSignalStatus } from '../utils/locationUtils';
 import { MapContainer, TileLayer, Marker, Polygon, Circle, useMapEvents } from 'react-leaflet';
@@ -22,6 +22,7 @@ import ScoreHUD from '../components/map/ScoreHUD';
 import CaptureButton from '../components/map/CaptureButton';
 import RecentButton from '../components/map/RecentButton';
 import TerritoryGrid from '../components/map/TerritoryGrid';
+import MapThemeSwitcher from '../components/map/MapThemeSwitcher';
 import PermissionDenied from '../components/map/PermissionDenied';
 import './MainMapPage.css';
 /**
@@ -31,7 +32,7 @@ const MainMapPage = () => {
   const navigate = useNavigate();
   
   // 1. 전역 게임 상태 및 위치 정보 훅 연결
-  const { selectedTeam, score, capturedTiles } = useGame();
+  const { selectedTeam, score, capturedTiles, mapThemeId } = useGame();
   const { 
     location, accuracy, error, permissionStatus, 
     isTrackingStarted, startTracking 
@@ -146,8 +147,8 @@ const MainMapPage = () => {
             className="real-map-container"
           >
             <TileLayer
-              attribution={MAP_CONFIG.ATTRIBUTION}
-              url={MAP_CONFIG.TILE_URL}
+              attribution={MAP_THEMES[mapThemeId]?.attribution || MAP_THEMES.dark.attribution}
+              url={MAP_THEMES[mapThemeId]?.url || MAP_THEMES.dark.url}
             />
 
             <MapCenterTracker onCenterTileChange={setCenterTile} />
@@ -227,6 +228,8 @@ const MainMapPage = () => {
       </div>
 
       <RecentButton onClick={handleRecentClick} />
+
+      <MapThemeSwitcher />
 
       <CaptureButton
         team={selectedTeam}
