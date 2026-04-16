@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Polygon, useMapEvents } from 'react-leaflet';
 import { getHexesInBounds, isPointInKorea, getHexCorners, hexToLatLng } from '../../utils/geoUtils';
-import { GAME_CONFIG } from '../../constants';
+import { GAME_CONFIG, MAP_CONFIG } from '../../constants';
 import { GRID_RENDER_CONFIG } from '../../constants/territoryConfig';
 
 /**
@@ -11,29 +11,23 @@ import { GRID_RENDER_CONFIG } from '../../constants/territoryConfig';
  */
 const TerritoryGrid = () => {
   const [visibleHexes, setVisibleHexes] = useState([]);
-  const [currentHexSize, setCurrentHexSize] = useState(MAP_CONFIG.TILE_SIZE);
   const [zoom, setZoom] = useState(MAP_CONFIG.DEFAULT_ZOOM);
   const [isReady, setIsReady] = useState(false);
 
-  // 줌 레벨에 따른 적절한 격자 크기(LOD) 결정
-  const getHexSizeForZoom = (z) => {
-    if (z >= 14) return 400;   // 최신 400m
-    if (z >= 12) return 1500;  // 1.5km
-    if (z >= 10) return 4000;  // 4km
-    if (z >= 8)  return 10000; // 10km
-    return 30000;              // 30km (전국 단위)
-  };
-
   const updateGrid = useCallback((m) => {
     const z = m.getZoom();
-    const hexSize = getHexSizeForZoom(z);
+    setZoom(z);
+
+    // 성능 보호: 특정 줌 레벨 미만에서는 격자를 렌더링하지 않음
+    if (z < GRID_RENDER_CONFIG.MIN_ZOOM_LEVEL) {
+      setVisibleHexes([]);
+      return;
+    }
+
     const bounds = m.getBounds();
     
-    // 이 함수는 이제 geoUtils에서 한국 영토와의 교집합만 계산함
-    const hexes = getHexesInBounds(bounds, hexSize);
-    
-    setZoom(z);
-    setCurrentHexSize(hexSize);
+    // 고정된 타일 크기(MAP_CONFIG.TILE_SIZE)로 격자 계산
+    const hexes = getHexesInBounds(bounds, MAP_CONFIG.TILE_SIZE);
     setVisibleHexes(hexes);
   }, []);
 
@@ -49,20 +43,20 @@ const TerritoryGrid = () => {
     }
   }, [map, updateGrid]);
 
-  if (!isReady) return null;
+  if (!isReady || zoom < GRID_RENDER_CONFIG.MIN_ZOOM_LEVEL) return null;
 
   return (
     <>
       {visibleHexes.map(hex => (
         <Polygon
-          key={`ghost-${currentHexSize}-${hex.q}-${hex.r}`}
-          positions={getHexCorners(hex.q, hex.r, currentHexSize)}
+          key={`ghost-${hex.q}-${hex.r}`}
+          positions={getHexCorners(hex.q, hex.r, MAP_CONFIG.TILE_SIZE)}
           pathOptions={{
             color: GAME_CONFIG.COLORS.TERRITORY_GRID,
             fillColor: GAME_CONFIG.COLORS.TRANSPARENT,
             weight: 1,
             fillOpacity: 0,
-            dashArray: zoom < 10 ? 'none' : '3, 7',
+            dashArray: '3, 7',
             interactive: false
           }}
         />
