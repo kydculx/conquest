@@ -15,7 +15,7 @@
   background: var(--color-hud-bg);
   backdrop-filter: var(--glass-blur);
   border: 1px solid var(--color-border-subtle);
-  color: var(--color-cyber-green);
+  color: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,13 +27,13 @@
 }
 
 .theme-trigger:hover, .theme-trigger.active {
-  border-color: var(--color-cyber-green);
-  box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 15px var(--color-glow);
   transform: scale(1.05);
 }
 
 .theme-trigger.active {
-  background: var(--color-cyber-green);
+  background: var(--color-accent);
   color: #0a0e17;
 }
 
@@ -76,13 +76,13 @@
 }
 
 .theme-option:hover {
-  background: rgba(0, 255, 136, 0.05);
-  border-color: rgba(0, 255, 136, 0.1);
+  background: var(--color-glow);
+  border-color: var(--color-border-subtle);
 }
 
 .theme-option.selected {
-  background: rgba(0, 255, 136, 0.1);
-  border-color: var(--color-cyber-green);
+  background: var(--color-glow);
+  border-color: var(--color-accent);
 }
 
 .theme-preview {
@@ -93,7 +93,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-cyber-green);
+  color: var(--color-accent);
 }
 
 .theme-name {

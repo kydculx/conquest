@@ -25,10 +25,13 @@ const MapUpdater = ({ center, recenterTrigger }) => {
   }, [center, map]);
 
   // 2. '내 위치로' 버튼 클릭(recenterTrigger 증가) 시에만 이동
-  // 의존성에 center가 있어도, lastTriggerRef를 통해 실제 클릭 여부를 확인함으로써 불필요한 스냅을 방지합니다.
+  // flyTo 고유의 줌 아웃/인 효과를 방지하기 위해 panTo를 사용하여 위치만 이동합니다.
   useEffect(() => {
     if (center && recenterTrigger > lastTriggerRef.current) {
-      map.flyTo(center, MAP_CONFIG.DEFAULT_ZOOM, { animate: true, duration: MAP_CONFIG.FLY_DURATION });
+      map.panTo(center, { 
+        animate: true, 
+        duration: MAP_CONFIG.FLY_DURATION 
+      });
       lastTriggerRef.current = recenterTrigger;
     }
   }, [recenterTrigger, center, map]);

@@ -12,14 +12,14 @@
   /* [네온 팔레트] - 진영 및 상태 표시용 */
   --color-neon-blue: #0066ff;      /* 블루팀 메인 컬러 */
   --color-neon-red: #ff1744;       /* 레드팀 메인 컬러 */
-  --color-cyber-green: #00ff88;    /* 시스템 가동/안정 상태 */
+  --color-cyber-green: #00ff88;    /* 시스템 가동/안정/공통 상태 */
   --color-cyber-yellow: #ffd600;   /* 주의/불안정 상태 */
-  --color-accent: #00ff88;         /* 강조 포인트 */
-  --color-glow: rgba(0, 255, 136, 0.2);
-  --color-matrix-green: #00ff41;
-
-  --shadow-hud: 0 10px 40px -10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 255, 136, 0.05);
-  --glass-blur: blur(16px);
+  
+  /* [동적 테마 변수] - 팀 선택에 따라 오버라이드됨 */
+  --color-accent: var(--color-cyber-green); /* 기본 강조 색상 */
+  --color-accent-rgb: 0, 255, 136;
+  --color-glow: rgba(0, 255, 136, 0.25);    /* 기본 글로우 */
+  --color-border-accent: rgba(0, 255, 136, 0.4);
 
   /* [타이포그래피] */
   --font-family-base: 'Space Grotesk', 'JetBrains Mono', system-ui, -apple-system, sans-serif;
@@ -39,4 +39,22 @@
   --z-map: 10;                     /* 기본 지도 레이어 */
   --z-hud: 20;                     /* 상단/하단 HUD */
   --z-modal: 1000;                 /* 최상단 모달/팝업 */
+  
+  --shadow-hud: 0 10px 40px -10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 255, 136, 0.05);
+  --glass-blur: blur(16px);
+}
+
+/* 팀별 테마 오버라이드 (root에 적용) */
+:root:has(.map-page.team-blue) {
+  --color-accent: var(--color-neon-blue);
+  --color-accent-rgb: 0, 102, 255;
+  --color-glow: rgba(0, 102, 255, 0.3);
+  --color-border-accent: rgba(0, 102, 255, 0.45);
+}
+
+:root:has(.map-page.team-red) {
+  --color-accent: var(--color-neon-red);
+  --color-accent-rgb: 255, 23, 68;
+  --color-glow: rgba(255, 23, 68, 0.3);
+  --color-border-accent: rgba(255, 23, 68, 0.45);
 }

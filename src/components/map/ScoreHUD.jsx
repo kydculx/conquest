@@ -1,7 +1,3 @@
-/**
- * 상단 전술 HUD 컴포넌트
- * - 블루팀과 레드팀의 현재 점령지 점수 현황을 리얼타임으로 시괄화합니다.
- */
 import { Target } from 'lucide-react';
 import { TEAM_BLUE, TEAM_RED } from '../../constants';
 

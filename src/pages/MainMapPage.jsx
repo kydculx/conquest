@@ -127,7 +127,7 @@ const MainMapPage = () => {
     <div className={`map-page team-${selectedTeam} ${isCapturing ? 'is-capturing' : ''}`}>
       <div className="scanline-overlay"></div>
       
-      <ScoreHUD score={score} />
+      <ScoreHUD score={score} selectedTeam={selectedTeam} />
       
       {/* GPS 상태 인디케이터 */}
       <div className={`gps-status-bar ${signal.class} ${error ? 'has-error' : ''}`}>
@@ -144,6 +144,7 @@ const MainMapPage = () => {
             minZoom={MAP_CONFIG.MIN_ZOOM}
             maxZoom={MAP_CONFIG.MAX_ZOOM}
             zoomControl={false}
+            preferCanvas={true}
             className="real-map-container"
           >
             <TileLayer

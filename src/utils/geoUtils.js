@@ -175,17 +175,20 @@ export const isPointInKorea = (lat, lng) => {
 
 /**
  * 지도의 LatLngBounds 영역에 포함되는 헥사곤 좌표 리스트를 반환 (최적화 버전)
+ * @param {object} viewportBounds - 현재 지도의 경계
+ * @param {number} hexSize - 헥사곤 크기
+ * @param {number} padding - 위경도 패딩 (화면 밖 타일 선행 계산용)
  */
-export const getHexesInBounds = (viewportBounds, hexSize = HEX_SIZE) => {
+export const getHexesInBounds = (viewportBounds, hexSize = HEX_SIZE, padding = 0.05) => {
   const { NORTH, SOUTH, WEST, EAST } = KOREA_BOUNDS;
   const sw = viewportBounds.getSouthWest();
   const ne = viewportBounds.getNorthEast();
 
-  // 화면 바운즈와 한국 영토 바운즈의 교집합 계산 (이 영역 밖은 계산조차 안함)
-  const interSouth = Math.max(sw.lat, SOUTH);
-  const interNorth = Math.min(ne.lat, NORTH);
-  const interWest = Math.max(sw.lng, WEST);
-  const interEast = Math.min(ne.lng, EAST);
+  // 화면 바운즈에 패딩을 적용하여 교집합 계산
+  const interSouth = Math.max(sw.lat - padding, SOUTH);
+  const interNorth = Math.min(ne.lat + padding, NORTH);
+  const interWest = Math.max(sw.lng - padding, WEST);
+  const interEast = Math.min(ne.lng + padding, EAST);
 
   if (interSouth >= interNorth || interWest >= interEast) return [];
 
@@ -207,7 +210,6 @@ export const getHexesInBounds = (viewportBounds, hexSize = HEX_SIZE) => {
   for (let q = minQ; q <= maxQ; q++) {
     for (let r = minR; r <= maxR; r++) {
       const center = hexToLatLng(q, r, hexSize);
-      // 최종적으로 한국 영토 내에 있는지 확인
       if (isPointInKorea(center.lat, center.lng)) {
         hexes.push({ q, r });
       }
