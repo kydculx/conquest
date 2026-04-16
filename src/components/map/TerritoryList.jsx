@@ -16,11 +16,17 @@ const TerritoryList = React.memo(() => {
   const { capturedTiles, selectedTeam } = useGame();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Leaflet 이벤트 전파 차단 (목록 위에서 휠/클릭 시 지도가 반응하지 않도록)
+  // Leaflet 이벤트 전파 차단 (목록 위에서 휠/클릭/터치 시 지도가 반응하지 않도록)
   useEffect(() => {
     if (containerRef.current) {
-      L.DomEvent.disableScrollPropagation(containerRef.current);
-      L.DomEvent.disableClickPropagation(containerRef.current);
+      const el = containerRef.current;
+      L.DomEvent.disableScrollPropagation(el);
+      L.DomEvent.disableClickPropagation(el);
+      
+      // 모바일 터치 이벤트가 지도로 전파되는 것을 추가로 차단
+      L.DomEvent.on(el, 'touchstart touchmove pointerdown pointermove', (e) => {
+        L.DomEvent.stopPropagation(e);
+      });
     }
   }, []);
 
