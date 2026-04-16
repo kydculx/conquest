@@ -99,9 +99,11 @@ const cubeToAxial = (x, y, z) => {
 /**
  * 위도/경도를 전술 맵의 헥사곤 좌표(q, r)로 변환
  */
-export const latLngToHex = (lat, lng) => {
-  const x = lngToX(lng);
-  const y = latToY(lat);
+export const latLngToHex = (lat, lng, hexSize = HEX_SIZE) => {
+  // 가변 hexSize를 고려한 좌표 변환
+  const latRad = (ORIGIN_LAT * Math.PI) / 180;
+  const x = (lng - ORIGIN_LNG) * (111320 * Math.cos(latRad) / hexSize);
+  const y = (lat - ORIGIN_LAT) * (111320 / hexSize);
   
   // Flat-top 헥사곤 수학 공식 적용
   const q = (Math.sqrt(3) / 3) * x - (1 / 3) * y;
@@ -114,64 +116,50 @@ export const latLngToHex = (lat, lng) => {
 /**
  * 헥사곤 좌표(q, r)를 위도/경도 중심점으로 변환
  */
-export const hexToLatLng = (q, r) => {
+export const hexToLatLng = (q, r, hexSize = HEX_SIZE) => {
   const cube = axialToCube(q, r);
   const x = Math.sqrt(3) * cube.x + (Math.sqrt(3) / 2) * cube.z;
   const y = (3 / 2) * cube.z;
   
-  return {
-    lat: yToLat(y),
-    lng: xToLng(x)
-  };
+  const latRad = (ORIGIN_LAT * Math.PI) / 180;
+  const lat = (y * hexSize / 111320) + ORIGIN_LAT;
+  const lng = (x * hexSize / (111320 * Math.cos(latRad))) + ORIGIN_LNG;
+  
+  return { lat, lng };
 };
 
 /**
  * 특정 타일(q, r)의 6개 꼭짓점 위도/경도 좌표를 계산
  */
-export const getHexCorners = (q, r) => {
-  const center = hexToLatLng(q, r);
+export const getHexCorners = (q, r, hexSize = HEX_SIZE) => {
+  const center = hexToLatLng(q, r, hexSize);
   const latRad = (ORIGIN_LAT * Math.PI) / 180;
-  const latScale = HEX_SIZE / 111320;
-  const lngScale = HEX_SIZE / (111320 * Math.cos(latRad));
+  const latScale = hexSize / 111320;
+  const lngScale = hexSize / (111320 * Math.cos(latRad));
   const corners = [];
   
-  // 60도 간격으로 6개의 꼭짓점 생성
   for (let i = 0; i < 6; i++) {
     const angleDeg = 60 * i - 30;
     const angleRad = (Math.PI / 180) * angleDeg;
-    
     const lat = center.lat + latScale * Math.sin(angleRad);
     const lng = center.lng + lngScale * Math.cos(angleRad);
-    
     corners.push([lat, lng]);
   }
-  
   return corners;
 };
 
 /**
  * 특정 좌표(lat, lng)에 해당하는 타일의 전체 정보를 생성
- * @returns {Object} 타일 메타데이터 (ID, 좌표, 경계면 등)
  */
 export const getTileInfo = (lat, lng) => {
   const { q, r } = latLngToHex(lat, lng);
   const center = hexToLatLng(q, r);
   const distance = calculateDistance(lat, lng, center.lat, center.lng);
   const corners = getHexCorners(q, r);
-  // 경계면 폐쇄를 위해 첫 좌표를 마지막에 추가
   corners.push(corners[0]);
   
   const id = `hex_${q}_${r}`;
-  
-  return {
-    id,
-    q,
-    r,
-    bounds: corners,
-    centerLat: center.lat,
-    centerLng: center.lng,
-    distanceFromCenter: distance
-  };
+  return { id, q, r, bounds: corners, centerLat: center.lat, centerLng: center.lng, distanceFromCenter: distance };
 };
 
 // 점령 허용 범위 (전역 설정에서 가져옴)
@@ -182,35 +170,45 @@ export const CAPTURE_RANGE = GAME_CONFIG.CAPTURE.RANGE;
  */
 export const isPointInKorea = (lat, lng) => {
   const { NORTH, SOUTH, WEST, EAST } = KOREA_BOUNDS;
-  return lat >= SOUTH && lat <= NORTH && lng >= WEST && lng <= EAST;
+  return lat >= SOUTH - 0.1 && lat <= NORTH + 0.1 && lng >= WEST - 0.1 && lng <= EAST + 0.1;
 };
 
 /**
- * 지도의 LatLngBounds 영역에 포함되는 모든 헥사곤 좌표(q, r) 리스트를 반환
+ * 지도의 LatLngBounds 영역에 포함되는 헥사곤 좌표 리스트를 반환 (최적화 버전)
  */
-export const getHexesInBounds = (bounds) => {
-  const sw = bounds.getSouthWest();
-  const ne = bounds.getNorthEast();
+export const getHexesInBounds = (viewportBounds, hexSize = HEX_SIZE) => {
+  const { NORTH, SOUTH, WEST, EAST } = KOREA_BOUNDS;
+  const sw = viewportBounds.getSouthWest();
+  const ne = viewportBounds.getNorthEast();
 
-  // 영역 내의 대략적인 q, r 범위를 계산하기 위해 네 모서리 변환
-  const corners = [
-    latLngToHex(sw.lat, sw.lng),
-    latLngToHex(ne.lat, ne.lng),
-    latLngToHex(sw.lat, ne.lng),
-    latLngToHex(ne.lat, sw.lng)
-  ];
+  // 화면 바운즈와 한국 영토 바운즈의 교집합 계산 (이 영역 밖은 계산조차 안함)
+  const interSouth = Math.max(sw.lat, SOUTH);
+  const interNorth = Math.min(ne.lat, NORTH);
+  const interWest = Math.max(sw.lng, WEST);
+  const interEast = Math.min(ne.lng, EAST);
 
-  const minQ = Math.min(...corners.map(c => c.q)) - 1;
-  const maxQ = Math.max(...corners.map(c => c.q)) + 1;
-  const minR = Math.min(...corners.map(c => c.r)) - 1;
-  const maxR = Math.max(...corners.map(c => c.r)) + 1;
+  if (interSouth >= interNorth || interWest >= interEast) return [];
+
+  // 교집합 구역의 q, r 범위를 산출
+  const c1 = latLngToHex(interSouth, interWest, hexSize);
+  const c2 = latLngToHex(interNorth, interEast, hexSize);
+  const c3 = latLngToHex(interSouth, interEast, hexSize);
+  const c4 = latLngToHex(interNorth, interWest, hexSize);
+
+  const qs = [c1.q, c2.q, c3.q, c4.q];
+  const rs = [c1.r, c2.r, c3.r, c4.r];
+  
+  const minQ = Math.min(...qs) - 1;
+  const maxQ = Math.max(...qs) + 1;
+  const minR = Math.min(...rs) - 1;
+  const maxR = Math.max(...rs) + 1;
 
   const hexes = [];
   for (let q = minQ; q <= maxQ; q++) {
     for (let r = minR; r <= maxR; r++) {
-      const center = hexToLatLng(q, r);
-      // 타일의 중심점이 현재 지도의 바운즈 안에 있는지 확인
-      if (center.lat >= sw.lat && center.lat <= ne.lat && center.lng >= sw.lng && center.lng <= ne.lng) {
+      const center = hexToLatLng(q, r, hexSize);
+      // 최종적으로 한국 영토 내에 있는지 확인
+      if (isPointInKorea(center.lat, center.lng)) {
         hexes.push({ q, r });
       }
     }

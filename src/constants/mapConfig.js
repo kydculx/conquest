@@ -11,7 +11,7 @@ export const MAP_CONFIG = {
 
   // 줌 임계치 및 애니메이션 파라미터
   DEFAULT_ZOOM: 13,
-  MIN_ZOOM: 12,
+  MIN_ZOOM: 5,
   MAX_ZOOM: 15,
   FLY_DURATION: 1.5,
   TILE_SIZE: 400, // 헥사곤 타일 한 변의 길이 (평면 미터)

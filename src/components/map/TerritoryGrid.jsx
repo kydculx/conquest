@@ -11,56 +11,59 @@ import { GRID_RENDER_CONFIG } from '../../constants/territoryConfig';
  */
 const TerritoryGrid = () => {
   const [visibleHexes, setVisibleHexes] = useState([]);
-  const [zoom, setZoom] = useState(0);
+  const [currentHexSize, setCurrentHexSize] = useState(MAP_CONFIG.TILE_SIZE);
+  const [zoom, setZoom] = useState(MAP_CONFIG.DEFAULT_ZOOM);
+  const [isReady, setIsReady] = useState(false);
 
-  const updateGrid = useCallback((map) => {
-    const currentZoom = map.getZoom();
-    setZoom(currentZoom);
+  // 줌 레벨에 따른 적절한 격자 크기(LOD) 결정
+  const getHexSizeForZoom = (z) => {
+    if (z >= 14) return 400;   // 최신 400m
+    if (z >= 12) return 1500;  // 1.5km
+    if (z >= 10) return 4000;  // 4km
+    if (z >= 8)  return 10000; // 10km
+    return 30000;              // 30km (전국 단위)
+  };
 
-    // 줌 레벨이 너무 낮으면(멀리서 보면) 렌더링하지 않음
-    if (currentZoom < GRID_RENDER_CONFIG.MIN_ZOOM_LEVEL) {
-      if (visibleHexes.length > 0) setVisibleHexes([]);
-      return;
-    }
-
-    const bounds = map.getBounds();
-    const hexes = getHexesInBounds(bounds);
+  const updateGrid = useCallback((m) => {
+    const z = m.getZoom();
+    const hexSize = getHexSizeForZoom(z);
+    const bounds = m.getBounds();
     
-    // 대한민국 영토 경계 내에 포함된 타일만 선별
-    const koreaHexes = hexes.filter(h => {
-      const center = hexToLatLng(h.q, h.r);
-      return isPointInKorea(center.lat, center.lng);
-    });
-
-    setVisibleHexes(koreaHexes);
-  }, [visibleHexes.length]);
+    // 이 함수는 이제 geoUtils에서 한국 영토와의 교집합만 계산함
+    const hexes = getHexesInBounds(bounds, hexSize);
+    
+    setZoom(z);
+    setCurrentHexSize(hexSize);
+    setVisibleHexes(hexes);
+  }, []);
 
   const map = useMapEvents({
     moveend: () => updateGrid(map),
     zoomend: () => updateGrid(map),
   });
 
-  // 컴포넌트 마운트 시 초기 그리드 계산
   useEffect(() => {
-    updateGrid(map);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (map) {
+      updateGrid(map);
+      setIsReady(true);
+    }
+  }, [map, updateGrid]);
 
-  if (zoom < GRID_RENDER_CONFIG.MIN_ZOOM_LEVEL) return null;
+  if (!isReady) return null;
 
   return (
     <>
       {visibleHexes.map(hex => (
         <Polygon
-          key={`ghost-${hex.q}-${hex.r}`}
-          positions={getHexCorners(hex.q, hex.r)}
+          key={`ghost-${currentHexSize}-${hex.q}-${hex.r}`}
+          positions={getHexCorners(hex.q, hex.r, currentHexSize)}
           pathOptions={{
             color: GAME_CONFIG.COLORS.TERRITORY_GRID,
             fillColor: GAME_CONFIG.COLORS.TRANSPARENT,
             weight: 1,
             fillOpacity: 0,
-            dashArray: '3, 7',
-            interactive: false // 배경 격자는 마우스 이벤트를 가로채지 않도록 설정
+            dashArray: zoom < 10 ? 'none' : '3, 7',
+            interactive: false
           }}
         />
       ))}
