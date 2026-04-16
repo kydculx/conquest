@@ -21,6 +21,7 @@ import TileScanOverlay from '../components/map/TileScanOverlay';
 import ScoreHUD from '../components/map/ScoreHUD';
 import CaptureButton from '../components/map/CaptureButton';
 import RecentButton from '../components/map/RecentButton';
+import TerritoryGrid from '../components/map/TerritoryGrid';
 import PermissionDenied from '../components/map/PermissionDenied';
 import './MainMapPage.css';
 /**
@@ -152,6 +153,9 @@ const MainMapPage = () => {
             <MapCenterTracker onCenterTileChange={setCenterTile} />
 
             <MapUpdater center={location} recenterTrigger={recenterTrigger} />
+
+            {/* 대한민국 영토 전술 격자 레이어 */}
+            <TerritoryGrid />
 
             {location && accuracy && (
               <Circle

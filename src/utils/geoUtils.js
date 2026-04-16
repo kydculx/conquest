@@ -3,6 +3,7 @@
  * - Flat-top 헥사곤 그리드 알고리즘을 사용합니다.
  */
 import { MAP_CONFIG, GAME_CONFIG } from '../constants';
+import { KOREA_BOUNDS } from '../constants/territoryConfig';
 
 const { TILE_SIZE: HEX_SIZE } = MAP_CONFIG;
 
@@ -175,3 +176,44 @@ export const getTileInfo = (lat, lng) => {
 
 // 점령 허용 범위 (전역 설정에서 가져옴)
 export const CAPTURE_RANGE = GAME_CONFIG.CAPTURE.RANGE;
+
+/**
+ * 특정 좌표가 대한민국 영토 경계(Bounding Box) 내에 있는지 확인
+ */
+export const isPointInKorea = (lat, lng) => {
+  const { NORTH, SOUTH, WEST, EAST } = KOREA_BOUNDS;
+  return lat >= SOUTH && lat <= NORTH && lng >= WEST && lng <= EAST;
+};
+
+/**
+ * 지도의 LatLngBounds 영역에 포함되는 모든 헥사곤 좌표(q, r) 리스트를 반환
+ */
+export const getHexesInBounds = (bounds) => {
+  const sw = bounds.getSouthWest();
+  const ne = bounds.getNorthEast();
+
+  // 영역 내의 대략적인 q, r 범위를 계산하기 위해 네 모서리 변환
+  const corners = [
+    latLngToHex(sw.lat, sw.lng),
+    latLngToHex(ne.lat, ne.lng),
+    latLngToHex(sw.lat, ne.lng),
+    latLngToHex(ne.lat, sw.lng)
+  ];
+
+  const minQ = Math.min(...corners.map(c => c.q)) - 1;
+  const maxQ = Math.max(...corners.map(c => c.q)) + 1;
+  const minR = Math.min(...corners.map(c => c.r)) - 1;
+  const maxR = Math.max(...corners.map(c => c.r)) + 1;
+
+  const hexes = [];
+  for (let q = minQ; q <= maxQ; q++) {
+    for (let r = minR; r <= maxR; r++) {
+      const center = hexToLatLng(q, r);
+      // 타일의 중심점이 현재 지도의 바운즈 안에 있는지 확인
+      if (center.lat >= sw.lat && center.lat <= ne.lat && center.lng >= sw.lng && center.lng <= ne.lng) {
+        hexes.push({ q, r });
+      }
+    }
+  }
+  return hexes;
+};
