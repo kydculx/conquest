@@ -16,6 +16,7 @@ export const UI_TEXT = {
   statusProcessing: "진행 중...",
   statusCaptureReady: "점령하기",
   statusCapturingBase: "점령 중...",
+  statusTargetMismatch: "타겟 조준 필요",
 
   permissionDenied: "위치 권한 거부됨",
   gpsSearching: "GPS 신호를 찾는 중입니다...",

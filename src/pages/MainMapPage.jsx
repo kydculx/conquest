@@ -65,6 +65,9 @@ const MainMapPage = () => {
   const captureCheck = canCapture(currentTile, accuracy);
   const isEnemyTile = currentTile && tileStatus && tileStatus.owner && tileStatus.owner !== selectedTeam;
 
+  // 4. 전술적 타겟 정렬 확인 (GPS 위치와 지도 중앙 십자선 일치 여부)
+  const isTargetAligned = currentTile && centerTile && currentTile.id === centerTile.id;
+
   const handleCapture = useCallback(() => {
     if (currentTile) {
       startCapture(currentTile);
@@ -86,6 +89,9 @@ const MainMapPage = () => {
     if (isCapturing) {
       return `${UI_TEXT.statusCapturingBase} ${Math.round(captureProgress)}%`;
     }
+    // 조준 정렬이 되지 않은 경우를 우선적으로 안내
+    if (currentTile && !isTargetAligned) return UI_TEXT.statusTargetMismatch;
+    
     if (captureCheck.reason === 'signal') return UI_TEXT.statusSignalWeak;
     if (captureCheck.reason === 'owned' || isCapturedByMe) return UI_TEXT.statusReclaimed;
     if (captureCheck.reason === 'busy') return UI_TEXT.statusProcessing;
@@ -102,7 +108,11 @@ const MainMapPage = () => {
   };
 
   const getCaptureDisabled = () => {
-    return !captureCheck.canCapture && !isCapturing;
+    // 1. 이미 점령 중이면 버튼을 누를 수 있음 (진행 상황 확인용) - 사실상 비활성화 대신 텍스트로 표현 가능
+    if (isCapturing) return false;
+    
+    // 2. 점령 가능 상태가 아니거나, 타겟 조준이 정렬되지 않았으면 비활성화
+    return !captureCheck.canCapture || !isTargetAligned;
   };
 
   // 실제 권한이 거부되었고, 캐시된 위치 정보조차 없는 경우에만 차단 화면 노출
