@@ -3,7 +3,7 @@
  * - 선택된 팀, 점령된 타일 데이터, 실시간 점수, 알림 시스템을 총괄합니다.
  * - Supabase Realtime을 사용하여 모든 플레이어의 점령 현황을 실시간으로 동기화합니다.
  */
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { GameContext } from './GameContext.js';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
 import { supabase } from '../lib/supabase';
@@ -31,6 +31,17 @@ export const GameProvider = ({ children }) => {
 
   // 전체 점령 타일 맵 데이터 { [tileId]: tileObject }
   const [capturedTiles, setCapturedTiles] = useState({});
+  
+  /**
+   * 실시간 업데이트 시 이전 데이터를 참조하기 위한 Ref
+   * Supabase payload.old에 모든 필드가 들어있지 않은 경우를 대비합니다.
+   */
+  const capturedTilesRef = useRef({});
+
+  // capturedTiles 상태가 변경될 때마다 Ref를 동기화합니다.
+  useEffect(() => {
+    capturedTilesRef.current = capturedTiles;
+  }, [capturedTiles]);
 
   /**
    * 전술 상황 알림(Alert) 목록 상태 관리
@@ -121,17 +132,23 @@ export const GameProvider = ({ children }) => {
               } else {
                 addAlert(UI_TEXT.alertOtherTeamCapture, 'info');
               }
-            } else if (eventType === 'UPDATE' && oldTile && oldTile.owner !== newTile.owner) {
-              // 소유권이 변경된 경우 (탈환 또는 침공)
-              if (newTile.owner === selectedTeam) {
-                // 우리 팀이 다시 뺏어온 경우
-                addAlert(UI_TEXT.alertCounterCapture, 'success');
-              } else if (oldTile.owner === selectedTeam) {
-                // 우리 팀 땅을 뺏긴 경우
-                addAlert(UI_TEXT.alertEnemyInvasion, 'danger');
-              } else {
-                // 다른 팀들끼리 싸우는 경우
-                addAlert(UI_TEXT.alertOtherTeamCapture, 'info');
+            } else if (eventType === 'UPDATE') {
+              // 소유권이 변경된 경우 (탈환 또는 침공) 판별
+              // payload.old 대신 ref에 저장된 이전 상태를 조회
+              const prevTile = capturedTilesRef.current[newTile.id];
+              const prevOwner = prevTile?.owner;
+
+              if (prevOwner !== newTile.owner) {
+                if (newTile.owner === selectedTeam) {
+                  // 우리 팀이 다시 뺏어온 경우
+                  addAlert(UI_TEXT.alertCounterCapture, 'success');
+                } else if (prevOwner === selectedTeam) {
+                  // 우리 팀 땅을 뺏긴 경우 (침공 발생)
+                  addAlert(UI_TEXT.alertEnemyInvasion, 'danger');
+                } else {
+                  // 다른 팀들끼리 싸우는 경우
+                  addAlert(UI_TEXT.alertOtherTeamCapture, 'info');
+                }
               }
             }
 
