@@ -77,6 +77,7 @@
   overflow: hidden;
   z-index: 20000;
   opacity: 0;
+  visibility: hidden; /* 영역 간섭 방지 */
   pointer-events: none;
   transform: perspective(1000px) rotateY(15deg) translateX(30px);
   transform-origin: right top;
@@ -85,6 +86,7 @@
 
 .territory-list-container.is-open .list-panel {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
   transform: perspective(1000px) rotateY(0) translateX(0);
 }
