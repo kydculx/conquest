@@ -151,7 +151,7 @@ export const GameProvider = ({ children }) => {
    * @param {Object} tileInfo - 점령할 타일의 메타데이터 (id, q, r, bounds 등)
    * @returns {Promise<boolean>} 점령 성공 여부
    */
-  const captureTile = async (tileInfo) => {
+  const captureTile = useCallback(async (tileInfo) => {
     if (!selectedTeam) return false;
     const { id, q, r, bounds, owner, capture_started_at, capture_status } = tileInfo;
 
@@ -182,7 +182,7 @@ export const GameProvider = ({ children }) => {
     }
 
     return true;
-  };
+  }, [selectedTeam, capturedTiles]);
 
   /**
    * 팀 선택 정보를 상태와 로컬 스토리지에 유지
@@ -202,23 +202,20 @@ export const GameProvider = ({ children }) => {
     setMapThemeId(themeId);
   };
 
-  // 컨텍스트에서 외부로 노출할 값들 정리
-  // useMemo를 사용하여 불필요한 하위 컴포넌트 리렌더링을 방지합니다.
   const value = useMemo(() => ({
-    selectedTeam,      // 현재 활성화된 팀 ID
-    setSelectedTeam,   // 팀 상태 직접 변경 함수
-    saveSelectedTeam,  // 팀 상태 및 로컬 스토리지 저장 함수
-    score,             // 실시간 팀별 점수 { blue, red }
-    capturedTiles,     // 전체 점령 타일 맵
-    captureTile,       // 타일 점령 로직 실행 함수
-    alerts,            // 현재 활성화된 전술 알림 목록
-    removeAlert,       // 알림 제거 함수
-    addAlert,          // 알림 수동 추가 함수
-    mapThemeId,        // 현재 가동 중인 지도 테마 ID
-    saveMapTheme,      // 지도 테마 변경 및 저장 함수
-    // 현재 선택된 팀의 상세 설정 데이터 (색상, 이름 등)
+    selectedTeam,
+    setSelectedTeam,
+    saveSelectedTeam,
+    score,
+    capturedTiles,
+    captureTile,
+    alerts,
+    removeAlert,
+    addAlert,
+    mapThemeId,
+    saveMapTheme,
     teamData: selectedTeam === TEAM_BLUE.id ? TEAM_BLUE : selectedTeam === TEAM_RED.id ? TEAM_RED : null,
-  }), [selectedTeam, score, capturedTiles, alerts, removeAlert, addAlert, mapThemeId]);
+  }), [selectedTeam, score, capturedTiles, alerts, removeAlert, addAlert, mapThemeId, captureTile]);
 
   return (
     <GameContext.Provider value={value}>

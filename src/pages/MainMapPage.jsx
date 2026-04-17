@@ -44,15 +44,9 @@ const MainMapPage = () => {
     isCapturing, captureProgress, startCapture, canCapture 
   } = useCaptureLogic();
 
-  // 3. 로컬 UI 상태 (지도 재중심화 트리거, 현재 지도 중앙 타일)
+  // 3. 로컬 UI 상태
   const [recenterTrigger, setRecenterTrigger] = useState(0);
   const [centerTile, setCenterTile] = useState(null);
-
-  useEffect(() => {
-    if (!selectedTeam) navigate('/', { replace: true });
-  }, [selectedTeam, navigate]);
-
-  if (!selectedTeam) return null;
 
   const currentTile = useMemo(() => {
     if (!location) return null;
@@ -63,13 +57,6 @@ const MainMapPage = () => {
     if (!currentTile) return null;
     return capturedTiles[currentTile.id] || null;
   }, [currentTile, capturedTiles]);
-
-  const isCapturedByMe = tileStatus?.owner === selectedTeam;
-  const captureCheck = canCapture(currentTile, accuracy);
-  const isEnemyTile = currentTile && tileStatus && tileStatus.owner && tileStatus.owner !== selectedTeam;
-
-  // 4. 전술적 타겟 정렬 확인 (GPS 위치와 지도 중앙 십자선 일치 여부)
-  const isTargetAligned = currentTile && centerTile && currentTile.id === centerTile.id;
 
   const handleCapture = useCallback(() => {
     if (currentTile) {
@@ -82,6 +69,17 @@ const MainMapPage = () => {
     if (!isTrackingStarted) startTracking();
     setRecenterTrigger(prev => prev + 1);
   }, [isTrackingStarted, startTracking]);
+
+  useEffect(() => {
+    if (!selectedTeam) navigate('/', { replace: true });
+  }, [selectedTeam, navigate]);
+
+  if (!selectedTeam) return null;
+
+  const isCapturedByMe = tileStatus?.owner === selectedTeam;
+  const captureCheck = canCapture(currentTile, accuracy);
+  const isEnemyTile = currentTile && tileStatus && tileStatus.owner && tileStatus.owner !== selectedTeam;
+  const isTargetAligned = currentTile && centerTile && currentTile.id === centerTile.id;
 
   // 플레이어 아이콘 및 위치 설정
   const playerIcon = selectedTeam === TEAM_BLUE.id ? bluePlayerIcon : redPlayerIcon;

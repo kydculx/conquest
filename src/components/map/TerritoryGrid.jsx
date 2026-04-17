@@ -55,9 +55,10 @@ const TerritoryGrid = () => {
     if (map) {
       updateGrid(map);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
-  if (isMoving || currentZoom < GRID_RENDER_CONFIG.MIN_ZOOM_LEVEL || multiPolygonCoords.length === 0) {
+  if (currentZoom < GRID_RENDER_CONFIG.MIN_ZOOM_LEVEL || multiPolygonCoords.length === 0) {
     return null;
   }
 

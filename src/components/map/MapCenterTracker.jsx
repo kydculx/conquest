@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback } from 'react';
 import { useMapEvents } from 'react-leaflet';
 import { getTileInfo } from '../../utils/geoUtils';
 
