@@ -8,7 +8,13 @@
 }
 
 html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
   overscroll-behavior: none;
+  /* 모바일 시스템 스크롤 차단 */
+  touch-action: none;
+  -webkit-overflow-scrolling: auto;
 }
 
 body {
@@ -18,9 +24,13 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  position: relative;
-  min-height: 100vh;
+  position: fixed; /* 페이지 전체 부유 방지 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
 }
 
 body::after {

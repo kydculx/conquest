@@ -209,6 +209,9 @@
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--color-border-subtle) transparent;
+  /* 모바일 락 예외: 내부 수직 스크롤 허용 */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .list-content::-webkit-scrollbar {
@@ -218,6 +221,18 @@
 .list-content::-webkit-scrollbar-thumb {
   background: var(--color-border-subtle);
   border-radius: 2px;
+}
+
+.theme-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 0 4px; /* 스크롤바 보이기 위한 여백 */
+  /* 모바일 락 예외: 내부 수직 스크롤 허용 */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tile-grid {

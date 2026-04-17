@@ -1,7 +1,8 @@
 .map-page {
   position: relative;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+  min-height: -webkit-fill-available; /* 모바일 Safari 주소창 이슈 대응 */
   overflow: hidden;
   background-color: #0a0e17;
 }
