@@ -26,13 +26,14 @@ const AutoCaptureEngine = ({
   useEffect(() => {
     if (!autoCaptureEnabled || !location || !tileId || isCapturing) return;
 
-    // 다른 타일로 이동했다면 처리 완료 기록 초기화
-    if (lastProcessedTileIdRef.current && lastProcessedTileIdRef.current !== tileId) {
+    // 1. 점령 가능 여부 확인
+    const { canCapture: possible } = canCapture;
+    
+    // 타일이 점령 완료되었거나 점령 불가능한 상태라면 기록 초기화 (재점령 가능하도록)
+    if (!isCapturing && !possible) {
       lastProcessedTileIdRef.current = null;
     }
 
-    // 1. 점령 가능 여부 확인
-    const { canCapture: possible } = canCapture;
     if (!possible) return;
 
     const now = Date.now();
