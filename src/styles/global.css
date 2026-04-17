@@ -111,15 +111,9 @@ body::after {
   transition: left 0.5s ease;
 }
 
-.btn-tactical:hover {
-  background: rgba(0, 255, 136, 0.12);
-  border-color: var(--color-cyber-green);
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
-  transform: translateY(-2px);
-}
-
-.btn-tactical:hover::before {
-  left: 100%;
+.btn-tactical:active {
+  transform: scale(0.95);
+  background: rgba(0, 255, 136, 0.15);
 }
 
 .btn-tactical:active {

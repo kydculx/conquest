@@ -25,23 +25,25 @@ import TerritoryList from '../components/map/TerritoryList';
 import CenterTileLayer from '../components/map/CenterTileLayer';
 import CapturedTilesLayer from '../components/map/CapturedTilesLayer';
 import PermissionDenied from '../components/map/PermissionDenied';
+import AutoCaptureEngine from '../components/map/AutoCaptureEngine';
+import AutoCaptureToggle from '../components/map/AutoCaptureToggle';
 import './MainMapPage.css';
 /**
  * 전술 지도 메인 컴포넌트
  */
 const MainMapPage = () => {
   const navigate = useNavigate();
-  
+
   // 1. 전역 게임 상태 및 위치 정보 훅 연결
-  const { selectedTeam, score, capturedTiles, mapThemeId } = useGame();
-  const { 
-    location, accuracy, error, permissionStatus, 
-    isTrackingStarted, startTracking 
+  const { selectedTeam, score, capturedTiles, mapThemeId, autoCaptureEnabled } = useGame();
+  const {
+    location, accuracy, error, permissionStatus,
+    isTrackingStarted, startTracking
   } = useGeolocation();
-  
+
   // 2. 점령 비즈니스 로직 훅 연결
-  const { 
-    isCapturing, captureProgress, startCapture, canCapture 
+  const {
+    isCapturing, captureProgress, startCapture, canCapture
   } = useCaptureLogic();
 
   // 3. 로컬 UI 상태
@@ -88,16 +90,23 @@ const MainMapPage = () => {
 
   const getCaptureStatusText = () => {
     if (isCapturing) {
-      return `${UI_TEXT.statusCapturingBase} ${Math.round(captureProgress)}%`;
+      const prefix = autoCaptureEnabled ? "자동 " : "";
+      return `${prefix}${UI_TEXT.statusCapturingBase} ${Math.round(captureProgress)}%`;
     }
     // 조준 정렬이 되지 않은 경우를 우선적으로 안내
     if (currentTile && !isTargetAligned) return UI_TEXT.statusTargetMismatch;
-    
+
     if (captureCheck.reason === 'signal') return UI_TEXT.statusSignalWeak;
-    if (captureCheck.reason === 'owned' || isCapturedByMe) return UI_TEXT.statusReclaimed;
+    if (captureCheck.reason === 'owned' || isCapturedByMe) {
+      return autoCaptureEnabled ? `자동 ${UI_TEXT.statusReclaimed}` : UI_TEXT.statusReclaimed;
+    }
     if (captureCheck.reason === 'busy') return UI_TEXT.statusProcessing;
-    if (isEnemyTile) return UI_TEXT.statusCaptureReady;
-    return UI_TEXT.statusCapture;
+
+    // 자동 점령 활성화 시 텍스트 변경
+    if (isEnemyTile) {
+      return autoCaptureEnabled ? "자동 점령하기" : UI_TEXT.statusCaptureReady;
+    }
+    return autoCaptureEnabled ? "자동 구역 점령" : UI_TEXT.statusCapture;
   };
 
   const getCaptureStatusType = () => {
@@ -111,7 +120,7 @@ const MainMapPage = () => {
   const getCaptureDisabled = () => {
     // 1. 이미 점령 중이면 버튼을 누를 수 있음 (진행 상황 확인용) - 사실상 비활성화 대신 텍스트로 표현 가능
     if (isCapturing) return false;
-    
+
     // 2. 점령 가능 상태가 아니거나, 타겟 조준이 정렬되지 않았으면 비활성화
     return !captureCheck.canCapture || !isTargetAligned;
   };
@@ -125,9 +134,9 @@ const MainMapPage = () => {
   return (
     <div className={`map-page team-${selectedTeam} ${isCapturing ? 'is-capturing' : ''}`}>
       <div className="scanline-overlay"></div>
-      
+
       <ScoreHUD score={score} />
-      
+
       {/* GPS 상태 인디케이터 */}
       <div className={`gps-status-bar ${signal.class} ${error ? 'has-error' : ''}`}>
         <div className="status-dot"></div>
@@ -158,6 +167,16 @@ const MainMapPage = () => {
             <TerritoryGrid />
             <CapturedTilesLayer />
             <CenterTileLayer onTileChange={setCenterTile} />
+
+            {/* 자동 조준 및 점령 엔진 (모듈화된 로직) */}
+            <AutoCaptureEngine
+              location={location}
+              tileId={currentTile?.id}
+              canCapture={captureCheck}
+              isTargetAligned={isTargetAligned}
+              isCapturing={isCapturing}
+              onCapture={handleCapture}
+            />
 
             {location && accuracy && (
               <Circle
@@ -205,7 +224,10 @@ const MainMapPage = () => {
 
       <RecentButton onClick={handleRecentClick} />
 
-      <MapThemeSwitcher />
+      <div className="map-settings-group">
+        <AutoCaptureToggle />
+        <MapThemeSwitcher />
+      </div>
 
       <CaptureButton
         team={selectedTeam}

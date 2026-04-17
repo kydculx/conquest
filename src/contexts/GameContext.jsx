@@ -24,6 +24,11 @@ export const GameProvider = ({ children }) => {
     return localStorage.getItem('conquest_map_theme') || 'grey';
   });
 
+  // 자동 점령 활성화 상태 (로컬 스토리지와 동기화)
+  const [autoCaptureEnabled, setAutoCaptureEnabled] = useState(() => {
+    return localStorage.getItem('conquest_auto_capture') === 'true';
+  });
+
   // 전체 점령 타일 맵 데이터 { [tileId]: tileObject }
   const [capturedTiles, setCapturedTiles] = useState({});
 
@@ -202,6 +207,15 @@ export const GameProvider = ({ children }) => {
     setMapThemeId(themeId);
   };
 
+  /**
+   * 자동 점령 설정 정보를 상태와 로컬 스토리지에 유지
+   * @param {boolean} enabled - 자동 점령 활성화 여부
+   */
+  const saveAutoCapture = (enabled) => {
+    localStorage.setItem('conquest_auto_capture', enabled);
+    setAutoCaptureEnabled(enabled);
+  };
+
   const value = useMemo(() => ({
     selectedTeam,
     setSelectedTeam,
@@ -214,8 +228,10 @@ export const GameProvider = ({ children }) => {
     addAlert,
     mapThemeId,
     saveMapTheme,
+    autoCaptureEnabled,
+    saveAutoCapture,
     teamData: selectedTeam === TEAM_BLUE.id ? TEAM_BLUE : selectedTeam === TEAM_RED.id ? TEAM_RED : null,
-  }), [selectedTeam, score, capturedTiles, alerts, removeAlert, addAlert, mapThemeId, captureTile]);
+  }), [selectedTeam, score, capturedTiles, alerts, removeAlert, addAlert, mapThemeId, captureTile, autoCaptureEnabled]);
 
   return (
     <GameContext.Provider value={value}>

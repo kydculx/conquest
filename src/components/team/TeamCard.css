@@ -57,7 +57,14 @@
   border-radius: 10px;
 }
 
-.team-card:hover .card-border-animation {
+/* 호버 효과 제거 및 클릭 피드백 */
+.team-card:active {
+  transform: scale(0.98);
+  background: rgba(0, 255, 136, 0.08);
+}
+
+.team-card.selected.blue .card-border-animation,
+.team-card.selected.red .card-border-animation {
   opacity: 0.6;
   animation: rotate-border 3s linear infinite;
 }
@@ -65,23 +72,6 @@
 @keyframes rotate-border {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-/* Base Hover Effect */
-.team-card:hover {
-  transform: translateY(-12px) scale(1.02);
-  background: rgba(0, 255, 136, 0.05);
-  border-color: rgba(0, 255, 136, 0.3);
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5);
-}
-
-/* Team Specific Glowing */
-.team-card.blue:hover {
-  box-shadow: 0 0 50px rgba(0, 240, 255, 0.2), 0 30px 60px -12px rgba(0, 0, 0, 0.5);
-}
-
-.team-card.red:hover {
-  box-shadow: 0 0 50px rgba(255, 23, 68, 0.2), 0 30px 60px -12px rgba(0, 0, 0, 0.5);
 }
 
 /* Selected State */
@@ -351,7 +341,7 @@
   background: var(--color-neon-red);
 }
 
-/* Light beam effect */
+/* Radial Gradient Overlay */
 .team-card::after {
   content: "";
   position: absolute;
@@ -360,10 +350,6 @@
   background: radial-gradient(circle at center, rgba(0, 255, 136, 0.04) 0%, transparent 50%);
   transition: transform 0.8s ease;
   pointer-events: none;
-}
-
-.team-card:hover::after {
-  transform: translate(10%, 10%);
 }
 
 @media (max-width: 640px) {

@@ -400,7 +400,7 @@
 
 .capture-overlay-btn {
   position: fixed;
-  bottom: 80px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10010;
@@ -546,49 +546,6 @@
 /* Interactions */
 .capture-overlay-btn:active .btn-content {
   transform: translateY(1px) scale(0.98);
-}
-
-/* ==========================================================================
-   모바일 반응형 최적화 (768px 이하)
-   ========================================================================== */
-@media (max-width: 768px) {
-
-  /* --- 상단 좌표 HUD (모바일) --- */
-  .coord-floating-ui {
-    top: calc(env(safe-area-inset-top, 0px) + 16px);
-    padding: 8px 10px;
-  }
-
-
-  /* --- 내 위치 버튼 (모바일) --- */
-  .recenter-container {
-    right: 12px;
-    bottom: calc(env(safe-area-inset-bottom, 24px) + 80px);
-  }
-
-  .recenter-btn {
-    width: 48px;
-    height: 48px;
-  }
-
-  /* --- 점령 액션 버튼 (모바일) --- */
-  .capture-overlay-btn {
-    bottom: calc(env(safe-area-inset-bottom, 24px) + 80px);
-    /* 높이 통일 */
-    width: auto;
-    max-width: 90%;
-  }
-
-  .capture-overlay-btn .btn-content {
-    justify-content: center;
-    width: auto;
-    padding: 12px 28px;
-  }
-
-  .capture-overlay-btn .btn-content span {
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-  }
 }
 
 /* 상태 오버레이 (인증, 권한 안내 등) */
@@ -791,7 +748,7 @@
    ========================================================================== */
 .gps-status-bar {
   position: fixed;
-  top: 85px;
+  top: 65px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10001;
@@ -879,14 +836,6 @@
   50% {
     opacity: 1;
     box-shadow: 0 0 10px var(--color-neon-red);
-  }
-}
-
-@media (max-width: 768px) {
-  .gps-status-bar {
-    top: calc(env(safe-area-inset-top, 0px) + 72px);
-    font-size: 0.6rem;
-    padding: 4px 12px;
   }
 }
 
