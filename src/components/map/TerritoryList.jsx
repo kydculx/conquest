@@ -5,6 +5,7 @@ import { List, MapPin, X, ChevronRight } from 'lucide-react';
 import { useGame } from '../../hooks/useGame';
 import { UI_TEXT, MAP_CONFIG } from '../../constants';
 import { hexToLatLng } from '../../utils/geoUtils';
+import TacticalPanel from '../common/TacticalPanel';
 import './TerritoryList.css';
 
 /**
@@ -79,21 +80,13 @@ const TerritoryList = React.memo(() => {
       </button>
 
       {/* 목록 패널 */}
-      <div className="list-panel">
-        <div className="panel-scan-line"></div>
-        <div className="corner-bracket tl"></div>
-        <div className="corner-bracket tr"></div>
-        <div className="corner-bracket bl"></div>
-        <div className="corner-bracket br"></div>
-
-        <div className="list-header">
-          <MapPin size={16} className="header-icon" />
-          <div className="header-text">
-            <h3>{UI_TEXT.territoryListTitle}</h3>
-            <span className="subtitle">Tactical Grid Overlay</span>
-          </div>
-        </div>
-
+      <TacticalPanel 
+        className="list-panel"
+        showHeader={true}
+        title={UI_TEXT.territoryListTitle}
+        subtitle="Tactical Grid Overlay"
+        icon={MapPin}
+      >
         <div className="list-stats">
           <div className="stat-label">CAPTURED SECTORS</div>
           <div className="stat-value">{myTiles.length}</div>
@@ -128,7 +121,7 @@ const TerritoryList = React.memo(() => {
             </div>
           )}
         </div>
-      </div>
+      </TacticalPanel>
     </div>
   );
 });

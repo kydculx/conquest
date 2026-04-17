@@ -3,16 +3,12 @@
  */
 import { ShieldAlert } from 'lucide-react';
 import { UI_TEXT } from '../../constants';
+import TacticalPanel from '../common/TacticalPanel';
 
 const PermissionDenied = () => {
   return (
     <div className="status-overlay">
-      <div className="hud-panel warning-card">
-        <div className="panel-scan-line"></div>
-        <div className="corner-bracket tl"></div>
-        <div className="corner-bracket tr"></div>
-        <div className="corner-bracket bl"></div>
-        <div className="corner-bracket br"></div>
+      <TacticalPanel className="warning-card">
         <ShieldAlert size={64} color="#ff003c" className="animate-pulse" />
         <h2 className="glitch-text">{UI_TEXT.permissionDenied}</h2>
         <div className="permission-guide">
@@ -23,7 +19,7 @@ const PermissionDenied = () => {
         <button className="tactical-btn active" onClick={() => window.location.reload()}>
           시스템 재동기화
         </button>
-      </div>
+      </TacticalPanel>
     </div>
   );
 };

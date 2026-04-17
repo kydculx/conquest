@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Layers, Check } from 'lucide-react';
 import { useGame } from '../../hooks/useGame';
 import { MAP_THEMES } from '../../constants/mapConfig';
+import TacticalPanel from '../common/TacticalPanel';
 import './MapThemeSwitcher.css';
 
 /**
@@ -41,21 +42,13 @@ const MapThemeSwitcher = () => {
       </button>
 
       {isOpen && (
-        <div className="theme-menu hud-panel">
-          <div className="panel-scan-line"></div>
-          <div className="corner-bracket tl"></div>
-          <div className="corner-bracket tr"></div>
-          <div className="corner-bracket bl"></div>
-          <div className="corner-bracket br"></div>
-
-          <div className="list-header">
-            <Layers size={16} className="header-icon" />
-            <div className="header-text">
-              <h3>지도 레이어 설정</h3>
-              <span className="subtitle">전술 지도 오버레이</span>
-            </div>
-          </div>
-
+        <TacticalPanel 
+          className="theme-menu"
+          showHeader={true}
+          title="지도 레이어 설정"
+          subtitle="전술 지도 오버레이"
+          icon={Layers}
+        >
           <div className="theme-options">
             {Object.values(MAP_THEMES).map((theme) => (
               <button
@@ -73,7 +66,7 @@ const MapThemeSwitcher = () => {
               </button>
             ))}
           </div>
-        </div>
+        </TacticalPanel>
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { TEAM_BLUE, TEAM_RED } from '../../constants';
+import TacticalPanel from '../common/TacticalPanel';
 import './ScoreHUD.css';
 
 /**
@@ -19,17 +20,11 @@ const ScoreHUD = ({ score }) => {
   }, [score]);
 
   return (
-    <div className="score-hud-container score-floating-ui hud-panel">
-      {/* HUD 장식 요소 */}
-      <div className="panel-scan-line"></div>
-      <div className="corner-bracket tl"></div>
-      <div className="corner-bracket tr"></div>
-      <div className="corner-bracket bl"></div>
-      <div className="corner-bracket br"></div>
-
-      <div className="hud-header-center">
-        <span className="monitoring-label">SECTOR DOMINANCE MONITOR</span>
-      </div>
+    <TacticalPanel
+      className="score-hud-container score-floating-ui"
+      showHeader={false}
+      title="SECTOR DOMINANCE MONITOR"
+    >
 
       <div className="score-main-section">
         <div className="team-stats blue">
@@ -38,12 +33,12 @@ const ScoreHUD = ({ score }) => {
         </div>
 
         <div className="dominance-gauge">
-          <div 
-            className="gauge-fill blue" 
+          <div
+            className="gauge-fill blue"
             style={{ width: `${dominance.blue}%` }}
           ></div>
-          <div 
-            className="gauge-fill red" 
+          <div
+            className="gauge-fill red"
             style={{ width: `${dominance.red}%` }}
           ></div>
           <div className="vs-label">VS</div>
@@ -54,7 +49,7 @@ const ScoreHUD = ({ score }) => {
           <span className="team-name">{TEAM_RED.name}</span>
         </div>
       </div>
-    </div>
+    </TacticalPanel>
   );
 };
 
