@@ -15,14 +15,12 @@ const CaptureButton = ({ team, isCapturing, statusType, onClick, statusText, dis
       className={`capture-overlay-btn team-${team} state-${statusType} ${isCapturing ? 'loading' : ''} ${disabled ? 'disabled' : ''}`}
       onClick={disabled ? undefined : onClick}
     >
-      {/* 전술적 코너 브래킷 */}
-      <div className="btn-bracket-tl"></div>
-      <div className="btn-bracket-tr"></div>
-      <div className="btn-bracket-bl"></div>
-      <div className="btn-bracket-br"></div>
-      
-      {/* 빗금 패턴 배경 */}
-      <div className="btn-scanline-pattern"></div>
+      {/* 전술적 디자인 요소 통일 */}
+      <div className="panel-scan-line"></div>
+      <div className="corner-bracket tl"></div>
+      <div className="corner-bracket tr"></div>
+      <div className="corner-bracket bl"></div>
+      <div className="corner-bracket br"></div>
 
       <div className="btn-content">
         <div className="text-info-area">

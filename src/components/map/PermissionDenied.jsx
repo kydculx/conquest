@@ -7,7 +7,12 @@ import { UI_TEXT } from '../../constants';
 const PermissionDenied = () => {
   return (
     <div className="status-overlay">
-      <div className="warning-card hud-panel">
+      <div className="hud-panel warning-card">
+        <div className="panel-scan-line"></div>
+        <div className="corner-bracket tl"></div>
+        <div className="corner-bracket tr"></div>
+        <div className="corner-bracket bl"></div>
+        <div className="corner-bracket br"></div>
         <ShieldAlert size={64} color="#ff003c" className="animate-pulse" />
         <h2 className="glitch-text">{UI_TEXT.permissionDenied}</h2>
         <div className="permission-guide">

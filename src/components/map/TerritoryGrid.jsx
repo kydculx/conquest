@@ -10,14 +10,13 @@ import { GRID_RENDER_CONFIG } from '../../constants/territoryConfig';
 const TerritoryGrid = () => {
   const [visibleHexes, setVisibleHexes] = useState([]);
   const [currentZoom, setCurrentZoom] = useState(MAP_CONFIG.DEFAULT_ZOOM);
-  const [isMoving, setIsMoving] = useState(false);
   const lastUpdateRef = useRef(0);
   const throttleMs = 150;
 
   const updateGrid = useCallback((map) => {
     const now = Date.now();
     if (now - lastUpdateRef.current < throttleMs) return;
-    
+
     const z = map.getZoom();
     setCurrentZoom(z);
 
@@ -28,22 +27,14 @@ const TerritoryGrid = () => {
 
     const bounds = map.getBounds();
     const hexes = getHexesInBounds(bounds, MAP_CONFIG.TILE_SIZE, 0.08);
-    
+
     setVisibleHexes(hexes);
     lastUpdateRef.current = now;
   }, [visibleHexes.length]);
 
   const map = useMapEvents({
-    movestart: () => setIsMoving(true),
-    zoomstart: () => setIsMoving(true),
-    moveend: () => {
-      setIsMoving(false);
-      updateGrid(map);
-    },
-    zoomend: () => {
-      setIsMoving(false);
-      updateGrid(map);
-    }
+    moveend: () => updateGrid(map),
+    zoomend: () => updateGrid(map)
   });
 
   const multiPolygonCoords = useMemo(() => {
@@ -68,11 +59,11 @@ const TerritoryGrid = () => {
       pathOptions={{
         color: GAME_CONFIG.COLORS.TERRITORY_GRID,
         fillColor: 'transparent',
-        weight: 1,
+        weight: 1.5,
         fillOpacity: 0,
-        dashArray: '3, 7',
+        dashArray: '2, 5',
         interactive: false,
-        smoothFactor: 0.5
+        smoothFactor: 1
       }}
     />
   );

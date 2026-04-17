@@ -1,24 +1,37 @@
 :root {
   /* [색상] - 전술 사이버 전쟁 테마 */
-  --color-bg: #0a0e17;             /* 기본 배경색 */
-  --color-surface: rgba(10, 20, 35, 0.65); /* 반투명 표면색 */
-  --color-hud-bg: rgba(8, 14, 24, 0.75);   /* HUD 패널 배경색 */
-  --color-border-subtle: rgba(0, 255, 170, 0.12); /* 미세한 테두리 */
-  --color-border-focus: rgba(0, 255, 170, 0.35);  /* 강조된 테두리 */
+  --color-bg: #0a0e17;
+  /* 기본 배경색 */
+  --color-surface: rgba(10, 20, 35, 0.65);
+  /* 반투명 표면색 */
+  --color-hud-bg: rgba(8, 14, 24, 1);
+  /* 가독성을 위해 불투명도 강화 (0.75 -> 0.9) */
+  --color-border-subtle: rgba(0, 255, 170, 0.12);
+  /* 미세한 테두리 */
+  --color-border-focus: rgba(0, 255, 170, 0.35);
+  /* 강조된 테두리 */
 
-  --color-text-primary: #e0ffe8;   /* 기본 텍스트 색상 */
-  --color-text-secondary: rgba(0, 255, 170, 0.55); /* 보조 텍스트 색상 */
+  --color-text-primary: #e0ffe8;
+  /* 기본 텍스트 색상 */
+  --color-text-secondary: rgba(0, 255, 170, 0.55);
+  /* 보조 텍스트 색상 */
 
   /* [네온 팔레트] - 진영 및 상태 표시용 */
-  --color-neon-blue: #0066ff;      /* 블루팀 메인 컬러 */
-  --color-neon-red: #ff1744;       /* 레드팀 메인 컬러 */
-  --color-cyber-green: #00ff88;    /* 시스템 가동/안정/공통 상태 */
-  --color-cyber-yellow: #ffd600;   /* 주의/불안정 상태 */
-  
+  --color-neon-blue: #0066ff;
+  /* 블루팀 메인 컬러 */
+  --color-neon-red: #ff1744;
+  /* 레드팀 메인 컬러 */
+  --color-cyber-green: #00ff88;
+  /* 시스템 가동/안정/공통 상태 */
+  --color-cyber-yellow: #ffd600;
+  /* 주의/불안정 상태 */
+
   /* [동적 테마 변수] - 팀 선택에 따라 오버라이드됨 */
-  --color-accent: var(--color-cyber-green); /* 기본 강조 색상 */
+  --color-accent: var(--color-cyber-green);
+  /* 기본 강조 색상 */
   --color-accent-rgb: 0, 255, 136;
-  --color-glow: rgba(0, 255, 136, 0.25);    /* 기본 글로우 */
+  --color-glow: rgba(0, 255, 136, 0.25);
+  /* 기본 글로우 */
   --color-border-accent: rgba(0, 255, 136, 0.4);
 
   /* [타이포그래피] */
@@ -36,10 +49,13 @@
   --nav-bottom-height: 80px;
 
   /* [Z-Index 레이어 스택] */
-  --z-map: 10;                     /* 기본 지도 레이어 */
-  --z-hud: 20;                     /* 상단/하단 HUD */
-  --z-modal: 1000;                 /* 최상단 모달/팝업 */
-  
+  --z-map: 10;
+  /* 기본 지도 레이어 */
+  --z-hud: 20;
+  /* 상단/하단 HUD */
+  --z-modal: 1000;
+  /* 최상단 모달/팝업 */
+
   --shadow-hud: 0 10px 40px -10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 255, 136, 0.05);
   --glass-blur: blur(16px);
 }

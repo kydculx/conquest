@@ -20,28 +20,14 @@ export const MAP_CONFIG = {
 export const MAP_THEMES = {
   grey: {
     id: 'grey',
-    name: '회색',
+    name: '전술지도',
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
     attribution: 'Tiles &copy; Esri',
     preview: '#2a2a2a'
   },
-  dark: {
-    id: 'dark',
-    name: '다크',
-    url: "https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png",
-    attribution: '&copy; CartoDB',
-    preview: '#0a101a'
-  },
-  light: {
-    id: 'light',
-    name: '화이트',
-    url: "https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
-    attribution: '&copy; CartoDB',
-    preview: '#f5f5f5'
-  },
   satellite: {
     id: 'satellite',
-    name: '위성',
+    name: '위성지도',
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: 'Tiles &copy; Esri',
     preview: '#14251a'

@@ -19,7 +19,7 @@ export const GAME_CONFIG = {
     SIGNAL_STABLE: '#00ff88',
     SIGNAL_UNSTABLE: '#ffd600',
     TILE_HIGHLIGHT: 'rgba(0, 255, 200, 0.5)',
-    TERRITORY_GRID: 'rgba(0, 255, 200, 0.2)',
+    TERRITORY_GRID: 'rgba(0, 255, 200, 0.3)',
     TRANSPARENT: 'transparent'
   },
 

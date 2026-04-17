@@ -2,7 +2,7 @@
   position: fixed;
   top: 130px;
   right: 10px;
-  z-index: 10010;
+  z-index: 15000;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -60,33 +60,33 @@
   color: #000;
 }
 
-/* 목록 패널 (전술 HUD 스타일) */
 .list-panel {
-  pointer-events: auto;
-  position: absolute;
-  top: 60px;
-  right: 0;
   width: 280px;
-  max-height: 450px;
+  position: absolute;
+  top: 54px;
+  right: 0;
+  padding: 0;
   background: var(--color-hud-bg);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--border-radius-md);
+  backdrop-filter: var(--glass-blur) saturate(200%);
+  -webkit-backdrop-filter: var(--glass-blur) saturate(200%);
+  border: 1px solid var(--color-border-focus);
   box-shadow: var(--shadow-hud);
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  z-index: 20000;
   opacity: 0;
-  transform: perspective(1000px) rotateY(15deg) translateX(30px);
   pointer-events: none;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: right center;
+  transform: perspective(1000px) rotateY(15deg) translateX(30px);
+  transform-origin: right top;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .territory-list-container.is-open .list-panel {
   opacity: 1;
-  transform: perspective(1000px) rotateY(0) translateX(0);
   pointer-events: auto;
+  transform: perspective(1000px) rotateY(0) translateX(0);
 }
 
 /* 전술적 데코레이션 */
@@ -151,20 +151,24 @@
 }
 
 .list-header {
-  padding: 20px 24px 12px;
+  padding: 20px 20px 12px;
   display: flex;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-icon {
+  color: var(--color-accent);
+  filter: drop-shadow(0 0 5px var(--color-glow));
 }
 
 .header-text h3 {
   margin: 0;
-  font-family: var(--font-family-base);
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: var(--color-text-primary);
+  font-size: 0.75rem;
+  font-family: var(--font-family-mono);
+  letter-spacing: 2px;
+  color: var(--color-accent);
   text-transform: uppercase;
 }
 
@@ -173,6 +177,7 @@
   font-family: var(--font-family-mono);
   color: var(--color-accent);
   opacity: 0.7;
+  letter-spacing: 1px;
 }
 
 .list-stats {
@@ -225,9 +230,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.02);
+  padding: 8px 16px;
+  background: rgba(10, 20, 35, 0.4); /* 아이템 배경을 조금 더 어둡게 하여 텍스트 대비 향상 */
   border: 1px solid var(--color-border-subtle);
+  border-left: 3px solid var(--color-accent); /* 왼쪽 강조선 추가로 선명도 확보 */
   border-radius: var(--border-radius-sm);
   cursor: pointer;
   position: relative;

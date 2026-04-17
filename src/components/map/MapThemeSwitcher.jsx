@@ -31,9 +31,9 @@ const MapThemeSwitcher = () => {
   };
 
   return (
-    <div className="map-theme-switcher" ref={menuRef}>
-      <button 
-        className={`theme-trigger ${isOpen ? 'active' : ''}`} 
+    <div className={`map-theme-switcher ${isOpen ? 'is-open' : ''}`} ref={menuRef}>
+      <button
+        className={`theme-trigger ${isOpen ? 'active' : ''}`}
         onClick={handleToggle}
         title="지도 테마 변경"
       >
@@ -42,10 +42,20 @@ const MapThemeSwitcher = () => {
 
       {isOpen && (
         <div className="theme-menu hud-panel">
-          <div className="hud-header">
-            <Layers size={10} />
-            <span>LAYER SETTINGS</span>
+          <div className="panel-scan-line"></div>
+          <div className="corner-bracket tl"></div>
+          <div className="corner-bracket tr"></div>
+          <div className="corner-bracket bl"></div>
+          <div className="corner-bracket br"></div>
+
+          <div className="list-header">
+            <Layers size={16} className="header-icon" />
+            <div className="header-text">
+              <h3>지도 레이어 설정</h3>
+              <span className="subtitle">전술 지도 오버레이</span>
+            </div>
           </div>
+
           <div className="theme-options">
             {Object.values(MAP_THEMES).map((theme) => (
               <button
@@ -53,8 +63,8 @@ const MapThemeSwitcher = () => {
                 className={`theme-option ${mapThemeId === theme.id ? 'selected' : ''}`}
                 onClick={() => handleSelect(theme.id)}
               >
-                <div 
-                  className="theme-preview" 
+                <div
+                  className="theme-preview"
                   style={{ backgroundColor: theme.preview }}
                 >
                   {mapThemeId === theme.id && <Check size={14} />}

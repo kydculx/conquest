@@ -23,17 +23,8 @@ body {
   min-height: 100vh;
 }
 
-/* Digital Noise Overlay */
 body::after {
-  content: "";
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.04;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: screen;
+  opacity: 0;
 }
 
 /* Global Transitions */
@@ -140,3 +131,52 @@ body::after {
 .animate-pulse {
   animation: pulse 2s ease-in-out infinite;
 }
+
+/* --- Tactical HUD Panel Global System --- */
+.hud-panel {
+  background: var(--color-hud-bg);
+  backdrop-filter: var(--glass-blur) saturate(200%);
+  -webkit-backdrop-filter: var(--glass-blur) saturate(200%);
+  border: 1px solid var(--color-border-focus);
+  box-shadow: var(--shadow-hud);
+  border-radius: var(--border-radius-lg);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.panel-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-accent);
+  opacity: 0.3;
+  z-index: 10;
+  animation: globalTacticalScan 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes globalTacticalScan {
+  0% { top: -2px; }
+  100% { top: 100%; }
+}
+
+.corner-bracket {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--color-accent);
+  opacity: 0.8;
+  z-index: 5;
+  transition: all 0.3s ease;
+}
+
+/* 곡률(12px)에 맞춘 브래킷 배치 최적화 */
+.corner-bracket.tl { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.corner-bracket.tr { top: 6px; right: 6px; border-left: none; border-bottom: none; }
+.corner-bracket.bl { bottom: 6px; left: 6px; border-right: none; border-top: none; }
+.corner-bracket.br { bottom: 6px; right: 6px; border-left: none; border-top: none; }
