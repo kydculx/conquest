@@ -8,6 +8,7 @@ import { Crosshair } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useCaptureLogic } from '../hooks/useCaptureLogic';
+import { useWakeLock } from '../hooks/useWakeLock';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT, MAP_CONFIG, MAP_THEMES, GAME_CONFIG } from '../constants';
 import { getTileInfo } from '../utils/geoUtils';
 import { getSignalStatus } from '../utils/locationUtils';
@@ -46,7 +47,10 @@ const MainMapPage = () => {
     isCapturing, captureProgress, startCapture, canCapture
   } = useCaptureLogic();
 
-  // 3. 로컬 UI 상태
+  // 3. 화면 유지(Wake Lock) 훅 연결
+  const { requestWakeLock, releaseWakeLock } = useWakeLock();
+
+  // 4. 로컬 UI 상태
   const [recenterTrigger, setRecenterTrigger] = useState(0);
   const [centerTile, setCenterTile] = useState(null);
 
@@ -124,6 +128,15 @@ const MainMapPage = () => {
     // 2. 점령 가능 상태가 아니거나, 타겟 조준이 정렬되지 않았으면 비활성화
     return !captureCheck.canCapture || !isTargetAligned;
   };
+
+  // 자동 점령 활성화 시 화면 유지 강제
+  useEffect(() => {
+    if (autoCaptureEnabled) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+  }, [autoCaptureEnabled, requestWakeLock, releaseWakeLock]);
 
   // 실제 권한이 거부되었고, 캐시된 위치 정보조차 없는 경우에만 차단 화면 노출
   // 이미 위치 정보가 있다면 신호가 불안정하더라도 지도를 계속 보여줌
