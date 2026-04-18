@@ -65,6 +65,7 @@
   position: absolute;
   top: 54px;
   right: 0;
+  max-height: 300px; /* 더 콤팩트하게 높이 제한 */
   padding: 0;
   background: var(--color-hud-bg);
   backdrop-filter: var(--glass-blur) saturate(200%);

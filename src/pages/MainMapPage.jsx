@@ -26,6 +26,7 @@ import TerritoryList from '../components/map/TerritoryList';
 import CenterTileLayer from '../components/map/CenterTileLayer';
 import CapturedTilesLayer from '../components/map/CapturedTilesLayer';
 import PermissionDenied from '../components/map/PermissionDenied';
+import TacticalHubsLayer from '../components/map/TacticalHubsLayer';
 import AutoCaptureEngine from '../components/map/AutoCaptureEngine';
 import AutoCaptureToggle from '../components/map/AutoCaptureToggle';
 import './MainMapPage.css';
@@ -179,6 +180,7 @@ const MainMapPage = () => {
             {/* 최적화 레이어: 이동 중 숨김 및 상태 격리 적용 */}
             <TerritoryGrid />
             <CapturedTilesLayer />
+            <TacticalHubsLayer />
             <CenterTileLayer onTileChange={setCenterTile} />
 
             {/* 자동 조준 및 점령 엔진 (모듈화된 로직) */}

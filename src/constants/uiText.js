@@ -25,6 +25,7 @@ export const UI_TEXT = {
   alertEnemyInvasion: "침공 발생! 적군이 우리 영토를 탈취했습니다.",
   alertCounterCapture: "반격 성공! 적의 구역을 탈취했습니다.",
   alertOtherTeamCapture: "전선 변화: 타 진영 간의 교전이 감지되었습니다.",
+  alertHubCapture: "전략 거점 확보! 해당 구역의 자원 생산 수율이 비약적으로 상승합니다.",
 
   // 점령지 목록 관련
   territoryListTitle: "전술 거점 목록",
