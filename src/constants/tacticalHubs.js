@@ -117,15 +117,29 @@ export const TACTICAL_HUBS = [
 
   // --- 경기도 (31개 시·군) ---
   { id: 'hub-gyeonggi-suwon', name: '수원시청', lat: 37.2635, lng: 127.0286, type: 'city', region: '경기' },
+  { id: 'hub-gyeonggi-suwon-jangan', name: '장안구청', lat: 37.3013, lng: 127.0099, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-suwon-gwonseon', name: '권선구청', lat: 37.2575, lng: 126.9702, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-suwon-paldal', name: '팔달구청', lat: 37.2825, lng: 127.0270, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-suwon-yeongtong', name: '영통구청', lat: 37.2520, lng: 127.0577, type: 'district', region: '경기' },
   { id: 'hub-gyeonggi-seongnam', name: '성남시청', lat: 37.4200, lng: 127.1267, type: 'city', region: '경기' },
+  { id: 'hub-gyeonggi-seongnam-sujeong', name: '수정구청', lat: 37.4485, lng: 127.1352, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-seongnam-jungwon', name: '중원구청', lat: 37.4332, lng: 127.1476, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-seongnam-bundang', name: '분당구청', lat: 37.3852, lng: 127.1213, type: 'district', region: '경기' },
   { id: 'hub-gyeonggi-uijeongbu', name: '의정부시청', lat: 37.7381, lng: 127.0337, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-anyang', name: '안양시청', lat: 37.3943, lng: 126.9568, type: 'city', region: '경기' },
+  { id: 'hub-gyeonggi-anyang-manan', name: '만안구청', lat: 37.3943, lng: 126.9248, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-anyang-dongan', name: '동안구청', lat: 37.3912, lng: 126.9632, type: 'district', region: '경기' },
   { id: 'hub-gyeonggi-bucheon', name: '부천시청', lat: 37.5036, lng: 126.7660, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-gwangmyeong', name: '광명시청', lat: 37.4785, lng: 126.8646, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-pyeongtaek', name: '평택시청', lat: 36.9921, lng: 127.1126, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-dongducheon', name: '동두천시청', lat: 37.9036, lng: 127.0607, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-ansan', name: '안산시청', lat: 37.3219, lng: 126.8308, type: 'city', region: '경기' },
+  { id: 'hub-gyeonggi-ansan-sangnok', name: '상록구청', lat: 37.3005, lng: 126.8466, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-ansan-danwon', name: '단원구청', lat: 37.3223, lng: 126.8149, type: 'district', region: '경기' },
   { id: 'hub-gyeonggi-goyang', name: '고양시청', lat: 37.6583, lng: 126.8320, type: 'city', region: '경기' },
+  { id: 'hub-gyeonggi-goyang-deogyang', name: '덕양구청', lat: 37.6545, lng: 126.8322, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-goyang-ilsandong', name: '일산동구청', lat: 37.6628, lng: 126.7725, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-goyang-ilsanseo', name: '일산서구청', lat: 37.6749, lng: 126.7570, type: 'district', region: '경기' },
   { id: 'hub-gyeonggi-gwacheon', name: '과천시청', lat: 37.4292, lng: 126.9877, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-guri', name: '구리시청', lat: 37.5943, lng: 127.1296, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-namyangju', name: '남양주시청', lat: 37.6360, lng: 127.2165, type: 'city', region: '경기' },
@@ -135,6 +149,9 @@ export const TACTICAL_HUBS = [
   { id: 'hub-gyeonggi-uiwang', name: '의왕시청', lat: 37.3447, lng: 126.9682, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-hanamsi', name: '하남시청', lat: 37.5392, lng: 127.2148, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-yongin', name: '용인시청', lat: 37.2410, lng: 127.1775, type: 'city', region: '경기' },
+  { id: 'hub-gyeonggi-yongin-cheoin', name: '처인구청', lat: 37.2349, lng: 127.2130, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-yongin-giheung', name: '기흥구청', lat: 37.2742, lng: 127.1527, type: 'district', region: '경기' },
+  { id: 'hub-gyeonggi-yongin-suji', name: '수지구청', lat: 37.3235, lng: 127.0972, type: 'district', region: '경기' },
   { id: 'hub-gyeonggi-paju', name: '파주시청', lat: 37.7601, lng: 126.7799, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-icheon', name: '이천시청', lat: 37.2721, lng: 127.4350, type: 'city', region: '경기' },
   { id: 'hub-gyeonggi-anseong', name: '안성시청', lat: 37.0079, lng: 127.2797, type: 'city', region: '경기' },
@@ -170,6 +187,10 @@ export const TACTICAL_HUBS = [
 
   // --- 충청북도 (11개 시·군) ---
   { id: 'hub-cb-cheongju', name: '청주시청', lat: 36.6421, lng: 127.4891, type: 'city', region: '충북' },
+  { id: 'hub-cb-cheongju-sangdang', name: '상당구청', lat: 36.6083, lng: 127.5303, type: 'district', region: '충북' },
+  { id: 'hub-cb-cheongju-seowon', name: '서원구청', lat: 36.6234, lng: 127.4725, type: 'district', region: '충북' },
+  { id: 'hub-cb-cheongju-heungdeok', name: '흥덕구청', lat: 36.6349, lng: 127.4316, type: 'district', region: '충북' },
+  { id: 'hub-cb-cheongju-cheongwon', name: '청원구청', lat: 36.6575, lng: 127.4939, type: 'district', region: '충북' },
   { id: 'hub-cb-chungju', name: '충주시청', lat: 36.9881, lng: 127.9281, type: 'city', region: '충북' },
   { id: 'hub-cb-jecheon', name: '제천시청', lat: 37.1326, lng: 128.2141, type: 'city', region: '충북' },
   { id: 'hub-cb-boeun', name: '보은군청', lat: 36.4894, lng: 127.7323, type: 'county', region: '충북' },
@@ -183,6 +204,8 @@ export const TACTICAL_HUBS = [
 
   // --- 충청남도 (15개 시·군) ---
   { id: 'hub-cn-cheonan', name: '천안시청', lat: 36.8151, lng: 127.1138, type: 'city', region: '충남' },
+  { id: 'hub-cn-cheonan-dongnam', name: '동남구청', lat: 36.8122, lng: 127.1565, type: 'district', region: '충남' },
+  { id: 'hub-cn-cheonan-seobuk', name: '서북구청', lat: 36.8291, lng: 127.1121, type: 'district', region: '충남' },
   { id: 'hub-cn-gongju', name: '공주시청', lat: 36.4465, lng: 127.1190, type: 'city', region: '충남' },
   { id: 'hub-cn-boryeong', name: '보령시청', lat: 36.3333, lng: 126.6128, type: 'city', region: '충남' },
   { id: 'hub-cn-asan', name: '아산시청', lat: 36.7898, lng: 127.0049, type: 'city', region: '충남' },
@@ -200,6 +223,8 @@ export const TACTICAL_HUBS = [
 
   // --- 전라북도 (전북특별자치도, 14개 시·군) ---
   { id: 'hub-jb-jeonju', name: '전주시청', lat: 35.8242, lng: 127.1479, type: 'city', region: '전북' },
+  { id: 'hub-jb-jeonju-wansan', name: '완산구청', lat: 35.8118, lng: 127.1119, type: 'district', region: '전북' },
+  { id: 'hub-jb-jeonju-deokjin', name: '덕진구청', lat: 35.8504, lng: 127.1228, type: 'district', region: '전북' },
   { id: 'hub-jb-gunsan', name: '군산시청', lat: 35.9676, lng: 126.7366, type: 'city', region: '전북' },
   { id: 'hub-jb-iksan', name: '익산시청', lat: 35.9482, lng: 126.9576, type: 'city', region: '전북' },
   { id: 'hub-jb-jeongeup', name: '정읍시청', lat: 35.5698, lng: 126.8528, type: 'city', region: '전북' },
@@ -240,6 +265,8 @@ export const TACTICAL_HUBS = [
 
   // --- 경상북도 (22개 시·군) ---
   { id: 'hub-gb-pohang', name: '포항시청', lat: 36.0190, lng: 129.3434, type: 'city', region: '경북' },
+  { id: 'hub-gb-pohang-nam', name: '남구청', lat: 36.0277, lng: 129.3870, type: 'district', region: '경북' },
+  { id: 'hub-gb-pohang-buk', name: '북구청', lat: 36.0796, lng: 129.3935, type: 'district', region: '경북' },
   { id: 'hub-gb-gyeongju', name: '경주시청', lat: 35.8562, lng: 129.2247, type: 'city', region: '경북' },
   { id: 'hub-gb-gimcheon', name: '김천시청', lat: 36.1397, lng: 128.1136, type: 'city', region: '경북' },
   { id: 'hub-gb-andong', name: '안동시청', lat: 36.5684, lng: 128.7295, type: 'city', region: '경북' },
@@ -264,6 +291,11 @@ export const TACTICAL_HUBS = [
 
   // --- 경상남도 (18개 시·군) ---
   { id: 'hub-gn-changwon', name: '창원시청', lat: 35.2281, lng: 128.6811, type: 'city', region: '경남' },
+  { id: 'hub-gn-changwon-uichang', name: '의창구청', lat: 35.2536, lng: 128.6052, type: 'district', region: '경남' },
+  { id: 'hub-gn-changwon-seongsan', name: '성산구청', lat: 35.2144, lng: 128.6830, type: 'district', region: '경남' },
+  { id: 'hub-gn-changwon-happo', name: '마산합포구청', lat: 35.1822, lng: 128.5779, type: 'district', region: '경남' },
+  { id: 'hub-gn-changwon-hoewon', name: '마산회원구청', lat: 35.2285, lng: 128.5835, type: 'district', region: '경남' },
+  { id: 'hub-gn-changwon-jinhae', name: '진해구청', lat: 35.1438, lng: 128.6826, type: 'district', region: '경남' },
   { id: 'hub-gn-jinju', name: '진주시청', lat: 35.1804, lng: 128.1077, type: 'city', region: '경남' },
   { id: 'hub-gn-tongyeong', name: '통영시청', lat: 34.8544, lng: 128.4331, type: 'city', region: '경남' },
   { id: 'hub-gn-sacheon', name: '사천시청', lat: 35.0039, lng: 128.0642, type: 'city', region: '경남' },
