@@ -14,6 +14,7 @@ export const createPlayerIcon = (colorClass) => L.divIcon({
   className: `custom-leaflet-icon player-marker-transition`,
   html: `
     <div class="marker-wrapper ${colorClass}">
+      <div class="marker-pulse"></div>
       <div class="marker-core"></div>
     </div>
   `,
