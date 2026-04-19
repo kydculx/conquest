@@ -11,6 +11,7 @@
   display: flex;
   justify-content: center;
   pointer-events: none;
+  direction: ltr !important; /* 항상 좌측에서 우측으로 정렬 강제 */
 }
 
 .scoreboard-frame {
@@ -49,6 +50,14 @@
   flex-shrink: 0;
 }
 
+.hud-team-blue {
+  order: 1 !important; /* 블루 항상 좌측 */
+}
+
+.hud-team-red {
+  order: 3 !important; /* 레드 항상 우측 */
+}
+
 .team-score {
   font-family: var(--font-family-mono);
   /* 수치는 전술적 Mono 폰트 사용 */
@@ -59,15 +68,15 @@
   text-align: center;
 }
 
-.team-blue .team-score {
-  color: var(--color-neon-blue);
-  text-shadow: 0 0 10px rgba(0, 162, 255, 0.4);
+.hud-team-blue .team-score {
+  color: var(--color-neon-blue) !important; 
+  text-shadow: 0 0 15px rgba(0, 162, 255, 0.8) !important;
   text-align: right;
 }
 
-.team-red .team-score {
-  color: var(--color-neon-red);
-  text-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
+.hud-team-red .team-score {
+  color: var(--color-neon-red) !important;
+  text-shadow: 0 0 15px rgba(255, 59, 48, 0.8) !important;
   text-align: left;
 }
 
@@ -83,6 +92,7 @@
   border-left: 1px solid rgba(255, 255, 255, 0.05);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
+  order: 2 !important; /* 게이지 항상 중앙 */
 }
 
 .hud-vs-area {

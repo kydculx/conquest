@@ -21,7 +21,7 @@ const ScoreHUD = ({ score }) => {
       <div className="scoreboard-frame">
 
         {/* 블루팀 구역 */}
-        <div className="scoreboard-side team-blue">
+        <div className="scoreboard-side hud-team-blue">
           <div className="team-score">{score.blue}</div>
         </div>
 
@@ -39,7 +39,7 @@ const ScoreHUD = ({ score }) => {
         </div>
 
         {/* 레드팀 구역 */}
-        <div className="scoreboard-side team-red">
+        <div className="scoreboard-side hud-team-red">
           <div className="team-score">{score.red}</div>
         </div>
 
