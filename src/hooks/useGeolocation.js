@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { smoothValue } from '../utils/locationUtils';
-import { GPS_CONFIG, GAME_CONFIG, UI_TEXT } from '../constants';
+import { MAP_CONFIG, GPS_CONFIG, GAME_CONFIG, UI_TEXT } from '../constants';
 
 /**
  * 실시간 GPS 위치 정보를 추적하고 관리하는 커스텀 훅
@@ -25,16 +25,25 @@ export const useGeolocation = () => {
   const [loading, setLoading] = useState(true);
   const [permissionStatus, setPermissionStatus] = useState('prompt');
   const [isTrackingStarted, setIsTrackingStarted] = useState(false);
+  const [isMocking, setIsMocking] = useState(false); // 가상 위치 사용 여부
 
   // EMA 필터링 및 리소스 정리를 위한 Ref
   const smoothedRef = useRef(null);
   const wakeLockRef = useRef(null);
 
   /**
-   * GPS 추적 수동 시작 (iOS 등 사용자 액션 기반 권한 요청 대응)
+   * GPS 추적 시작 및 에러 발생 시 재시도
    */
   const startTracking = () => {
-    if (!isTrackingStarted) setIsTrackingStarted(true);
+    setError(null);
+    setLoading(true);
+    if (!isTrackingStarted) {
+      setIsTrackingStarted(true);
+    } else {
+      // 이미 시작된 상태에서 에러가 났을 경우를 대비해 상태를 강제로 흔들어 재실행 유도
+      setIsTrackingStarted(false);
+      setTimeout(() => setIsTrackingStarted(true), 10);
+    }
   };
 
   /**
@@ -103,8 +112,23 @@ export const useGeolocation = () => {
     /**
      * 위치 정보 수신 실패 핸들러
      * - 권한 거부와 일시적 신호 장애를 구분하여 처리합니다.
+     * - 개발 환경(DEV)인 경우 에러 대신 가상 위치로 우회합니다.
      */
     const handleError = (err) => {
+      // [개발용 Fallback] 환경적 요인으로 신호가 없는 경우 강제로 가상 위치 할당
+      if (import.meta.env.DEV) {
+        console.warn('Real GPS failed, using Mock Location for development:', err.message);
+        setIsMocking(true);
+        handleSuccess({
+          coords: {
+            latitude: MAP_CONFIG.MOCK_POSITION[0],
+            longitude: MAP_CONFIG.MOCK_POSITION[1],
+            accuracy: 15
+          }
+        });
+        return;
+      }
+
       if (err.code === err.PERMISSION_DENIED) {
         // 실제 권한 상태를 재확인하여 오보를 방지
         if (navigator.permissions) {
@@ -117,7 +141,7 @@ export const useGeolocation = () => {
         }
         setLoading(false);
       } else if (err.code === err.POSITION_UNAVAILABLE) {
-        setError("위치 신호를 일시적으로 수신할 수 없거나 기기 위치 서비스가 꺼져 있습니다.");
+        setError(UI_TEXT.locationUnavailable);
         setLoading(false);
       } else if (err.code === err.TIMEOUT) {
         setError(UI_TEXT.gpsSearching);
@@ -145,6 +169,7 @@ export const useGeolocation = () => {
 
   return { 
     location, accuracy, error, loading, 
-    permissionStatus, isTrackingStarted, startTracking 
+    permissionStatus, isTrackingStarted, startTracking,
+    isMocking 
   };
 };

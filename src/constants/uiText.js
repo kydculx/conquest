@@ -1,35 +1,42 @@
 /**
- * 앱 전역에 걸쳐 사용되는 UI 텍스트 및 전술 상황 메시지 번들
+ * 어플리케이션 전역에서 사용되는 텍스트 정의
+ * - 'Advanced Tactical HUD V4.0' 컨셉에 맞춰 전문적이고 격식 있는 용어로 개편
  */
 export const UI_TEXT = {
-  selectTeamTitle: "프로토콜 초기화",
-  selectTeamSubtitle: "사이버 전쟁 커맨드에 접속할 진영을 선택하십시오.",
-  readyBtn: "작전 개시",
-  captureBtn: "구역 점령",
-  scanningBtn: "구역 스캔 중...",
-  recenterBtn: "내 위치로",
+  // 공통
+  appTitle: "NEXUS CONQUEST",
+  loading: "시스템 초기화 중...",
 
-  statusSyncing: "점령 점유 중...",
-  statusSignalWeak: "신호 약함",
-  statusReclaimed: "점령 완료",
-  statusCapture: "구역 점령",
-  statusProcessing: "진행 중...",
-  statusCaptureReady: "점령하기",
-  statusCapturingBase: "점령 중",
-  statusTargetMismatch: "목표 불일치",
+  // 팀 선택
+  selectTeam: "투입 진영을 선택하십시오.",
+  selectTeamTitle: "작전 진영 선택",
+  teamBlueTitle: "블루 센티널",
+  teamRedTitle: "레드 팬텀",
+  teamBlueDesc: "방어 및 보안 프로토콜 최적화 진영",
+  teamRedDesc: "공격 및 시스템 탈취 프로토콜 특화 진영",
 
-  permissionDenied: "위치 권한 거부됨",
-  gpsSearching: "GPS 신호를 찾는 중입니다...",
+  // 지도 액션
+  btnStartCapture: "구역 점령 개시",
+  btnCapturing: "업링크 동기화 중...",
+  btnCaptureDone: "구역 확보 완료",
 
-  alertNeutralCapture: "영토 확보: 새로운 구역을 점령했습니다.",
-  alertEnemyInvasion: "침공 발생! 적군이 우리 영토를 탈취했습니다.",
-  alertCounterCapture: "반격 성공! 적의 구역을 탈취했습니다.",
-  alertOtherTeamCapture: "전선 변화: 타 진영 간의 교전이 감지되었습니다.",
-  alertHubCapture: "전략 거점 확보! 해당 구역의 자원 생산 수율이 비약적으로 상승합니다.",
+  // 상태 메시지
+  statusCapture: "미확보 구역 탐지",
+  statusCaptureReady: "점령 프로토콜 가동 가능",
+  statusCapturingBase: "데이터 전송 및 동기화 중...",
+  statusReclaimed: "아군 점령 구역 (SECURED)",
+  statusSignalWeak: "GPS 신호 감쇠 - 개활지로 이동하십시오.",
+  statusTargetMismatch: "좌표 보정 필요: 위치를 중앙에 맞추십시오.",
+  statusProcessing: "데이터 패킷 처리 중...",
 
-  // 점령지 목록 관련
-  territoryListTitle: "전술 거점 목록",
-  territoryListEmpty: "확보된 거점이 없습니다.",
-  sectorLabel: "SECTOR",
-  totalCountLabel: "총 {n}개 구역 확보",
+  // 레이어 및 목록
+  territoryListTitle: "점령 구역 데이터베이스",
+  territoryListEmpty: "확보된 데이터가 없습니다. 구역 점령을 시작하십시오.",
+  hubsListTitle: "주요 전술 거점 (TACTICAL_HUBS)",
+
+  // 에러
+  locationDenied: "위치 권한 거부 - 작전 수행 불가",
+  locationError: "GPS 하드웨어 응답 없음",
+  locationUnavailable: "위치 서비스 이용 불가. 시스템 설정에서 GPS 권한을 확인한 후 'RECENTER' 버튼을 눌러 재시도하십시오.",
+  mockLocationNotice: "가상 위치 시뮬레이션 가동 중 (DEV_MODE)",
 };

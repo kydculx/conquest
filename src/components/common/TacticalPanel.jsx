@@ -24,12 +24,7 @@ const TacticalPanel = ({
 }) => {
   return (
     <div className={`hud-panel ${className}`} style={style}>
-      {/* 전역 장식 요소 */}
-      <div className="panel-scan-line"></div>
-      <div className="corner-bracket tl"></div>
-      <div className="corner-bracket tr"></div>
-      <div className="corner-bracket bl"></div>
-      <div className="corner-bracket br"></div>
+      {/* 구식 택티컬 스캔라인 및 꺾쇠 디자인 제거됨 (V3.1 다크/글래스모피즘) */}
       
       {/* 헤더 템플릿(선택 사항) */}
       {showHeader && (

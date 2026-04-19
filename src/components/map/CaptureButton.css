@@ -1,0 +1,119 @@
+/* ==========================================================================
+   CaptureButton (Advanced Tactical HUD - V4.0)
+   ========================================================================== */
+
+.capture-btn-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pop-adventure-btn {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-hud-bg);
+  backdrop-filter: var(--hud-blur);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  z-index: 10;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.pop-adventure-btn:hover:not(:disabled) {
+  border-color: rgba(var(--color-accent-rgb), 0.4);
+  background: rgba(var(--color-accent-rgb), 0.05);
+  transform: scale(1.05);
+}
+
+.pop-adventure-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.pop-adventure-btn:disabled {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.05);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-inner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 20;
+}
+
+.btn-icon {
+  color: #ffffff;
+  filter: drop-shadow(0 0 10px rgba(var(--color-accent-rgb), 0.6));
+  transition: transform 0.3s ease;
+}
+
+.btn-icon.pulse {
+  animation: pulseIcon 1.5s infinite alternate;
+}
+
+@keyframes pulseIcon {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(1.2); opacity: 1; }
+}
+
+.btn-label {
+  font-family: var(--font-family-mono); /* 전술 정보 명시를 위해 Mono 폰트 사용 */
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+/* 하이테크 점선 링 */
+.pop-adventure-btn::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: 50%;
+  border: 1px dashed rgba(var(--color-accent-rgb), 0.3);
+  animation: rotate-slow 15s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 팀별 네온 하이라이트 */
+.pop-adventure-btn.blue { border-color: rgba(0, 162, 255, 0.3); box-shadow: 0 0 25px rgba(0, 162, 255, 0.15); }
+.pop-adventure-btn.red { border-color: rgba(255, 59, 48, 0.3); box-shadow: 0 0 25px rgba(255, 59, 48, 0.15); }
+
+/* 점령 중 고출력 펄스 효과 */
+.btn-capture-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid var(--color-accent);
+  opacity: 0.8;
+  z-index: 1;
+  animation: tacticalPulse 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes tacticalPulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}

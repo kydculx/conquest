@@ -12,14 +12,14 @@ export const GAME_CONFIG = {
     VIBRATION_PATTERN: [30, 50, 30], // 점령 시작 시 진동 패턴
   },
 
-  // 전술 테마 색상 (Leaflet 컴포넌트용)
+  // 카툰 테마 색상 (Leaflet 컴포넌트용)
   COLORS: {
-    TEAM_BLUE: '#0066ff',
-    TEAM_RED: '#ff1744',
-    SIGNAL_STABLE: '#00ff88',
-    SIGNAL_UNSTABLE: '#ffd600',
-    TILE_HIGHLIGHT: 'rgba(0, 255, 200, 0.5)',
-    TERRITORY_GRID: 'rgba(0, 255, 200, 0.3)',
+    TEAM_BLUE: '#3A8DFF', // 선명한 스카이블루
+    TEAM_RED: '#FF4757',  // 쨍한 레드
+    SIGNAL_STABLE: '#2ED573', // 잔디색
+    SIGNAL_UNSTABLE: '#FFA502', // 치즈 오렌지
+    TILE_HIGHLIGHT: 'rgba(58, 141, 255, 0.5)',
+    TERRITORY_GRID: 'rgba(58, 141, 255, 0.3)',
     TRANSPARENT: 'transparent'
   },
 

@@ -1,26 +1,29 @@
 import { Marker, Popup } from 'react-leaflet';
 import { TACTICAL_HUBS } from '../../constants/tacticalHubs';
+import { useGame } from '../../hooks/useGame';
+import { getTileInfo } from '../../utils/geoUtils';
 import { 
-  specialHubIcon, 
-  metropolitanHubIcon, 
-  provincialHubIcon, 
-  cityHubIcon, 
-  countyHubIcon, 
-  districtHubIcon 
+  getSpecialHubIcon, 
+  getMetropolitanHubIcon, 
+  getProvincialHubIcon, 
+  getCityHubIcon, 
+  getCountyHubIcon, 
+  getDistrictHubIcon 
 } from './MapIcons';
+import { Activity } from 'lucide-react';
 
 /**
- * 전술 거점 등급별 아이콘 매퍼
+ * 전술 거점 등급별 아이콘 매퍼 (동적)
  */
-const getHubIcon = (type) => {
+const getHubIcon = (type, captureClass) => {
   switch (type) {
-    case 'special': return specialHubIcon;
-    case 'metropolitan': return metropolitanHubIcon;
-    case 'provincial': return provincialHubIcon;
-    case 'city': return cityHubIcon;
-    case 'county': return countyHubIcon;
-    case 'district': return districtHubIcon;
-    default: return cityHubIcon;
+    case 'special': return getSpecialHubIcon(captureClass);
+    case 'metropolitan': return getMetropolitanHubIcon(captureClass);
+    case 'provincial': return getProvincialHubIcon(captureClass);
+    case 'city': return getCityHubIcon(captureClass);
+    case 'county': return getCountyHubIcon(captureClass);
+    case 'district': return getDistrictHubIcon(captureClass);
+    default: return getCityHubIcon(captureClass);
   }
 };
 
@@ -43,29 +46,33 @@ const getHubTag = (type) => {
  * 전술 거점(시청, 군청, 구청)을 지도에 표시하는 레이어
  */
 const TacticalHubsLayer = () => {
+  const { capturedTiles } = useGame();
+
   return (
     <>
-      {TACTICAL_HUBS.map((hub) => (
-        <Marker 
-          key={hub.id} 
-          position={[hub.lat, hub.lng]} 
-          icon={getHubIcon(hub.type)}
-        >
-          <Popup className="tactical-popup">
-            <div className="hub-popup-content">
-              <span className={`hub-tag ${hub.type}`}>
-                {getHubTag(hub.type)}
-              </span>
-              <h3 className="hub-name">{hub.name}</h3>
-              <p className="hub-status">작전 구역 내 주요 거점</p>
-              <div className="hub-footer">
-                <span className="region-label">{hub.region} 섹터</span>
-                <span className="coords-label">{hub.lat.toFixed(3)}, {hub.lng.toFixed(3)}</span>
+      {TACTICAL_HUBS.map((hub) => {
+        // 거점 위치의 타일 점령 상태 파악
+        const tileInfo = getTileInfo(hub.lat, hub.lng);
+        const owner = capturedTiles[tileInfo.id]?.owner;
+        const captureClass = owner ? `captured-${owner}` : '';
+
+        return (
+          <Marker 
+            key={hub.id} 
+            position={[hub.lat, hub.lng]} 
+            icon={getHubIcon(hub.type, captureClass)}
+          >
+            <Popup className="tactical-popup">
+              <div className="hub-popup-content">
+                <h3 className="hub-name">{hub.name}</h3>
+                <div className="hub-footer">
+                  <span className="region-label">{hub.region} SECTOR_0{Math.floor(Math.random() * 9) + 1}</span>
+                </div>
               </div>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+            </Popup>
+          </Marker>
+        );
+      })}
     </>
   );
 };

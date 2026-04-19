@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Space+Grotesk:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap');
 @import './variables.css';
 
 * {
@@ -12,7 +12,6 @@ html, body {
   width: 100%;
   overflow: hidden;
   overscroll-behavior: none;
-  /* 모바일 시스템 스크롤 차단 */
   touch-action: none;
   -webkit-overflow-scrolling: auto;
 }
@@ -23,176 +22,90 @@ body {
   color: var(--color-text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  position: fixed; /* 페이지 전체 부유 방지 */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
   height: 100%;
   width: 100%;
-  
-  /* 텍스트 선택 및 드래그 방지 (앱 느낌 구현) */
   user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
-  -webkit-touch-callout: none;
 }
 
-/* 이미지 드래그 방지 */
-img {
-  -webkit-user-drag: none;
-  user-drag: none;
+/* 하이테크 텍스트 강조 */
+.text-outline {
+  color: var(--color-white);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-body::after {
-  opacity: 0;
+.text-pop {
+  color: var(--color-accent);
+  text-shadow: 0 0 14px rgba(var(--color-accent-rgb), 0.4);
 }
 
-/* Global Transitions */
-* {
-  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Glass Panel Utility - Cyber Tactical */
-.glass-panel {
-  background: var(--color-hud-bg);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--color-border-subtle);
-  box-shadow: var(--shadow-hud);
-  border-radius: var(--border-radius-lg);
-  position: relative;
-}
-
-.glass-panel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-cyber-green), transparent);
-}
-
-.text-gradient {
-  background: linear-gradient(180deg, var(--color-cyber-green) 0%, rgba(0, 255, 136, 0.6) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Common tactical button style - Cyber */
-.btn-tactical {
-  background: rgba(0, 255, 136, 0.05);
-  border: 1px solid var(--color-border-subtle);
-  color: var(--color-cyber-green);
-  padding: 10px 20px;
-  border-radius: var(--border-radius-md);
-  cursor: pointer;
-  font-family: var(--font-family-mono);
+/* 시스템 버튼 - 정교한 전술 인터페이스 */
+.btn-cartoon, .btn-tactical {
+  background-color: var(--color-hud-bg);
+  backdrop-filter: var(--hud-blur);
+  border: var(--border-bold);
+  border-bottom: 2px solid rgba(var(--color-accent-rgb), 0.5);
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-family: var(--font-family-base);
   font-weight: 700;
-  letter-spacing: 2px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-transform: uppercase;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  letter-spacing: 1px;
+  gap: 10px;
 }
 
-.btn-tactical::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
-  transition: left 0.5s ease;
+.btn-cartoon:active, .btn-tactical:active {
+  transform: scale(0.96);
+  background-color: rgba(var(--color-accent-rgb), 0.2);
+  border-color: var(--color-accent);
 }
 
-.btn-tactical:active {
-  transform: scale(0.95);
-  background: rgba(0, 255, 136, 0.15);
-}
-
-.btn-tactical:active {
-  transform: scale(0.95);
-}
-
-/* Glitch Text Effect */
-@keyframes glitch {
-  0%, 100% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.8s ease forwards;
-}
-
-/* Pulse Animation */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-.animate-pulse {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* --- Tactical HUD Panel Global System --- */
-.hud-panel {
-  background: var(--color-hud-bg);
-  backdrop-filter: var(--glass-blur) saturate(200%);
-  -webkit-backdrop-filter: var(--glass-blur) saturate(200%);
-  border: 1px solid var(--color-border-focus);
-  box-shadow: var(--shadow-hud);
-  border-radius: var(--border-radius-lg);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.panel-scan-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
+/* 전용 상태 버튼 클래스 (유지보수를 위해 공통화) */
+.btn-tactical.active {
   background: var(--color-accent);
-  opacity: 0.3;
-  z-index: 10;
-  animation: globalTacticalScan 4s linear infinite;
-  pointer-events: none;
+  color: #000;
+  border-color: #000;
+  box-shadow: 0 0 20px rgba(var(--color-accent-rgb), 0.4);
 }
 
-@keyframes globalTacticalScan {
-  0% { top: -2px; }
-  100% { top: 100%; }
+/* 고심도 전술 패널 시스템 */
+.cartoon-panel, .glass-panel, .hud-panel {
+  background: var(--color-hud-bg) !important;
+  backdrop-filter: var(--hud-blur) !important;
+  border: var(--border-bold) !important;
+  box-shadow: var(--shadow-cartoon) !important;
+  border-radius: 20px !important;
+  position: relative;
+  overflow: hidden;
 }
 
-.corner-bracket {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border: 2px solid var(--color-accent);
-  opacity: 0.8;
-  z-index: 5;
-  transition: all 0.3s ease;
+/* 공통 애니메이션 */
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-/* 곡률(12px)에 맞춘 브래킷 배치 최적화 */
-.corner-bracket.tl { top: 6px; left: 6px; border-right: none; border-bottom: none; }
-.corner-bracket.tr { top: 6px; right: 6px; border-left: none; border-bottom: none; }
-.corner-bracket.bl { bottom: 6px; left: 6px; border-right: none; border-top: none; }
-.corner-bracket.br { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+.animate-pop {
+  animation: bounceIn 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}

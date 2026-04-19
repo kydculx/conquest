@@ -28,11 +28,13 @@ const CapturedTilesLayer = React.memo(() => {
         <Polygon
           positions={blueCoords}
           pathOptions={{
-            color: 'transparent',
+            color: '#000000',      // 강렬한 블랙 테두리
             fillColor: GAME_CONFIG.COLORS.TEAM_BLUE,
-            fillOpacity: 0.35,
-            weight: 0,
-            smoothFactor: 0.5
+            fillOpacity: 0.8,
+            weight: 3,             // 굵은 선 (Cartoon Style)
+            lineJoin: 'round',
+            smoothFactor: 1,
+            className: 'captured-hex team-blue-hex'
           }}
           interactive={false}
         />
@@ -43,11 +45,13 @@ const CapturedTilesLayer = React.memo(() => {
         <Polygon
           positions={redCoords}
           pathOptions={{
-            color: 'transparent',
+            color: '#000000',      // 강렬한 블랙 테두리
             fillColor: GAME_CONFIG.COLORS.TEAM_RED,
-            fillOpacity: 0.35,
-            weight: 0,
-            smoothFactor: 0.5
+            fillOpacity: 0.8,
+            weight: 3,             // 굵은 선 (Cartoon Style)
+            lineJoin: 'round',
+            smoothFactor: 1,
+            className: 'captured-hex team-red-hex'
           }}
           interactive={false}
         />

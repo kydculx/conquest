@@ -1,125 +1,156 @@
-.score-hud-container {
-  /* 상단 중앙 고정 및 폭 고정 */
-  position: fixed;
-  top: 4px; /* 살짝 위로 붙임 */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10010;
+/* ==========================================================================
+   ScoreHUD (Advanced Tactical HUD - V4.0)
+   ========================================================================== */
 
-  /* 글로벌 .hud-panel 클래스를 사용하므로 고유 레이아웃만 설정 */
-  display: flex;
-  flex-direction: column;
-  width: 320px; /* 가독성을 위해 넓이 약간 확장 */
-  padding: 8px 24px;
-}
-
-/* 전역 .panel-scan-line, .corner-bracket 클래스를 사용하므로 로컬 스타일 제거 */
-
-.hud-header-center {
+.adventure-scoreboard-container {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  right: 20px;
+  z-index: var(--z-hud);
   display: flex;
   justify-content: center;
-  margin-bottom: 2px;
-  border-bottom: 1px solid var(--color-border-subtle);
-  padding-bottom: 2px;
+  pointer-events: none;
 }
 
-.monitoring-label {
-  font-family: var(--font-family-mono);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--color-accent);
-  opacity: 0.8;
+.scoreboard-frame {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-hud-bg);
+  backdrop-filter: var(--hud-blur);
+  border: var(--border-bold);
+  border-radius: 12px;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  height: 60px;
+  animation: slideDownFade 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-.score-main-section {
+@keyframes slideDownFade {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.scoreboard-side {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
-.team-stats {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 70px;
+.team-score {
+  font-family: var(--font-family-mono);
+  /* 수치는 전술적 Mono 폰트 사용 */
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  min-width: 4.5rem;
+  text-align: center;
 }
 
-.team-stats.blue {
-  align-items: flex-start;
-  text-align: left;
-}
-
-.team-stats.red {
-  align-items: flex-end;
+.team-blue .team-score {
+  color: var(--color-neon-blue);
+  text-shadow: 0 0 10px rgba(0, 162, 255, 0.4);
   text-align: right;
 }
 
-.team-name {
-  font-family: var(--font-family-mono);
-  font-size: 0.55rem;
-  font-weight: 700;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.score-val {
-  font-family: var(--font-family-mono);
-  font-size: 1.25rem;
-  font-weight: 900;
-  line-height: 1;
-  margin-top: 1px;
-}
-
-.blue .score-val {
-  color: var(--color-neon-blue);
-  text-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.4);
-}
-
-.red .score-val {
+.team-red .team-score {
   color: var(--color-neon-red);
-  text-shadow: 0 0 15px rgba(255, 23, 68, 0.4);
+  text-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
+  text-align: left;
 }
 
-/* 점유율 게이지 바 */
-.dominance-gauge {
+/* 중앙 매치 상태 */
+.scoreboard-center {
   flex: 1;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
-  overflow: visible;
-  margin: 0 4px;
+}
+
+.hud-vs-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.hud-team-icon {
+  opacity: 0.8;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.hud-team-icon.blue { color: var(--color-neon-blue); }
+.hud-team-icon.red { color: var(--color-neon-red); }
+
+.vs-pop-badge {
+  font-family: var(--font-family-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 2px;
+  opacity: 0.4;
+}
+
+.dominance-gauge {
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  display: flex;
+  overflow: hidden;
 }
 
 .gauge-fill {
   height: 100%;
   transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
 }
 
-.gauge-fill.blue {
+.blue-fill {
   background: var(--color-neon-blue);
-  box-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
-  border-radius: 3px 0 0 3px;
+  box-shadow: 0 0 10px var(--color-neon-blue);
 }
 
-.gauge-fill.red {
+.red-fill {
   background: var(--color-neon-red);
-  box-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
-  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 10px var(--color-neon-red);
 }
 
-.vs-label {
-  position: absolute;
-  top: -16px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-family-mono);
-  font-size: 0.5rem;
-  font-weight: 800;
-  color: var(--color-text-secondary);
-  opacity: 0.5;
+@media (max-width: 400px) {
+  .scoreboard-frame {
+    height: 52px;
+    max-width: 100%;
+  }
+
+  .team-score {
+    font-size: 1.2rem;
+    min-width: 3.5rem;
+  }
+
+  .scoreboard-side {
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .vs-pop-badge {
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+  }
 }

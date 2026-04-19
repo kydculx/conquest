@@ -57,11 +57,10 @@ const TerritoryGrid = () => {
     <Polygon
       positions={multiPolygonCoords}
       pathOptions={{
-        color: GAME_CONFIG.COLORS.TERRITORY_GRID,
+        color: 'rgba(255, 255, 255, 0.4)', // 깨끗하고 우아한 흰색 베이스 라인
         fillColor: 'transparent',
-        weight: 1.5,
         fillOpacity: 0,
-        dashArray: '2, 5',
+        weight: 1.5,
         interactive: false,
         smoothFactor: 1
       }}

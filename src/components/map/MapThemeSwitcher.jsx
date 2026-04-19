@@ -1,74 +1,103 @@
-import { useState, useRef, useEffect } from 'react';
-import { Layers, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { Layers, Check, X } from 'lucide-react';
 import { useGame } from '../../hooks/useGame';
 import { MAP_THEMES } from '../../constants/mapConfig';
-import TacticalPanel from '../common/TacticalPanel';
 import './MapThemeSwitcher.css';
 
 /**
- * 지도 테마 전환 컴포넌트 (우측 상단 플로팅)
+ * MapThemeSwitcher: 지도 테마 바꾸기 컴포넌트
+ * - 리뉴얼: 하단 독 내 버튼 배치 및 카툰 모달 스타일 적용
  */
 const MapThemeSwitcher = () => {
   const { mapThemeId, saveMapTheme } = useGame();
   const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef(null);
 
-  // 메뉴 외부 클릭 시 닫기
+  // 모달이 열릴 때 Body 스크롤 제한
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   const handleToggle = () => setIsOpen(!isOpen);
 
   const handleSelect = (id) => {
     saveMapTheme(id);
-    setIsOpen(false);
+    setTimeout(() => setIsOpen(false), 300);
   };
 
   return (
-    <div className={`map-theme-switcher ${isOpen ? 'is-open' : ''}`} ref={menuRef}>
-      <button
-        className={`theme-trigger ${isOpen ? 'active' : ''}`}
-        onClick={handleToggle}
-        title="지도 테마 변경"
-      >
-        <Layers size={20} />
-      </button>
-
-      {isOpen && (
-        <TacticalPanel 
-          className="theme-menu"
-          showHeader={true}
-          title="지도 레이어 설정"
-          subtitle="전술 지도 오버레이"
-          icon={Layers}
+    <>
+      <div className="adventure-theme-switcher">
+        <button
+          className={`theme-pop-btn ${isOpen ? 'active' : ''}`}
+          onClick={handleToggle}
+          title="지도 테마 바꾸기"
         >
-          <div className="theme-options">
-            {Object.values(MAP_THEMES).map((theme) => (
-              <button
-                key={theme.id}
-                className={`theme-option ${mapThemeId === theme.id ? 'selected' : ''}`}
-                onClick={() => handleSelect(theme.id)}
-              >
-                <div
-                  className="theme-preview"
-                  style={{ backgroundColor: theme.preview }}
-                >
-                  {mapThemeId === theme.id && <Check size={14} />}
-                </div>
-                <span className="theme-name">{theme.name}</span>
+          <Layers size={22} />
+        </button>
+      </div>
+
+      {isOpen && createPortal(
+        <div className="pop-modal-overlay" onClick={() => setIsOpen(false)}>
+          <div className="pop-theme-modal" onClick={(e) => e.stopPropagation()}>
+            {/* Header Section */}
+            <div className="pop-modal-header">
+              <div className="header-icon-badge">
+                <Layers size={20} />
+              </div>
+              <div className="header-title-group">
+                <h3 className="pop-title">세상 테마 바꾸기</h3>
+                <p className="pop-subtitle">CHOOSE YOUR WORLD THEME</p>
+              </div>
+              <button className="pop-modal-close" onClick={() => setIsOpen(false)}>
+                <X size={20} />
               </button>
-            ))}
+            </div>
+
+            {/* Options Grid */}
+            <div 
+              className="pop-modal-content"
+              onWheel={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+            >
+              <div className="theme-pop-grid">
+                {Object.values(MAP_THEMES).map((theme) => (
+                  <button
+                    key={theme.id}
+                    className={`theme-pop-card ${mapThemeId === theme.id ? 'selected' : ''}`}
+                    onClick={() => handleSelect(theme.id)}
+                  >
+                    <div className="theme-pop-visual" style={{ background: theme.preview }}>
+                      {mapThemeId === theme.id && (
+                        <div className="pop-selection-marker">
+                          <Check size={16} strokeWidth={4} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="theme-pop-info">
+                      <span className="theme-pop-label">{theme.name}</span>
+                      <span className="theme-pop-action">선택하기</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom Tip */}
+            <div className="pop-modal-footer">
+              <span className="footer-tip">팁: 카툰 모드가 가장 예뻐요! ✨</span>
+            </div>
           </div>
-        </TacticalPanel>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 };
 

@@ -21,7 +21,13 @@ export const GameProvider = ({ children }) => {
 
   // 지도 테마 상태 (로컬 스토리지와 동기화)
   const [mapThemeId, setMapThemeId] = useState(() => {
-    return localStorage.getItem('conquest_map_theme') || 'grey';
+    const savedTheme = localStorage.getItem('conquest_map_theme');
+    // 구식 테마(grey, dark 등)가 저장되어 있거나 없는 경우 'voyager'로 마이그레이션
+    const validThemes = ['voyager', 'colorpop', 'sketch', 'satellite'];
+    if (savedTheme && validThemes.includes(savedTheme)) {
+      return savedTheme;
+    }
+    return 'voyager';
   });
 
   // 자동 점령 활성화 상태 (로컬 스토리지와 동기화)

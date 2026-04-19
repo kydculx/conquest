@@ -3,6 +3,7 @@
  * - Leaflet의 L.divIcon을 사용하여 CSS 기반의 커스텀 애니메이션 아이콘을 생성합니다.
  */
 import L from 'leaflet';
+import './MapMarkers.css';
 
 /**
  * 전술 맵에 사용되는 커스텀 플레이어 마커 아이콘 생성기
@@ -27,83 +28,39 @@ export const bluePlayerIcon = createPlayerIcon('blue-marker');
 export const redPlayerIcon = createPlayerIcon('red-marker');
 
 /**
- * 전술 거점(Hub) 등급별 아이콘 정의
+ * 전술 거점(Hub) 등급별 아이콘 생성기
  */
+const createHubIcon = (hubTypeClass, size, captureClass = '') => L.divIcon({
+  className: 'custom-leaflet-icon hub-marker-transition',
+  html: `
+    <div class="marker-wrapper ${hubTypeClass} ${captureClass}">
+      <div class="marker-core"></div>
+      ${hubTypeClass.includes('special') || hubTypeClass.includes('metropolitan') || hubTypeClass.includes('provincial') 
+        ? `<div class="major-ring ${hubTypeClass.includes('special') ? 'double' : ''}"></div>` 
+        : ''}
+    </div>
+  `,
+  iconSize: [size, size],
+  iconAnchor: [size / 2, size / 2],
+});
 
 // 1. 특별시청 (Special - Seoul)
-export const specialHubIcon = L.divIcon({
-  className: 'custom-leaflet-icon hub-marker-transition',
-  html: `
-    <div class="marker-wrapper special-marker">
-      <div class="marker-core"></div>
-      <div class="major-ring double"></div>
-    </div>
-  `,
-  iconSize: [64, 64],
-  iconAnchor: [32, 32],
-});
+export const getSpecialHubIcon = (captureClass) => createHubIcon('special-marker', 64, captureClass);
 
 // 2. 광역시청 (Metropolitan)
-export const metropolitanHubIcon = L.divIcon({
-  className: 'custom-leaflet-icon hub-marker-transition',
-  html: `
-    <div class="marker-wrapper metropolitan-marker">
-      <div class="marker-core"></div>
-      <div class="major-ring"></div>
-    </div>
-  `,
-  iconSize: [56, 56],
-  iconAnchor: [28, 28],
-});
+export const getMetropolitanHubIcon = (captureClass) => createHubIcon('metropolitan-marker', 56, captureClass);
 
 // 3. 도청/특별자치 (Provincial)
-export const provincialHubIcon = L.divIcon({
-  className: 'custom-leaflet-icon hub-marker-transition',
-  html: `
-    <div class="marker-wrapper provincial-marker">
-      <div class="marker-core"></div>
-      <div class="major-ring flat"></div>
-    </div>
-  `,
-  iconSize: [52, 52],
-  iconAnchor: [26, 26],
-});
+export const getProvincialHubIcon = (captureClass) => createHubIcon('provincial-marker', 52, captureClass);
 
 // 4. 일반 시청 (City)
-export const cityHubIcon = L.divIcon({
-  className: 'custom-leaflet-icon hub-marker-transition',
-  html: `
-    <div class="marker-wrapper city-marker">
-      <div class="marker-core"></div>
-    </div>
-  `,
-  iconSize: [42, 42],
-  iconAnchor: [21, 21],
-});
+export const getCityHubIcon = (captureClass) => createHubIcon('city-marker', 42, captureClass);
 
 // 5. 일반 군청 (County)
-export const countyHubIcon = L.divIcon({
-  className: 'custom-leaflet-icon hub-marker-transition',
-  html: `
-    <div class="marker-wrapper county-marker">
-      <div class="marker-core"></div>
-    </div>
-  `,
-  iconSize: [36, 36],
-  iconAnchor: [18, 18],
-});
+export const getCountyHubIcon = (captureClass) => createHubIcon('county-marker', 36, captureClass);
 
 // 6. 구청 (District)
-export const districtHubIcon = L.divIcon({
-  className: 'custom-leaflet-icon hub-marker-transition',
-  html: `
-    <div class="marker-wrapper district-marker">
-      <div class="marker-core"></div>
-    </div>
-  `,
-  iconSize: [40, 40],
-  iconAnchor: [20, 20],
-});
+export const getDistrictHubIcon = (captureClass) => createHubIcon('district-marker', 40, captureClass);
 
-// 하위 호환성을 위한 기본 허브 아이콘 (City와 동일)
-export const hubIcon = cityHubIcon;
+// 하위 호환성을 위한 기본 허브 아이콘
+export const hubIcon = (captureClass) => getCityHubIcon(captureClass);

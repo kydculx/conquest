@@ -1,30 +1,35 @@
 .tactical-alerts-container {
   position: fixed;
-  top: 80px;
+  top: 90px;
   right: 20px;
   z-index: 20000;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   pointer-events: none;
-  max-width: 340px;
+  max-width: 320px;
   width: calc(100% - 40px);
 }
 
 .tactical-alert {
   pointer-events: auto;
-  padding: 14px 16px;
-  border-radius: 6px;
+  padding: 14px 18px;
+  border-radius: 12px;
   background: var(--color-hud-bg);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--color-border-subtle);
-  box-shadow: var(--shadow-hud);
+  backdrop-filter: var(--hud-blur);
+  border: var(--border-bold);
+  box-shadow: var(--shadow-cartoon-sm);
   display: flex;
   align-items: center;
-  gap: 12px;
-  animation: alert-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  gap: 14px;
+  animation: alert-pop-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   position: relative;
   overflow: hidden;
+}
+
+@keyframes alert-pop-in {
+  from { opacity: 0; transform: scale(0.8) translateX(50px); }
+  to { opacity: 1; transform: scale(1) translateX(0); }
 }
 
 .tactical-alert::before {
@@ -33,46 +38,32 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 8px;
 }
 
-.tactical-alert::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
-}
+.tactical-alert.info { border-color: rgba(0, 162, 255, 0.5); }
+.tactical-alert.info::before { background: var(--color-neon-blue); box-shadow: 0 0 10px var(--color-neon-blue); }
+.tactical-alert.info .alert-message { color: var(--color-text-primary); }
 
-.tactical-alert.info { border-left-color: var(--color-neon-blue); }
-.tactical-alert.info::before { background: var(--color-neon-blue); }
-.tactical-alert.info .alert-icon { color: var(--color-neon-blue); }
+.tactical-alert.warning { border-color: rgba(241, 196, 15, 0.5); }
+.tactical-alert.warning::before { background: var(--color-cyber-yellow); box-shadow: 0 0 10px var(--color-cyber-yellow); }
 
-.tactical-alert.warning { border-left-color: var(--color-cyber-yellow); }
-.tactical-alert.warning::before { background: var(--color-cyber-yellow); }
-.tactical-alert.warning .alert-icon { color: var(--color-cyber-yellow); }
+.tactical-alert.danger { border-color: rgba(255, 59, 48, 0.5); }
+.tactical-alert.danger::before { background: var(--color-neon-red); box-shadow: 0 0 10px var(--color-neon-red); }
 
-.tactical-alert.danger { border-left-color: var(--color-neon-red); }
-.tactical-alert.danger::before { background: var(--color-neon-red); }
-.tactical-alert.danger .alert-icon { color: var(--color-neon-red); }
-
-.tactical-alert.success { border-left-color: var(--color-cyber-green); }
-.tactical-alert.success::before { background: var(--color-cyber-green); }
-.tactical-alert.success .alert-icon { color: var(--color-cyber-green); }
+.tactical-alert.success { border-color: rgba(46, 204, 113, 0.5); }
+.tactical-alert.success::before { background: var(--color-cyber-green); box-shadow: 0 0 10px var(--color-cyber-green); }
 
 .alert-content {
   flex: 1;
 }
 
 .alert-message {
-  font-family: var(--font-family-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-family: var(--font-family-base);
+  font-size: 0.95rem;
+  font-weight: 700;
   color: var(--color-text-primary);
-  line-height: 1.5;
-  letter-spacing: 0.5px;
+  line-height: 1.3;
 }
 
 .alert-icon {
@@ -80,43 +71,23 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 4px;
-  border-radius: 4px;
-  background: rgba(0, 255, 136, 0.05);
-}
-
-@keyframes alert-slide-in {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
 }
 
 .tactical-alert.exiting {
-  animation: alert-slide-out 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: alert-pop-out 0.4s ease-in forwards;
 }
 
-@keyframes alert-slide-out {
-  to {
-    opacity: 0;
-    transform: translateX(30px);
-  }
+@keyframes alert-pop-out {
+  to { opacity: 0; transform: scale(0.5) translateX(100px); }
 }
 
 @media (max-width: 768px) {
   .tactical-alerts-container {
-    top: calc(env(safe-area-inset-top, 20px) + 60px);
+    top: calc(env(safe-area-inset-top, 20px) + 70px);
     right: 15px;
     left: 15px;
     width: auto;
     max-width: none;
-  }
-
-  .alert-message {
-    font-size: 0.7rem;
   }
 }

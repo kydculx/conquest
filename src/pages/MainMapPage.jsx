@@ -1,18 +1,17 @@
 /**
- * "CONQUEST" 어플리케이션의 핵심 페이지: 메인 전술 지도 화면
- * - 실시간 GPS 추적, 헥사곤 그리드 기반 영토 렌더링, 점령 인터페이스를 총괄합니다.
+ * "COLOR CONQUEST" 어플리케이션의 핵심 페이지: 메인 모험 지도 화면
+ * - 실시간 GPS 추적, 헥사곤 그리드 기반 컬러링 인터페이스를 총괄합니다.
  */
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Crosshair } from 'lucide-react';
+import { Crosshair, Target, Map as MapIcon } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useCaptureLogic } from '../hooks/useCaptureLogic';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { TEAM_BLUE, TEAM_RED, UI_TEXT, MAP_CONFIG, MAP_THEMES, GAME_CONFIG } from '../constants';
+import { TEAM_BLUE, TEAM_RED, UI_TEXT, MAP_CONFIG, GAME_CONFIG } from '../constants';
 import { getTileInfo } from '../utils/geoUtils';
-import { getSignalStatus } from '../utils/locationUtils';
-import { MapContainer, TileLayer, Marker, Polygon, Circle } from 'react-leaflet';
+import { MapContainer, Marker, Circle } from 'react-leaflet';
 
 import MapUpdater from '../components/map/MapUpdater';
 import { bluePlayerIcon, redPlayerIcon } from '../components/map/MapIcons';
@@ -20,27 +19,28 @@ import TileScanOverlay from '../components/map/TileScanOverlay';
 import ScoreHUD from '../components/map/ScoreHUD';
 import CaptureButton from '../components/map/CaptureButton';
 import RecentButton from '../components/map/RecentButton';
-import TerritoryGrid from '../components/map/TerritoryGrid';
 import MapThemeSwitcher from '../components/map/MapThemeSwitcher';
-import TerritoryList from '../components/map/TerritoryList';
 import CenterTileLayer from '../components/map/CenterTileLayer';
+import TacticalDataModal from '../components/map/TacticalDataModal';
 import CapturedTilesLayer from '../components/map/CapturedTilesLayer';
+import { useMap } from 'react-leaflet';
 import PermissionDenied from '../components/map/PermissionDenied';
 import TacticalHubsLayer from '../components/map/TacticalHubsLayer';
 import AutoCaptureEngine from '../components/map/AutoCaptureEngine';
 import AutoCaptureToggle from '../components/map/AutoCaptureToggle';
 import './MainMapPage.css';
+
 /**
- * 전술 지도 메인 컴포넌트
+ * 모험 지도 메인 컴포넌트
  */
 const MainMapPage = () => {
   const navigate = useNavigate();
 
   // 1. 전역 게임 상태 및 위치 정보 훅 연결
-  const { selectedTeam, score, capturedTiles, mapThemeId, autoCaptureEnabled } = useGame();
+  const { selectedTeam, score, capturedTiles, autoCaptureEnabled } = useGame();
   const {
     location, accuracy, error, permissionStatus,
-    isTrackingStarted, startTracking
+    isTrackingStarted, startTracking, isMocking
   } = useGeolocation();
 
   // 2. 점령 비즈니스 로직 훅 연결
@@ -54,6 +54,19 @@ const MainMapPage = () => {
   // 4. 로컬 UI 상태
   const [recenterTrigger, setRecenterTrigger] = useState(0);
   const [centerTile, setCenterTile] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mapInstance, setMapInstance] = useState(null);
+
+  /**
+   * 지도 객체를 상위 상태로 추출하기 위한 내부 헬퍼 컴포넌트
+   */
+  const MapInstanceGetter = () => {
+    const map = useMap();
+    useEffect(() => {
+      if (map) setMapInstance(map);
+    }, [map]);
+    return null;
+  };
 
   const currentTile = useMemo(() => {
     if (!location) return null;
@@ -73,9 +86,9 @@ const MainMapPage = () => {
   }, [currentTile, startCapture]);
 
   const handleRecentClick = useCallback(() => {
-    if (!isTrackingStarted) startTracking();
+    startTracking(); // 에러 초기화 및 재시도 포함
     setRecenterTrigger(prev => prev + 1);
-  }, [isTrackingStarted, startTracking]);
+  }, [startTracking]);
 
   useEffect(() => {
     if (!selectedTeam) navigate('/', { replace: true });
@@ -91,27 +104,18 @@ const MainMapPage = () => {
   // 플레이어 아이콘 및 위치 설정
   const playerIcon = selectedTeam === TEAM_BLUE.id ? bluePlayerIcon : redPlayerIcon;
   const effectivePosition = location || MAP_CONFIG.DEFAULT_POSITION;
-  const signal = getSignalStatus(accuracy);
 
   const getCaptureStatusText = () => {
     if (isCapturing) {
-      const prefix = autoCaptureEnabled ? "자동 " : "";
-      return `${prefix}${UI_TEXT.statusCapturingBase} ${Math.round(captureProgress)}%`;
+      return `${UI_TEXT.btnCapturing} ${Math.round(captureProgress)}%`;
     }
-    // 조준 정렬이 되지 않은 경우를 우선적으로 안내
-    if (currentTile && !isTargetAligned) return UI_TEXT.statusTargetMismatch;
 
-    if (captureCheck.reason === 'signal') return UI_TEXT.statusSignalWeak;
     if (captureCheck.reason === 'owned' || isCapturedByMe) {
-      return autoCaptureEnabled ? `자동 ${UI_TEXT.statusReclaimed}` : UI_TEXT.statusReclaimed;
+      return UI_TEXT.statusReclaimed;
     }
     if (captureCheck.reason === 'busy') return UI_TEXT.statusProcessing;
 
-    // 자동 점령 활성화 시 텍스트 변경
-    if (isEnemyTile) {
-      return autoCaptureEnabled ? "자동 점령하기" : UI_TEXT.statusCaptureReady;
-    }
-    return autoCaptureEnabled ? "자동 구역 점령" : UI_TEXT.statusCapture;
+    return UI_TEXT.btnStartCapture;
   };
 
   const getCaptureStatusType = () => {
@@ -123,11 +127,8 @@ const MainMapPage = () => {
   };
 
   const getCaptureDisabled = () => {
-    // 1. 이미 점령 중이면 버튼을 누를 수 있음 (진행 상황 확인용) - 사실상 비활성화 대신 텍스트로 표현 가능
     if (isCapturing) return false;
-
-    // 2. 점령 가능 상태가 아니거나, 타겟 조준이 정렬되지 않았으면 비활성화
-    return !captureCheck.canCapture || !isTargetAligned;
+    return !captureCheck.canCapture;
   };
 
   // 자동 점령 활성화 시 화면 유지 강제
@@ -139,119 +140,98 @@ const MainMapPage = () => {
     }
   }, [autoCaptureEnabled, requestWakeLock, releaseWakeLock]);
 
-  // 실제 권한이 거부되었고, 캐시된 위치 정보조차 없는 경우에만 차단 화면 노출
-  // 이미 위치 정보가 있다면 신호가 불안정하더라도 지도를 계속 보여줌
   if (permissionStatus === 'denied' && !location) {
     return <PermissionDenied />;
   }
 
   return (
     <div className={`map-page team-${selectedTeam} ${isCapturing ? 'is-capturing' : ''}`}>
-      <div className="scanline-overlay"></div>
+      {/* 글로벌 전술 오버레이 (스캔라인/그리드) */}
+      <div className="global-tactical-overlay"></div>
 
+      {/* HUD 상단: 스코어 */}
       <ScoreHUD score={score} />
 
-      {/* GPS 상태 인디케이터 */}
-      <div className={`gps-status-bar ${signal.class} ${error ? 'has-error' : ''}`}>
-        <div className="status-dot"></div>
-        <span className="status-label">{error || signal.label}</span>
-        {accuracy && <span className="accuracy-value">±{Math.round(accuracy)}m</span>}
+      <div className="adventure-map-view">
+        <MapContainer
+          center={MAP_CONFIG.DEFAULT_POSITION}
+          zoom={MAP_CONFIG.DEFAULT_ZOOM}
+          minZoom={MAP_CONFIG.MIN_ZOOM}
+          maxZoom={MAP_CONFIG.MAX_ZOOM}
+          zoomControl={false}
+          tap={false}
+          className="cartoon-map-container"
+        >
+
+          <MapUpdater center={location} recenterTrigger={recenterTrigger} />
+          <CapturedTilesLayer />
+          <TacticalHubsLayer />
+          <CenterTileLayer onTileChange={setCenterTile} />
+
+          <AutoCaptureEngine
+            location={location}
+            tileId={currentTile?.id}
+            canCapture={captureCheck}
+            isTargetAligned={isTargetAligned}
+            isCapturing={isCapturing}
+            onCapture={handleCapture}
+          />
+
+
+          <Marker position={effectivePosition} icon={playerIcon} />
+          <MapInstanceGetter />
+        </MapContainer>
       </div>
 
-      <div className="map-view">
-        <div className="tactical-overlay-container">
-          <MapContainer
-            center={MAP_CONFIG.DEFAULT_POSITION}
-            zoom={MAP_CONFIG.DEFAULT_ZOOM}
-            minZoom={MAP_CONFIG.MIN_ZOOM}
-            maxZoom={MAP_CONFIG.MAX_ZOOM}
-            zoomControl={false}
-            preferCanvas={true}
-            className="real-map-container"
-          >
-            <TileLayer
-              attribution={MAP_THEMES[mapThemeId]?.attribution || MAP_THEMES.dark.attribution}
-              url={MAP_THEMES[mapThemeId]?.url || MAP_THEMES.dark.url}
-            />
-
-
-            <MapUpdater center={location} recenterTrigger={recenterTrigger} />
-
-            {/* 최적화 레이어: 이동 중 숨김 및 상태 격리 적용 */}
-            <TerritoryGrid />
-            <CapturedTilesLayer />
-            <TacticalHubsLayer />
-            <CenterTileLayer onTileChange={setCenterTile} />
-
-            {/* 자동 조준 및 점령 엔진 (모듈화된 로직) */}
-            <AutoCaptureEngine
-              location={location}
-              tileId={currentTile?.id}
-              canCapture={captureCheck}
-              isTargetAligned={isTargetAligned}
-              isCapturing={isCapturing}
-              onCapture={handleCapture}
-            />
-
-            {location && accuracy && (
-              <Circle
-                center={location}
-                radius={accuracy}
-                pathOptions={{
-                  color: GAME_CONFIG.COLORS.TRANSPARENT,
-                  fillColor: signal.class === 'stable' ? GAME_CONFIG.COLORS.SIGNAL_STABLE : GAME_CONFIG.COLORS.SIGNAL_UNSTABLE,
-                  fillOpacity: 0.08,
-                  weight: 0
-                }}
-              />
-            )}
-
-            {currentTile && (
-              <Polygon
-                key={`current-${currentTile.id}`}
-                positions={currentTile.bounds || currentTile.coords}
-                pathOptions={{
-                  color: selectedTeam === TEAM_BLUE.id ? GAME_CONFIG.COLORS.TEAM_BLUE : GAME_CONFIG.COLORS.TEAM_RED,
-                  fillColor: GAME_CONFIG.COLORS.TRANSPARENT,
-                  fillOpacity: 0,
-                  weight: 1,
-                  dashArray: '5, 5',
-                  smoothFactor: 0
-                }}
-              />
-            )}
-
-            <TileScanOverlay tile={currentTile} isCapturing={isCapturing} teamColor={selectedTeam} />
-
-            <Marker position={effectivePosition} icon={playerIcon} />
-            <TerritoryList />
-          </MapContainer>
-        </div>
-
-        {/* 정중앙 전술 십자선 */}
-        <div className="crosshair-center">
-          <div className="crosshair-outer"></div>
-          <div className="crosshair-inner">
-            <Crosshair size={32} className={`active-target ${isCapturing ? 'capturing' : ''}`} />
-          </div>
+      {/* 팝한 타켓 가이드 (Crosshair 적용) */}
+      <div className="adventure-target-guide">
+        <div className="target-ring"></div>
+        <div className="target-center">
+          <Crosshair size={36} className={`target-icon ${isCapturing ? 'spinning' : ''}`} />
         </div>
       </div>
 
-      <RecentButton onClick={handleRecentClick} />
-
-      <div className="map-settings-group">
-        <AutoCaptureToggle />
-        <MapThemeSwitcher />
-      </div>
-
-      <CaptureButton
-        team={selectedTeam}
-        isCapturing={isCapturing}
-        statusType={getCaptureStatusType()}
-        onClick={handleCapture}
-        statusText={getCaptureStatusText()}
-        disabled={getCaptureDisabled()}
+      {/* 구역 목록 모달 */}
+      <TacticalDataModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        map={mapInstance}
       />
+
+      {/* 상태 안내 말풍선 영역 */}
+      <div className="floating-status-balloon">
+        <div className={`balloon-content ${getCaptureStatusType()}`}>
+          {getCaptureStatusText()}
+        </div>
+      </div>
+
+      {/* 하단 통합 컨트롤 바 (Pop Dock) */}
+      <div className="pop-control-dock">
+        <div className="dock-section side">
+          <RecentButton onClick={handleRecentClick} />
+          <button
+            className="adventure-list-btn"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <MapIcon size={24} />
+          </button>
+        </div>
+
+        <div className="dock-section center">
+          <CaptureButton
+            team={selectedTeam}
+            isCapturing={isCapturing}
+            statusType={getCaptureStatusType()}
+            onClick={handleCapture}
+            statusText="점령하기"
+            disabled={getCaptureDisabled()}
+          />
+        </div>
+
+        <div className="dock-section side settings">
+          <AutoCaptureToggle />
+        </div>
+      </div>
     </div>
   );
 };

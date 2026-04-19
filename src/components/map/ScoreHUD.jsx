@@ -1,18 +1,15 @@
 import React, { useMemo } from 'react';
+import { Shield, Zap } from 'lucide-react';
 import { TEAM_BLUE, TEAM_RED } from '../../constants';
-import TacticalPanel from '../common/TacticalPanel';
 import './ScoreHUD.css';
 
 /**
- * 점수 및 전장 점유율 HUD 컴포넌트
- * @param {Object} props
- * @param {Object} props.score - { blue: number, red: number } 형태의 점수 객체
+ * 모험 스코어보드 (상단 HUD)
  */
 const ScoreHUD = ({ score }) => {
-  // 점유율 계산 (전체 대비 각 팀의 비율)
   const dominance = useMemo(() => {
     const total = score.blue + score.red;
-    if (total === 0) return { blue: 50, red: 50 }; // 초기 상태
+    if (total === 0) return { blue: 50, red: 50 };
     return {
       blue: (score.blue / total) * 100,
       red: (score.red / total) * 100
@@ -20,36 +17,34 @@ const ScoreHUD = ({ score }) => {
   }, [score]);
 
   return (
-    <TacticalPanel
-      className="score-hud-container score-floating-ui"
-      showHeader={false}
-      title="SECTOR DOMINANCE MONITOR"
-    >
+    <div className="adventure-scoreboard-container">
+      <div className="scoreboard-frame">
 
-      <div className="score-main-section">
-        <div className="team-stats blue">
-          <span className="team-name">{TEAM_BLUE.name}</span>
-          <span className="score-val">{score.blue}</span>
+        {/* 블루팀 구역 */}
+        <div className="scoreboard-side team-blue">
+          <div className="team-score">{score.blue}</div>
         </div>
 
-        <div className="dominance-gauge">
-          <div
-            className="gauge-fill blue"
-            style={{ width: `${dominance.blue}%` }}
-          ></div>
-          <div
-            className="gauge-fill red"
-            style={{ width: `${dominance.red}%` }}
-          ></div>
-          <div className="vs-label">VS</div>
+        {/* 중앙 게이지 및 매치 상태 */}
+        <div className="scoreboard-center">
+          <div className="hud-vs-area">
+            <Shield size={20} className="hud-team-icon blue" />
+            <div className="vs-pop-badge">VS</div>
+            <Zap size={20} className="hud-team-icon red" />
+          </div>
+          <div className="dominance-gauge">
+            <div className="gauge-fill blue-fill" style={{ width: `${dominance.blue}%` }}></div>
+            <div className="gauge-fill red-fill" style={{ width: `${dominance.red}%` }}></div>
+          </div>
         </div>
 
-        <div className="team-stats red">
-          <span className="score-val">{score.red}</span>
-          <span className="team-name">{TEAM_RED.name}</span>
+        {/* 레드팀 구역 */}
+        <div className="scoreboard-side team-red">
+          <div className="team-score">{score.red}</div>
         </div>
+
       </div>
-    </TacticalPanel>
+    </div>
   );
 };
 

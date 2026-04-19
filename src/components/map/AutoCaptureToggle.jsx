@@ -1,10 +1,10 @@
 import React from 'react';
-import { Target } from 'lucide-react';
 import { useGame } from '../../hooks/useGame';
 import './AutoCaptureToggle.css';
 
 /**
- * 자동 점령(Auto-Capture) 토글 스위치 컴포넌트 - 간소화 버전
+ * 자동 점령(Auto-Capture) 토글 버튼 - 텍스트 전용 버전
+ * - 사용자의 요청에 따라 복잡한 토글 스위치 대신 '자동/수동' 텍스트 버튼으로 변경
  */
 const AutoCaptureToggle = () => {
   const { autoCaptureEnabled, saveAutoCapture } = useGame();
@@ -16,19 +16,16 @@ const AutoCaptureToggle = () => {
   };
 
   return (
-    <div 
-      className={`auto-capture-toggle-container ${autoCaptureEnabled ? 'is-active' : ''}`}
-      onClick={handleToggle}
-      title={autoCaptureEnabled ? '전술 모드: 자동' : '전술 모드: 수동'}
-    >
-      <div className="toggle-track">
-        <div className="toggle-thumb">
-          <Target size={14} className="thumb-icon" />
-        </div>
-      </div>
-      <div className="toggle-label">
-        <span className="status-text">{autoCaptureEnabled ? '자동' : '수동'}</span>
-      </div>
+    <div className="adventure-auto-toggle">
+      <button 
+        className={`pop-text-btn ${autoCaptureEnabled ? 'auto' : 'manual'}`}
+        onClick={handleToggle}
+        title={autoCaptureEnabled ? '현재 자동 모드' : '현재 수동 모드'}
+      >
+        <span className="btn-text">
+          {autoCaptureEnabled ? '자동' : '수동'}
+        </span>
+      </button>
     </div>
   );
 };

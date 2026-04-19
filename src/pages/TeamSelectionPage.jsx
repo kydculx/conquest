@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../hooks/useGame';
 import { TEAM_BLUE, TEAM_RED, UI_TEXT } from '../constants';
+import { Activity, Terminal } from 'lucide-react';
 import TeamCard from '../components/team/TeamCard';
 import './TeamSelectionPage.css';
 
@@ -14,6 +15,7 @@ const TeamSelectionPage = () => {
   const { saveSelectedTeam } = useGame();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [hoveredTeam, setHoveredTeam] = useState(null);
 
   const handleTeamClick = async (teamId) => {
     if (loading) return;
@@ -29,31 +31,48 @@ const TeamSelectionPage = () => {
   };
 
   return (
-    <div className={`page-container team-selection-page ${loading ? 'loading' : ''}`}>
-      <header className="page-header">
-        <div className="header-decoration"></div>
-        <h1 className="title glitch-effect">{UI_TEXT.selectTeamTitle}</h1>
-        <p className="subtitle">{UI_TEXT.selectTeamSubtitle}</p>
+    <div className={`page-container team-selection-page ${loading ? 'loading' : ''} hovered-${hoveredTeam || 'none'}`}>
+      
+      {/* 앰비언트 배경 & 인게임 동기화 스캔라인 */}
+      <div className="ambient-background">
+        <div className="ambient-glow" />
+        <div className="tactical-grid" />
+        <div className="tactical-particles" />
+        <div className="background-vignette" />
+        <div className="modal-scanline" />
+      </div>
+
+      <header className="page-header tactical-panel">
+        <h1 className="title">{UI_TEXT.selectTeamTitle}</h1>
       </header>
 
-      <div className="teams-container">
+      <div 
+        className="teams-container" 
+        style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch', width: '100%', maxWidth: '1200px' }}
+      >
         <TeamCard
           team={TEAM_BLUE}
           onClick={() => handleTeamClick(TEAM_BLUE.id)}
+          onHover={setHoveredTeam}
         />
+
+        <div className="center-divider">
+          <div className="divider-line"></div>
+          <span className="vs-label">VS</span>
+          <div className="divider-line"></div>
+        </div>
 
         <TeamCard
           team={TEAM_RED}
           onClick={() => handleTeamClick(TEAM_RED.id)}
+          onHover={setHoveredTeam}
         />
       </div>
 
       {loading && (
         <div className="selection-loading">
-          <div className="pulse-text">네트워크 연결 중...</div>
-          <div className="loading-bar">
-            <div className="loading-progress"></div>
-          </div>
+          <div className="hud-spinner"></div>
+          <div className="pulse-text">데이터 동기화 및 작전 승인 중...</div>
         </div>
       )}
     </div>

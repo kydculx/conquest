@@ -38,20 +38,19 @@ const AutoCaptureEngine = ({
 
     const now = Date.now();
     
-    // 2. [자동 조준 단계] 조준이 정렬되지 않았다면 플레이어 위치로 지도 이동
+    // 2. [자동 조준 단계] 플레이어 위치로 지도 이동 (시각적 가이드)
     if (!isTargetAligned) {
-      if (now - lastAutoActionRef.current < 2000) return;
-      
-      lastAutoActionRef.current = now;
-      map.panTo(location, {
-        animate: true,
-        duration: MAP_CONFIG.FLY_DURATION
-      });
-      return;
+      if (now - lastAutoActionRef.current > 2000) {
+        lastAutoActionRef.current = now;
+        map.panTo(location, {
+          animate: true,
+          duration: MAP_CONFIG.FLY_DURATION
+        });
+      }
     }
 
-    // 3. [자동 점령 단계] 조준이 완료되었고 점령 가용한 상태면 실행
-    if (isTargetAligned && !isCapturing) {
+    // 3. [자동 점령 단계] 점령 가용한 상태면 실행 (정렬 여부 무관)
+    if (!isCapturing) {
       // ⚠️ 중요: 점령 완료 직후 동일 타일 중복 실행 방지
       if (lastProcessedTileIdRef.current === tileId) return;
 
