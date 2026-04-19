@@ -50,7 +50,7 @@ const getHubStyle = (type, ownerTeam) => {
  */
 const TacticalHubItem = React.memo(({ hub, owner }) => {
   const { color, radius } = useMemo(() => getHubStyle(hub.type, owner), [hub.type, owner]);
-  
+
   // 고정된 섹터 번호
   const sectorNum = useMemo(() => (hub.id % 9) + 1, [hub.id]);
 
@@ -67,7 +67,7 @@ const TacticalHubItem = React.memo(({ hub, owner }) => {
           interactive: false
         }}
       />
-      
+
       {/* 2. 중심 코어 레이어 (Core Node) */}
       <CircleMarker
         center={[hub.lat, hub.lng]}
@@ -107,10 +107,10 @@ const TacticalHubsLayer = () => {
         const owner = capturedTiles[tileInfo.id]?.owner;
 
         return (
-          <TacticalHubItem 
-            key={hub.id} 
-            hub={hub} 
-            owner={owner} 
+          <TacticalHubItem
+            key={hub.id}
+            hub={hub}
+            owner={owner}
           />
         );
       })}
