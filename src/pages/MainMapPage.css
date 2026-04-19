@@ -2,6 +2,7 @@
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* 최신 모바일 브라우저 동적 뷰포트 대응 */
   background-color: #050505;
   overflow: hidden;
   display: flex;
@@ -175,7 +176,8 @@
 /* 상태 안내 말풍선 (전술 알림 패널) */
 .floating-status-balloon {
   position: absolute;
-  bottom: 140px;
+  /* 모바일 네비게이션 바 및 세이프 에어리어 대응 */
+  bottom: calc(140px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
   z-index: var(--z-hud);
@@ -241,7 +243,8 @@
 /* 하단 통합 독 (Tactical Dock) */
 .pop-control-dock {
   position: absolute;
-  bottom: 30px;
+  /* 세이프 에어리어(아이폰 홈 바 등) 포함한 하단 여백 설정 */
+  bottom: calc(30px + env(safe-area-inset-bottom));
   left: 20px;
   right: 20px;
   height: 80px;
