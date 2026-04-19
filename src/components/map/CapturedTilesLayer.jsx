@@ -8,7 +8,7 @@ import { getTileInfo } from '../../utils/geoUtils';
 const CapturedTilesLayer = React.memo(({ zoom }) => {
   const { capturedTiles } = useGame();
 
-  // 줌 레벨에 따른 렌더링 품질 최적화 (LoD)
+  // 줌 레벨에 따른 렌더링 품질 최적화 (LoD 재적용)
   const renderConfig = useMemo(() => {
     if (zoom < 9) return { weight: 1, smoothFactor: 6 };
     if (zoom < 12) return { weight: 2, smoothFactor: 3 };

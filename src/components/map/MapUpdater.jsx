@@ -24,11 +24,10 @@ const MapUpdater = ({ center, recenterTrigger }) => {
     }
   }, [center, map]);
 
-  // 2. '내 위치로' 버튼 클릭(recenterTrigger 증가) 시에만 이동
-  // flyTo 고유의 줌 아웃/인 효과를 방지하기 위해 panTo를 사용하여 위치만 이동합니다.
+  // 2. '내 위치로' 버튼 클릭(recenterTrigger 증가) 시 확대하며 이동
   useEffect(() => {
     if (center && recenterTrigger > lastTriggerRef.current) {
-      map.panTo(center, { 
+      map.flyTo(center, MAP_CONFIG.MAX_ZOOM, { 
         animate: true, 
         duration: MAP_CONFIG.FLY_DURATION 
       });
