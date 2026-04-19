@@ -56,6 +56,7 @@ const MainMapPage = () => {
   const [centerTile, setCenterTile] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
+  const [currentZoom, setCurrentZoom] = useState(MAP_CONFIG.DEFAULT_ZOOM);
 
   /**
    * 지도 객체를 상위 상태로 추출하기 위한 내부 헬퍼 컴포넌트
@@ -63,7 +64,14 @@ const MainMapPage = () => {
   const MapInstanceGetter = () => {
     const map = useMap();
     useEffect(() => {
-      if (map) setMapInstance(map);
+      if (map) {
+        setMapInstance(map);
+        
+        // 줌 레벨 추적 이벤트 등록
+        const onZoom = () => setCurrentZoom(map.getZoom());
+        map.on('zoomend', onZoom);
+        return () => map.off('zoomend', onZoom);
+      }
     }, [map]);
     return null;
   };
@@ -160,13 +168,14 @@ const MainMapPage = () => {
           maxZoom={MAP_CONFIG.MAX_ZOOM}
           zoomControl={false}
           tap={false}
+          preferCanvas={true}
           className="cartoon-map-container"
         >
 
           <MapUpdater center={location} recenterTrigger={recenterTrigger} />
-          <CapturedTilesLayer />
-          <TacticalHubsLayer />
-          <CenterTileLayer onTileChange={setCenterTile} />
+          <CapturedTilesLayer zoom={currentZoom} />
+          <TacticalHubsLayer zoom={currentZoom} />
+          <CenterTileLayer onTileChange={setCenterTile} zoom={currentZoom} />
 
           <AutoCaptureEngine
             location={location}

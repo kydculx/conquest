@@ -17,7 +17,7 @@ const CaptureButton = ({
   return (
     <div className="capture-btn-wrapper">
       <button
-        className={`pop-adventure-btn ${team} ${isCapturing ? 'active' : ''}`}
+        className={`pop-adventure-btn ${team} ${statusType} ${isCapturing ? 'active' : ''}`}
         onClick={onClick}
         disabled={disabled}
       >

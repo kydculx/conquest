@@ -35,9 +35,6 @@ const createHubIcon = (hubTypeClass, size, captureClass = '') => L.divIcon({
   html: `
     <div class="marker-wrapper ${hubTypeClass} ${captureClass}">
       <div class="marker-core"></div>
-      ${hubTypeClass.includes('special') || hubTypeClass.includes('metropolitan') || hubTypeClass.includes('provincial') 
-        ? `<div class="major-ring ${hubTypeClass.includes('special') ? 'double' : ''}"></div>` 
-        : ''}
     </div>
   `,
   iconSize: [size, size],

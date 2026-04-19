@@ -43,7 +43,7 @@
 
 .tactical-alert.info { border-color: rgba(0, 162, 255, 0.5); }
 .tactical-alert.info::before { background: var(--color-neon-blue); box-shadow: 0 0 10px var(--color-neon-blue); }
-.tactical-alert.info .alert-message { color: var(--color-text-primary); }
+.tactical-alert.info .alert-message { color: #ffffff; }
 
 .tactical-alert.warning { border-color: rgba(241, 196, 15, 0.5); }
 .tactical-alert.warning::before { background: var(--color-cyber-yellow); box-shadow: 0 0 10px var(--color-cyber-yellow); }
@@ -62,7 +62,7 @@
   font-family: var(--font-family-base);
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: #ffffff;
   line-height: 1.3;
 }
 

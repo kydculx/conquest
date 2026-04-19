@@ -3,8 +3,15 @@ import { Polygon } from 'react-leaflet';
 import { useGame } from '../../hooks/useGame';
 import { TEAM_BLUE, GAME_CONFIG } from '../../constants';
 
-const CapturedTilesLayer = React.memo(() => {
+const CapturedTilesLayer = React.memo(({ zoom }) => {
   const { capturedTiles } = useGame();
+
+  // 줌 레벨에 따른 렌더링 품질 최적화 (LoD)
+  const renderConfig = useMemo(() => {
+    if (zoom < 9) return { weight: 1, smoothFactor: 6 };
+    if (zoom < 12) return { weight: 2, smoothFactor: 3 };
+    return { weight: 3, smoothFactor: 1 };
+  }, [zoom]);
 
   const { blue: blueCoords, red: redCoords } = useMemo(() => {
     const coords = { blue: [], red: [] };
@@ -31,9 +38,9 @@ const CapturedTilesLayer = React.memo(() => {
             color: '#000000',      // 강렬한 블랙 테두리
             fillColor: GAME_CONFIG.COLORS.TEAM_BLUE,
             fillOpacity: 0.8,
-            weight: 3,             // 굵은 선 (Cartoon Style)
+            weight: renderConfig.weight,
             lineJoin: 'round',
-            smoothFactor: 1,
+            smoothFactor: renderConfig.smoothFactor,
             className: 'captured-hex team-blue-hex'
           }}
           interactive={false}
@@ -48,9 +55,9 @@ const CapturedTilesLayer = React.memo(() => {
             color: '#000000',      // 강렬한 블랙 테두리
             fillColor: GAME_CONFIG.COLORS.TEAM_RED,
             fillOpacity: 0.8,
-            weight: 3,             // 굵은 선 (Cartoon Style)
+            weight: renderConfig.weight,
             lineJoin: 'round',
-            smoothFactor: 1,
+            smoothFactor: renderConfig.smoothFactor,
             className: 'captured-hex team-red-hex'
           }}
           interactive={false}

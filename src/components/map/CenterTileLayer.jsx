@@ -9,7 +9,7 @@ import { GAME_CONFIG } from '../../constants';
  * @param {Object} props
  * @param {Function} props.onTileChange - 타일이 바뀔 때 외부(부모)에 알리기 위한 콜백 (필요 시)
  */
-const CenterTileLayer = ({ onTileChange }) => {
+const CenterTileLayer = ({ onTileChange, zoom }) => {
   const [centerTile, setCenterTile] = useState(null);
   const lastUpdateRef = useRef(0);
   const throttleMs = 100;
@@ -34,7 +34,7 @@ const CenterTileLayer = ({ onTileChange }) => {
     load: () => updateCenterTile(map)
   });
 
-  if (!centerTile) return null;
+  if (!centerTile || (zoom && zoom < 12)) return null;
 
   return (
     <Polygon

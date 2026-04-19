@@ -17,14 +17,14 @@ export const UI_TEXT = {
 
   // 지도 액션
   btnStartCapture: "구역 점령 개시",
-  btnCapturing: "업링크 동기화 중...",
+  btnCapturing: "구역 점령중..",
   btnCaptureDone: "구역 확보 완료",
 
   // 상태 메시지
   statusCapture: "미확보 구역 탐지",
   statusCaptureReady: "점령 프로토콜 가동 가능",
   statusCapturingBase: "데이터 전송 및 동기화 중...",
-  statusReclaimed: "아군 점령 구역 (SECURED)",
+  statusReclaimed: "아군 점령 구역",
   statusSignalWeak: "GPS 신호 감쇠 - 개활지로 이동하십시오.",
   statusTargetMismatch: "좌표 보정 필요: 위치를 중앙에 맞추십시오.",
   statusProcessing: "데이터 패킷 처리 중...",
@@ -32,11 +32,17 @@ export const UI_TEXT = {
   // 레이어 및 목록
   territoryListTitle: "점령 구역 데이터베이스",
   territoryListEmpty: "확보된 데이터가 없습니다. 구역 점령을 시작하십시오.",
-  hubsListTitle: "주요 전술 거점 (TACTICAL_HUBS)",
+  hubsListTitle: "주요 전술 거점",
 
   // 에러
   locationDenied: "위치 권한 거부 - 작전 수행 불가",
   locationError: "GPS 하드웨어 응답 없음",
   locationUnavailable: "위치 서비스 이용 불가. 시스템 설정에서 GPS 권한을 확인한 후 'RECENTER' 버튼을 눌러 재시도하십시오.",
   mockLocationNotice: "가상 위치 시뮬레이션 가동 중 (DEV_MODE)",
+
+  // 전술 알림용 (addAlert 전용)
+  alertNeutralCapture: "중립 구역 확보 성공 - 시스템 등록 완료",
+  alertOtherTeamCapture: "타 진영의 구역 확장 감지됨",
+  alertCounterCapture: "적 구역 무력화 및 구역 재확보 성공",
+  alertEnemyInvasion: "중요: 아군 구역 내 적대적 침공 발생!",
 };

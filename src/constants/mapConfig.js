@@ -4,10 +4,10 @@
 export const MAP_CONFIG = {
   DEFAULT_POSITION: [37.5665, 126.9780],
   DEFAULT_ZOOM: 13,
-  MIN_ZOOM: 5,
-  MAX_ZOOM: 15,
+  MIN_ZOOM: 7,
+  MAX_ZOOM: 14,
   FLY_DURATION: 1.5,
-  TILE_SIZE: 400, 
+  TILE_SIZE: 400,
   MOCK_POSITION: [37.4979, 127.0276], // 개발용 가상 위치 (강남역)
 };
 

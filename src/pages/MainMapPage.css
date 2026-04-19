@@ -35,7 +35,7 @@
   z-index: 1;
   background-color: #050505;
   background-image:
-    radial-gradient(circle at center, rgba(0, 0, 0, 0.7) 0%, #000 100%),
+    radial-gradient(circle at center, rgba(0, 0, 0, 0.80) 0%, #000 100%),
     url('../assets/images/tactical_bg.png');
   background-size: 100% 100%, cover;
   background-position: center;
@@ -195,8 +195,6 @@
   font-size: 0.85rem;
   color: #ffffff;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  position: relative;
-  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: center;
   letter-spacing: 1px;
 }
@@ -230,6 +228,14 @@
 
 .balloon-content.secured {
   color: var(--color-cyber-green);
+}
+
+.balloon-content.warning {
+  color: var(--color-neon-red);
+}
+
+.balloon-content.busy {
+  color: var(--color-cyber-yellow);
 }
 
 /* 하단 통합 독 (Tactical Dock) */
@@ -272,7 +278,8 @@
   height: 52px;
   background: var(--color-hud-bg);
   backdrop-filter: var(--hud-blur);
-  border: 1px solid var(--color-accent); /* 상시 진영 색상 테두리 */
+  border: 1px solid var(--color-accent);
+  /* 상시 진영 색상 테두리 */
   border-radius: var(--border-radius-sm);
   display: flex;
   align-items: center;
@@ -280,7 +287,8 @@
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  color: var(--color-accent); /* 상시 진영 색상 아이콘 */
+  color: var(--color-accent);
+  /* 상시 진영 색상 아이콘 */
 }
 
 .recenter-btn:hover,
@@ -361,13 +369,23 @@
 .tactical-pulse-icon {
   color: var(--color-accent);
   opacity: 0.8;
-  animation: pulse-soft 2s infinite;
 }
 
 @keyframes pulse-soft {
-  0% { opacity: 0.4; transform: scale(0.9); }
-  50% { opacity: 0.8; transform: scale(1.1); }
-  100% { opacity: 0.4; transform: scale(0.9); }
+  0% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+
+  100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
 }
 
 .hub-tag {
@@ -380,11 +398,30 @@
 }
 
 /* 등급별 태그 컬러 */
-.hub-tag.special { background: rgba(255, 215, 0, 0.15); color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.3); }
-.hub-tag.metropolitan { background: rgba(168, 85, 247, 0.15); color: #A855F7; border: 1px solid rgba(168, 85, 247, 0.3); }
-.hub-tag.provincial { background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
-.hub-tag.city, .hub-tag.district, .hub-tag.county { 
-  background: rgba(255, 255, 255, 0.05); color: #eee; border: 1px solid rgba(255, 255, 255, 0.1); 
+.hub-tag.special {
+  background: rgba(255, 215, 0, 0.15);
+  color: #FFD700;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.hub-tag.metropolitan {
+  background: rgba(168, 85, 247, 0.15);
+  color: #A855F7;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.hub-tag.provincial {
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.hub-tag.city,
+.hub-tag.district,
+.hub-tag.county {
+  background: rgba(255, 255, 255, 0.05);
+  color: #eee;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .hub-name {
@@ -402,8 +439,14 @@
   letter-spacing: 0.5px;
 }
 
-.hub-status.neutral { color: rgba(255, 255, 255, 0.4); }
-.hub-status.captured { color: var(--color-accent); text-shadow: 0 0 10px rgba(var(--color-accent-rgb), 0.5); }
+.hub-status.neutral {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.hub-status.captured {
+  color: var(--color-accent);
+  text-shadow: 0 0 10px rgba(var(--color-accent-rgb), 0.5);
+}
 
 .hub-footer {
   padding-top: 8px;
