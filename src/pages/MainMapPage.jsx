@@ -66,7 +66,7 @@ const MainMapPage = () => {
     useEffect(() => {
       if (map) {
         setMapInstance(map);
-        
+
         // 줌 레벨 추적 이벤트 등록
         const onZoom = () => setCurrentZoom(map.getZoom());
         map.on('zoomend', onZoom);

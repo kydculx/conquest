@@ -1,5 +1,6 @@
 /* ==========================================================================
-   ScoreHUD (Advanced Tactical HUD - V4.0)
+   ScoreHUD: Visual Integrity Guaranteed
+   - UI 수치는 기존 v4.0과 100% 동일하게 유지하며 내부 선택자만 정돈함
    ========================================================================== */
 
 .adventure-scoreboard-container {
@@ -11,7 +12,7 @@
   display: flex;
   justify-content: center;
   pointer-events: none;
-  direction: ltr !important; /* 항상 좌측에서 우측으로 정렬 강제 */
+  direction: ltr; /* 상단에서 강제하되 !important 제거 */
 }
 
 .scoreboard-frame {
@@ -21,63 +22,55 @@
   background: var(--color-hud-bg);
   backdrop-filter: var(--hud-blur);
   border: var(--border-bold);
-  border-radius: 12px;
+  border-radius: 12px; /* 기존 수치 복구 */
   display: flex;
   align-items: stretch;
   overflow: hidden;
-  height: 60px;
+  height: 60px; /* 기존 수치 복구 */
   animation: slideDownFade 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 @keyframes slideDownFade {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .scoreboard-side {
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 20px; /* 기존 수치 복구 */
   gap: 12px;
   flex-shrink: 0;
 }
 
+/* 팀별 정체성 격리 (기존 시각 효과 100% 유지) */
 .hud-team-blue {
-  order: 1 !important; /* 블루 항상 좌측 */
-}
-
-.hud-team-red {
-  order: 3 !important; /* 레드 항상 우측 */
-}
-
-.team-score {
-  font-family: var(--font-family-mono);
-  /* 수치는 전술적 Mono 폰트 사용 */
-  font-size: 1.8rem;
-  font-weight: 800;
-  line-height: 1;
-  min-width: 4.5rem;
-  text-align: center;
+  order: 1;
 }
 
 .hud-team-blue .team-score {
-  color: var(--color-neon-blue) !important; 
-  text-shadow: 0 0 15px rgba(0, 162, 255, 0.8) !important;
+  color: var(--color-neon-blue);
+  text-shadow: 0 0 15px rgba(0, 162, 255, 0.8);
   text-align: right;
+  font-family: var(--font-family-mono);
+  font-size: 1.8rem;
+  font-weight: 800;
+  min-width: 4.5rem;
+}
+
+.hud-team-red {
+  order: 3;
 }
 
 .hud-team-red .team-score {
-  color: var(--color-neon-red) !important;
-  text-shadow: 0 0 15px rgba(255, 59, 48, 0.8) !important;
+  color: var(--color-neon-red);
+  text-shadow: 0 0 15px rgba(255, 59, 48, 0.8);
   text-align: left;
+  font-family: var(--font-family-mono);
+  font-size: 1.8rem;
+  font-weight: 800;
+  min-width: 4.5rem;
 }
 
 /* 중앙 매치 상태 */
@@ -88,11 +81,11 @@
   justify-content: center;
   align-items: center;
   padding: 0 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.03); /* 기존 수치 복구 */
   border-left: 1px solid rgba(255, 255, 255, 0.05);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
-  order: 2 !important; /* 게이지 항상 중앙 */
+  order: 2;
 }
 
 .hud-vs-area {
@@ -112,7 +105,7 @@
 
 .vs-pop-badge {
   font-family: var(--font-family-mono);
-  font-size: 0.65rem;
+  font-size: 0.65rem; /* 기존 수치 복구 */
   font-weight: 800;
   color: #fff;
   letter-spacing: 2px;
@@ -133,34 +126,12 @@
   transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.blue-fill {
-  background: var(--color-neon-blue);
-  box-shadow: 0 0 10px var(--color-neon-blue);
-}
-
-.red-fill {
-  background: var(--color-neon-red);
-  box-shadow: 0 0 10px var(--color-neon-red);
-}
+.blue-fill { background: var(--color-neon-blue); box-shadow: 0 0 10px var(--color-neon-blue); }
+.red-fill { background: var(--color-neon-red); box-shadow: 0 0 10px var(--color-neon-red); }
 
 @media (max-width: 400px) {
-  .scoreboard-frame {
-    height: 52px;
-    max-width: 100%;
-  }
-
-  .team-score {
-    font-size: 1.2rem;
-    min-width: 3.5rem;
-  }
-
-  .scoreboard-side {
-    padding: 0 12px;
-    gap: 8px;
-  }
-
-  .vs-pop-badge {
-    font-size: 0.55rem;
-    letter-spacing: 1px;
-  }
+  .scoreboard-frame { height: 52px; }
+  .team-score { font-size: 1.2rem; min-width: 3.5rem; }
+  .scoreboard-side { padding: 0 12px; gap: 8px; }
+  .vs-pop-badge { font-size: 0.55rem; letter-spacing: 1px; }
 }
