@@ -10,6 +10,7 @@ export const GAME_CONFIG = {
     UPDATE_INTERVAL: 100,      // 점령 진행률 갱신 주기 (ms)
     RANGE: 150,                // 점령 가능 범위 (m)
     VIBRATION_PATTERN: [30, 50, 30], // 점령 시작 시 진동 패턴
+    AUTO_CAPTURE_DELAY: 10000,  // 자동 점령 시작 전 대기 시간 (ms)
   },
 
   // 카툰 테마 색상 (Leaflet 컴포넌트용)
