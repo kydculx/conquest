@@ -1,5 +1,5 @@
 /**
- * "CONQUEST" 메인 어플리케이션 컴포넌트
+ * "한국정복" 메인 어플리케이션 컴포넌트
  * - 라우팅(Routing) 및 전역 상태 제공(GameProvider)을 담당합니다.
  */
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';

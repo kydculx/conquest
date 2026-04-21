@@ -1,10 +1,10 @@
 /**
- * 어플리케이션 전역에서 사용되는 텍스트 정의
+ * "한국정복" 메인 어플리케이션 컴포넌트
  * - 'Advanced Tactical HUD V4.0' 컨셉에 맞춰 전문적이고 격식 있는 용어로 개편
  */
 export const UI_TEXT = {
   // 공통
-  appTitle: "NEXUS CONQUEST",
+  appTitle: "한국정복",
   loading: "시스템 초기화 중...",
 
   // 팀 선택
