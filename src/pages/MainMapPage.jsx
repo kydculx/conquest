@@ -154,13 +154,18 @@ const MainMapPage = () => {
 
   return (
     <div className={`map-page team-${selectedTeam} ${isCapturing ? 'is-capturing' : ''}`}>
+      {/* SEO용 시맨틱 타이틀 (시각적으로는 숨김 처리 권장) */}
+      <h1 className="sr-only">한국정복 | 실시간 GPS 영토 점령 전쟁</h1>
+
       {/* 글로벌 전술 오버레이 (스캔라인/그리드) */}
       <div className="global-tactical-overlay"></div>
 
       {/* HUD 상단: 스코어 */}
-      <ScoreHUD score={score} />
+      <header className="map-page-header">
+        <ScoreHUD score={score} />
+      </header>
 
-      <div className="adventure-map-view">
+      <main className="adventure-map-view">
         <MapContainer
           center={MAP_CONFIG.DEFAULT_POSITION}
           zoom={MAP_CONFIG.DEFAULT_ZOOM}
@@ -190,7 +195,7 @@ const MainMapPage = () => {
           <Marker position={effectivePosition} icon={playerIcon} />
           <MapInstanceGetter />
         </MapContainer>
-      </div>
+      </main>
 
       {/* 팝한 타켓 가이드 (Crosshair 적용) */}
       <div className="adventure-target-guide">
